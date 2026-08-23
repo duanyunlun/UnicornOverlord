@@ -1,0 +1,276 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UnicornOverlord"
+        x:Class="UnicornOverlord.MainWindow"
+        x:Name="Root"
+        mc:Ignorable="d"
+        Title="独角兽之王 存档编辑器"
+        Width="1120" Height="760" MinWidth="900" MinHeight="620"
+        WindowStartupLocation="CenterScreen"
+        Background="#F3F4F6">
+  <Window.KeyBindings>
+    <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileCommand}" />
+    <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveFileCommand}" />
+    <KeyBinding Gesture="Ctrl+Shift+S" Command="{Binding SaveAsFileCommand}" />
+  </Window.KeyBindings>
+
+  <Window.Resources>
+    <local:ClassIDConverter x:Key="ClassIDConverter" />
+    <local:ItemIDConverter x:Key="ItemIDConverter" />
+    <local:NameIDConverter x:Key="NameIDConverter" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#287764" />
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="#E5F2EE" />
+    <SolidColorBrush x:Key="BorderBrush" Color="#D8DBE0" />
+    <SolidColorBrush x:Key="MutedBrush" Color="#656B75" />
+  </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="TextBlock.section-title">
+      <Setter Property="FontSize" Value="18" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="TextBlock.caption">
+      <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+      <Setter Property="FontSize" Value="12" />
+    </Style>
+    <Style Selector="Border.panel">
+      <Setter Property="Background" Value="White" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="Padding" Value="16,8" />
+    </Style>
+    <Style Selector="Button.compact">
+      <Setter Property="Padding" Value="10,6" />
+      <Setter Property="MinHeight" Value="32" />
+    </Style>
+    <Style Selector="TextBox.editor">
+      <Setter Property="MinWidth" Value="110" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+    <Style Selector="ListBoxItem">
+      <Setter Property="Padding" Value="10,8" />
+    </Style>
+  </Window.Styles>
+
+  <Grid RowDefinitions="Auto,Auto,*,Auto">
+    <Border Grid.Row="0" Background="#20252B" Padding="24,16">
+      <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+        <StackPanel Spacing="2">
+          <TextBlock Text="独角兽之王" FontSize="22" FontWeight="SemiBold" Foreground="White" />
+          <TextBlock Text="Nintendo Switch 存档编辑器" Foreground="#BFC6CE" FontSize="12" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+          <Button Classes="compact" Content="打开" Command="{Binding OpenFileCommand}" />
+          <Button Classes="compact" Content="另存为" Command="{Binding SaveAsFileCommand}" IsEnabled="{Binding IsSaveLoaded}" />
+          <Button Classes="primary" Content="保存" Command="{Binding SaveFileCommand}" IsEnabled="{Binding IsSaveLoaded}" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Border Grid.Row="1" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="24,10">
+      <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+        <StackPanel Spacing="1">
+          <TextBlock Text="{Binding CurrentFileName}" FontWeight="SemiBold" />
+          <TextBlock Classes="caption" Text="{Binding FileLocation}" TextTrimming="CharacterEllipsis" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+          <TextBlock Text="名称语言" VerticalAlignment="Center" />
+          <ComboBox Width="116" ItemsSource="{Binding Languages}" SelectedIndex="{Binding LanguageIndex, Mode=TwoWay}" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <TabControl Grid.Row="2" Margin="20">
+      <TabItem Header="概览">
+        <Border Classes="panel" Padding="24" Margin="0,12,0,0">
+          <StackPanel Spacing="20" MaxWidth="520" HorizontalAlignment="Left">
+            <StackPanel Spacing="3">
+              <TextBlock Classes="section-title" Text="游戏进度" />
+              <TextBlock Classes="caption" Text="当前存档的主要进度数值" />
+            </StackPanel>
+            <Grid ColumnDefinitions="180,220" RowDefinitions="Auto,Auto,Auto" RowSpacing="14">
+              <TextBlock Text="金币" VerticalAlignment="Center" />
+              <TextBox Grid.Column="1" Classes="editor" Text="{Binding Basic.Money, Mode=TwoWay}" />
+              <TextBlock Grid.Row="1" Text="名望" VerticalAlignment="Center" />
+              <TextBox Grid.Row="1" Grid.Column="1" Classes="editor" Text="{Binding Basic.Fame, Mode=TwoWay}" />
+              <TextBlock Grid.Row="2" Text="泽诺伊拉难度" VerticalAlignment="Center" />
+              <ToggleSwitch Grid.Row="2" Grid.Column="1" IsChecked="{Binding Basic.ZENOIRA, Mode=TwoWay}" OnContent="启用" OffContent="停用" />
+            </Grid>
+          </StackPanel>
+        </Border>
+      </TabItem>
+
+      <TabItem Header="角色">
+        <Grid ColumnDefinitions="260,*,300" ColumnSpacing="12" Margin="0,12,0,0">
+          <Border Classes="panel">
+            <Grid RowDefinitions="Auto,*,Auto">
+              <StackPanel Margin="16" Spacing="3">
+                <TextBlock Classes="section-title" Text="角色列表" />
+                <TextBlock Classes="caption" Text="{Binding Characters.Count, StringFormat='{}{0} 名角色'}" />
+              </StackPanel>
+              <ListBox Grid.Row="1" x:Name="CharacterList" ItemsSource="{Binding Characters}" BorderThickness="0,1,0,1" BorderBrush="{StaticResource BorderBrush}">
+                <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Name, Converter={StaticResource NameIDConverter}}" TextTrimming="CharacterEllipsis" />
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+              <Grid Grid.Row="2" ColumnDefinitions="*,*,*" ColumnSpacing="6" Margin="10">
+                <Button Classes="compact" Content="导出" Command="{Binding ExportCharacterCommand}" CommandParameter="{Binding SelectedIndex, ElementName=CharacterList}" />
+                <Button Grid.Column="1" Classes="compact" Content="导入" Command="{Binding ImportCharacterCommand}" CommandParameter="{Binding SelectedIndex, ElementName=CharacterList}" />
+                <Button Grid.Column="2" Classes="compact" Content="插入" Command="{Binding InsertCharacterCommand}" />
+              </Grid>
+            </Grid>
+          </Border>
+
+          <Border Grid.Column="1" Classes="panel" Padding="18">
+            <ScrollViewer>
+              <StackPanel Spacing="14">
+                <TextBlock Classes="section-title" Text="角色属性" />
+                <Grid ColumnDefinitions="150,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="10">
+                  <TextBlock Text="启用" VerticalAlignment="Center" />
+                  <ToggleSwitch Grid.Column="1" IsChecked="{Binding SelectedItem.Use, ElementName=CharacterList, Mode=TwoWay}" OnContent="启用" OffContent="停用" />
+                  <TextBlock Grid.Row="1" Text="职业" VerticalAlignment="Center" />
+                  <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <Button Classes="compact" Content="更换" Command="{Binding ChoiceClassCommand}" CommandParameter="{Binding SelectedItem, ElementName=CharacterList}" />
+                    <TextBlock Text="{Binding SelectedItem.Class, ElementName=CharacterList, Converter={StaticResource ClassIDConverter}}" VerticalAlignment="Center" />
+                  </StackPanel>
+                  <TextBlock Grid.Row="2" Text="等级" VerticalAlignment="Center" />
+                  <TextBox Grid.Row="2" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.Lv, ElementName=CharacterList, Mode=TwoWay}" />
+                  <TextBlock Grid.Row="3" Text="经验值" VerticalAlignment="Center" />
+                  <TextBox Grid.Row="3" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.Exp, ElementName=CharacterList, Mode=TwoWay}" />
+                  <TextBlock Grid.Row="4" Text="生命加成" VerticalAlignment="Center" />
+                  <TextBox Grid.Row="4" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.HPPlus, ElementName=CharacterList, Mode=TwoWay}" />
+                  <TextBlock Grid.Row="5" Text="物理攻击" VerticalAlignment="Center" />
+                  <TextBox Grid.Row="5" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.AttackPlus, ElementName=CharacterList, Mode=TwoWay}" />
+                  <TextBlock Grid.Row="6" Text="物理防御" VerticalAlignment="Center" />
+                  <TextBox Grid.Row="6" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.DefensePlus, ElementName=CharacterList, Mode=TwoWay}" />
+                  <TextBlock Grid.Row="7" Text="魔法攻击" VerticalAlignment="Center" />
+                  <TextBox Grid.Row="7" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.MagicAttackPlus, ElementName=CharacterList, Mode=TwoWay}" />
+                  <TextBlock Grid.Row="8" Text="魔法防御" VerticalAlignment="Center" />
+                  <TextBox Grid.Row="8" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.MagicDefensePlus, ElementName=CharacterList, Mode=TwoWay}" />
+                  <TextBlock Grid.Row="9" Text="命中" VerticalAlignment="Center" />
+                  <TextBox Grid.Row="9" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.HitRatePlus, ElementName=CharacterList, Mode=TwoWay}" />
+                  <TextBlock Grid.Row="10" Text="闪避" VerticalAlignment="Center" />
+                  <TextBox Grid.Row="10" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.AVoidPlus, ElementName=CharacterList, Mode=TwoWay}" />
+                  <TextBlock Grid.Row="11" Text="暴击率" VerticalAlignment="Center" />
+                  <TextBox Grid.Row="11" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.CriticalPlus, ElementName=CharacterList, Mode=TwoWay}" />
+                  <TextBlock Grid.Row="12" Text="格挡率" VerticalAlignment="Center" />
+                  <TextBox Grid.Row="12" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.GuardPlus, ElementName=CharacterList, Mode=TwoWay}" />
+                  <TextBlock Grid.Row="13" Text="行动速度" VerticalAlignment="Center" />
+                  <TextBox Grid.Row="13" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.SpeedPlus, ElementName=CharacterList, Mode=TwoWay}" />
+                </Grid>
+              </StackPanel>
+            </ScrollViewer>
+          </Border>
+
+          <Border Grid.Column="2" Classes="panel">
+            <Grid RowDefinitions="Auto,Auto,*">
+              <StackPanel Margin="16,16,16,8" Spacing="3">
+                <TextBlock Classes="section-title" Text="亲密度" />
+                <TextBlock Classes="caption" Text="角色之间的亲密度数值" />
+              </StackPanel>
+              <Button Grid.Row="1" Classes="compact" Content="全部设为 1000" HorizontalAlignment="Left" Margin="16,4,16,12"
+                      Command="{Binding ChangeCharacterBondMaxCommand}" CommandParameter="{Binding SelectedItem, ElementName=CharacterList}" />
+              <ListBox Grid.Row="2" ItemsSource="{Binding SelectedItem.Bonds, ElementName=CharacterList}" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush}">
+                <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <Grid ColumnDefinitions="*,90" ColumnSpacing="10">
+                      <TextBlock Text="{Binding ID, StringFormat='角色 ID {0}'}" VerticalAlignment="Center" />
+                      <TextBox Grid.Column="1" Text="{Binding Value, Mode=TwoWay}" />
+                    </Grid>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </Grid>
+          </Border>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="物品">
+        <Border Classes="panel" Margin="0,12,0,0">
+          <Grid RowDefinitions="Auto,*">
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" Margin="18,14">
+              <StackPanel Spacing="2">
+                <TextBlock Classes="section-title" Text="消耗品与材料" />
+                <TextBlock Classes="caption" Text="{Binding Items.Count, StringFormat='{}{0} 条物品记录'}" />
+              </StackPanel>
+              <Button Grid.Column="1" Classes="compact" Content="数量全部设为 99" Command="{Binding ChangeItemCountMaxCommand}" />
+              <Button Grid.Column="2" Classes="primary" Content="添加物品" Command="{Binding AppendItemCommand}" />
+            </Grid>
+            <ListBox Grid.Row="1" ItemsSource="{Binding Items}" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush}">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="*,110,100" ColumnSpacing="12">
+                    <TextBlock Text="{Binding ID, Converter={StaticResource ItemIDConverter}}" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Text="{Binding Count, Mode=TwoWay}" />
+                    <Button Grid.Column="2" Classes="compact" Content="替换" Command="{Binding $parent[Window].DataContext.ChoiceItemCommand}" CommandParameter="{Binding}" />
+                  </Grid>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Grid>
+        </Border>
+      </TabItem>
+
+      <TabItem Header="装备">
+        <Border Classes="panel" Margin="0,12,0,0">
+          <Grid RowDefinitions="Auto,*">
+            <Grid ColumnDefinitions="*,Auto" Margin="18,14">
+              <StackPanel Spacing="2">
+                <TextBlock Classes="section-title" Text="装备列表" />
+                <TextBlock Classes="caption" Text="{Binding Equipments.Count, StringFormat='{}{0} 条装备记录'}" />
+              </StackPanel>
+              <Button Grid.Column="1" Classes="primary" Content="添加装备" Command="{Binding AppendEquipmentCommand}" />
+            </Grid>
+            <ListBox Grid.Row="1" ItemsSource="{Binding Equipments}" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush}">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="*,90,90,100" ColumnSpacing="12">
+                    <TextBlock Text="{Binding ID, Converter={StaticResource ItemIDConverter}}" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1" Text="{Binding Equipment1, StringFormat='参数 A：{0}'}" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="2" Text="{Binding Equipment2, StringFormat='参数 B：{0}'}" VerticalAlignment="Center" />
+                    <Button Grid.Column="3" Classes="compact" Content="替换" Command="{Binding $parent[Window].DataContext.ChoiceEquipmentCommand}" CommandParameter="{Binding}" />
+                  </Grid>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Grid>
+        </Border>
+      </TabItem>
+
+      <TabItem Header="编队">
+        <Border Classes="panel" Margin="0,12,0,0">
+          <Grid RowDefinitions="Auto,*">
+            <StackPanel Margin="18,14" Spacing="2">
+              <TextBlock Classes="section-title" Text="部队编成" />
+              <TextBlock Classes="caption" Text="十个已保存的编队槽位" />
+            </StackPanel>
+            <ListBox Grid.Row="1" ItemsSource="{Binding Units}" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush}">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="*,130,120" ColumnSpacing="16">
+                    <TextBlock Text="编队" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <ToggleSwitch Grid.Column="1" IsChecked="{Binding Valid, Mode=TwoWay}" OnContent="启用" OffContent="停用" />
+                    <NumericUpDown Grid.Column="2" Value="{Binding Count, Mode=TwoWay}" Minimum="1" Maximum="6" />
+                  </Grid>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Grid>
+        </Border>
+      </TabItem>
+    </TabControl>
+
+    <Border Grid.Row="3" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="20,9">
+      <TextBlock Classes="caption" Text="{Binding StatusMessage}" />
+    </Border>
+  </Grid>
+</Window>

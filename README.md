@@ -1,33 +1,46 @@
-![DL Count](https://img.shields.io/github/downloads/turtle-insect/UnicornOverlord/total.svg)
+![下载量](https://img.shields.io/github/downloads/duanyunlun/UnicornOverlord/total.svg)
 
-# UnicornOverlord
-Switch Unicorn Overlord SaveDate Editor
+# 独角兽之王存档编辑器
 
-# Portal
-https://unicorn-overlord.com/
+基于 Avalonia 的跨平台《独角兽之王》Nintendo Switch 存档编辑器，界面默认使用简体中文。
 
-# ソフト
-■Switch  
-https://store-jp.nintendo.com/list/software/70010000058315.html
+## 功能
 
-# 実行に必要
-* Windows マシン
-* [.NET 10](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)の導入
-* セーブデータの吸い出し
-* セーブデータの書き戻し
+- 修改金币、名望和泽诺伊拉难度
+- 查看及修改角色职业、等级、能力加成与亲密度
+- 修改或添加物品和装备
+- 导入、导出及插入角色数据
+- 修改十个编队槽位
+- 打开存档时自动在存档旁的 `backup` 目录创建备份
 
-# Build環境
-* Windows 11(64bit)
-* [Visual Studio 2026](https://visualstudio.microsoft.com/)
+## 运行环境
 
-# Editor Step
-* SaveData Export
-* Open SavaData
-* Edit SavaData
-* Save SaveData
-* SaveData Import
+- Windows、macOS 或 Linux
+- [.NET 10 SDK 或运行时](https://dotnet.microsoft.com/zh-cn/download/dotnet/10.0)
 
-# Special Thanks
-* [pauljames80](https://gbatemp.net/members/pj1980.378437/)
-* [GBAtemp](https://gbatemp.net/threads/unicorn-overlord-save-editing.650584/)
-* [DataSheet](https://docs.google.com/spreadsheets/d/1UXe4nEloKlv14P4H4cOKeJc8R2P1fZW_HaLAuQG96BQ)
+## 构建与运行
+
+```bash
+dotnet build UnicornOverlord.slnx
+dotnet run --project UnicornOverlord/UnicornOverlord.csproj
+```
+
+编辑前请先从模拟器或主机导出存档。编辑完成后，将保存的副本导回对应的存档位置。
+
+## 数据与安全
+
+项目内置物品、装备、职业和角色名称映射。职业与角色的简体中文名称由 v1.0.5 中文资源验证，物品与装备类型映射来自原项目公开发行数据。
+
+开发和逆向验证过程中使用的 ROM、存档、Keys、提取工具及中间文件均被排除在版本控制之外。详细说明见 [开发与验证说明](docs/开发与验证.md)。
+
+## 相关链接
+
+- [游戏官网](https://unicorn-overlord.com/)
+- [原项目](https://github.com/turtle-insect/UnicornOverlord)
+- [存档研究讨论](https://gbatemp.net/threads/unicorn-overlord-save-editing.650584/)
+- [数据表](https://docs.google.com/spreadsheets/d/1UXe4nEloKlv14P4H4cOKeJc8R2P1fZW_HaLAuQG96BQ)
+
+## 致谢
+
+- [pauljames80](https://gbatemp.net/members/pj1980.378437/)
+- [GBAtemp 社区](https://gbatemp.net/)

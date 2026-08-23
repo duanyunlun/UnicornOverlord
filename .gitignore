@@ -396,3 +396,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# 本地逆向工具与受版权保护的测试数据
+.tools/
+.testdata/
+.extracted/
+.codex-melisandre-work/

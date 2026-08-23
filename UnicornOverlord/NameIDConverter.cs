@@ -1,19 +1,19 @@
-﻿using System.Globalization;
-using System.Windows.Data;
+﻿using Avalonia.Data.Converters;
+using System.Globalization;
 
 namespace UnicornOverlord
 {
 	internal class NameIDConverter : IValueConverter
 	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
-			uint id = (uint)value;
+			if (value is not uint id) return null;
 			var nm = Info.Instance().Search(Info.Instance().Name, id);
 			if (nm == null) return id.ToString();
 			return nm.Name;
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 		}

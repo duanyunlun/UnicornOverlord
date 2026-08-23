@@ -21,8 +21,9 @@
 			if (System.IO.File.Exists(filename) == false) return false;
 
 			var buffer = System.IO.File.ReadAllBytes(filename);
+			if (buffer.Length < 8) return false;
 			String header = mEncode.GetString(buffer, 4, 4);
-			if(header != "UCSD") return false;
+			if (header != "UCSD") return false;
 
 			mBuffer = buffer;
 			mFileName = filename;
@@ -62,7 +63,7 @@
 		{
 			if (mBuffer == null) return 0;
 			address = CalcAddress(address);
-			if (address + size >= mBuffer.Length) return 0;
+			if (!IsRangeValid(address, size)) return 0;
 			uint result = 0;
 			for (int i = 0; i < size; i++)
 			{
@@ -76,12 +77,12 @@
 			Byte[] result = new Byte[size];
 			if (mBuffer == null) return result;
 			address = CalcAddress(address);
-			if (address + size >= mBuffer.Length) return result;
+			if (!IsRangeValid(address, size)) return result;
 			Array.Copy(mBuffer, address, result, 0, size);
 			return result;
 		}
 
-		// 0 to 7.
+		// 位索引范围为 0 到 7。
 		public bool ReadBit(uint address, uint bit)
 		{
 			if (bit > 7) return false;
@@ -96,7 +97,7 @@
 		{
 			if (mBuffer == null) return "";
 			address = CalcAddress(address);
-			if (address + size >= mBuffer.Length) return "";
+			if (!IsRangeValid(address, size)) return "";
 
 			Byte[] tmp = new Byte[size];
 			for (uint i = 0; i < size; i++)
@@ -111,7 +112,7 @@
 		{
 			if (mBuffer == null) return;
 			address = CalcAddress(address);
-			if (address + size >= mBuffer.Length) return;
+			if (!IsRangeValid(address, size)) return;
 			for (uint i = 0; i < size; i++)
 			{
 				mBuffer[address + i] = (Byte)(value & 0xFF);
@@ -119,7 +120,7 @@
 			}
 		}
 
-		// 0 to 7.
+		// 位索引范围为 0 到 7。
 		public void WriteBit(uint address, uint bit, bool value)
 		{
 			if (bit > 7) return;
@@ -135,7 +136,7 @@
 		{
 			if (mBuffer == null) return;
 			address = CalcAddress(address);
-			if (address + size >= mBuffer.Length) return;
+			if (!IsRangeValid(address, size)) return;
 			Byte[] tmp = mEncode.GetBytes(value);
 			Array.Resize(ref tmp, (int)size);
 			Array.Copy(tmp, 0, mBuffer, address, size);
@@ -145,7 +146,7 @@
 		{
 			if (mBuffer == null) return;
 			address = CalcAddress(address);
-			if (address + buffer.Length >= mBuffer.Length) return;
+			if (!IsRangeValid(address, (uint)buffer.Length)) return;
 			Array.Copy(buffer, 0, mBuffer, address, buffer.Length);
 		}
 
@@ -153,7 +154,7 @@
 		{
 			if (mBuffer == null) return;
 			address = CalcAddress(address);
-			if (address + size >= mBuffer.Length) return;
+			if (!IsRangeValid(address, size)) return;
 			for (uint i = 0; i < size; i++)
 			{
 				mBuffer[address + i] = number;
@@ -165,12 +166,8 @@
 			if (mBuffer == null) return;
 			from = CalcAddress(from);
 			to = CalcAddress(to);
-			if (from + size >= mBuffer.Length) return;
-			if (to + size >= mBuffer.Length) return;
-			for (uint i = 0; i < size; i++)
-			{
-				mBuffer[to + i] = mBuffer[from + i];
-			}
+			if (!IsRangeValid(from, size) || !IsRangeValid(to, size)) return;
+			Array.Copy(mBuffer, from, mBuffer, to, size);
 		}
 
 		public void Swap(uint from, uint to, uint size)
@@ -178,8 +175,7 @@
 			if (mBuffer == null) return;
 			from = CalcAddress(from);
 			to = CalcAddress(to);
-			if (from + size >= mBuffer.Length) return;
-			if (to + size >= mBuffer.Length) return;
+			if (!IsRangeValid(from, size) || !IsRangeValid(to, size)) return;
 			for (uint i = 0; i < size; i++)
 			{
 				Byte tmp = mBuffer[to + i];
@@ -192,7 +188,8 @@
 		{
 			List<uint> result = new List<uint>();
 			if (mBuffer == null) return result;
-			for (; index < mBuffer.Length; index++)
+			if (String.IsNullOrEmpty(name)) return result;
+			for (; (ulong)index + (ulong)name.Length <= (ulong)mBuffer.Length; index++)
 			{
 				if (mBuffer[index] != name[0]) continue;
 
@@ -212,17 +209,22 @@
 			return address + Adventure;
 		}
 
+		private bool IsRangeValid(uint address, uint size)
+		{
+			return mBuffer != null && (ulong)address + size <= (ulong)mBuffer.Length;
+		}
+
 		private void Backup()
 		{
 			DateTime now = DateTime.Now;
-			String path = System.IO.Directory.GetCurrentDirectory();
+			String path = System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(mFileName))!;
 			path = System.IO.Path.Combine(path, "backup");
 			if (!System.IO.Directory.Exists(path))
 			{
 				System.IO.Directory.CreateDirectory(path);
 			}
-			path = System.IO.Path.Combine(path, $"{now:yyyy-MM-dd HH-mm-ss} {System.IO.Path.GetFileName(mFileName)}");
-			System.IO.File.Copy(mFileName, path, true);
+			path = System.IO.Path.Combine(path, $"{now:yyyy-MM-dd HH-mm-ss-fff} {System.IO.Path.GetFileName(mFileName)}");
+			System.IO.File.Copy(mFileName, path, false);
 		}
 	}
 }

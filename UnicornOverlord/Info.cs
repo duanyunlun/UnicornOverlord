@@ -22,10 +22,11 @@
 
 		private void Initialize()
 		{
-			AppendList("info\\item.txt", Item);
-			AppendList("info\\kind.txt", Kind);
-			AppendList("info\\class.txt", Class);
-			AppendList("info\\name.txt", Name);
+			String infoPath = System.IO.Path.Combine(AppContext.BaseDirectory, "info");
+			AppendList(System.IO.Path.Combine(infoPath, "item.txt"), Item);
+			AppendList(System.IO.Path.Combine(infoPath, "kind.txt"), Kind);
+			AppendList(System.IO.Path.Combine(infoPath, "class.txt"), Class);
+			AppendList(System.IO.Path.Combine(infoPath, "name.txt"), Name);
 		}
 
 		public NameValueInfo? Search<Type>(List<Type> list, uint id)

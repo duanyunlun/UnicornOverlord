@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         melisand.re 简体中文（圣兽之王官方术语）
 // @namespace    https://github.com/duanyunlun/UnicornOverlord
-// @version      1.0.0
+// @version      1.1.0
 // @description  使用游戏官方简体中文文本持续翻译 melisand.re，不调用在线翻译服务。
 // @match        https://melisand.re/*
 // @run-at       document-start
@@ -20,8 +20,13 @@
   const EXACT = new Map([["Unicorn Overlord Mods","《圣兽之王》Mod 工具"],["Pick your mods, customize them to taste, and download a ready-to-install patch bundle. Every download also gives you a link to reload or share the exact setup.","选择所需 Mod，按喜好调整后下载可直接安装的补丁包。每次下载还会生成一个链接，用于重新载入或分享完全相同的配置。"],["Choose your loadout","选择 Mod 组合"],["Choose your loadout · select at least one","选择 Mod 组合 · 至少选择一项"],["Ability Editor","技能编辑器"],["Battle Preview Tweaks","战斗预览调整"],["Battle Timer Freeze","冻结战斗限制时间"],["Character Randomizer","角色随机化"],["Experimental","实验性功能"],["Class Editor","职业编辑器"],["Fort Editor","堡垒编辑器"],["Mine Editor","采掘场编辑器"],["Shop Editor","商店编辑器"],["Six-Member Units","六人小队"],["Text Editor","文本编辑器"],["Retune any active or passive skill's numbers: its AP or PP cost, its physical and magical potency (power %), and its accuracy (hit rate). Many skills can also change their target shape (e.g. a row heal to the whole party). Search and filter to find skills, then edit them in place.","调整任意主动技能或被动技能的数值，包括 AP 或 PP 消耗、物理与魔法威力（威力百分比）以及命中率。许多技能还可改变目标范围（例如将一排治疗改为全体治疗）。通过搜索和筛选找到技能后即可直接编辑。"],["Element, hit count, and animation are left alone. Shape options are limited to real in-game targeting patterns, so nothing breaks, though an unusual pairing may look a little odd in the battle animation. Covers the skills that classes and items actually use.","属性、攻击次数和动画不会改变。目标范围仅提供游戏中实际存在的模式，因此不会导致功能损坏，但非常规组合的战斗动画可能稍显异常。仅包含职业和物品实际使用的技能。"],["All skills","全部技能"],["Active","主动技能"],["Passive","被动技能"],["Any type","任意类型"],["Attack","攻击"],["Support","辅助"],["Any trait","任意特性"],["Charge","蓄力"],["Ground-Based","地面"],["Limited","限制"],["Ranged","远程"],["Uncoverable","无法保护"],["Unguardable","无法格挡"],["Sort: Name","排序：名称"],["Sort: AP","排序：AP"],["Sort: PP","排序：PP"],["Sort: Phys","排序：物理威力"],["Sort: Mag","排序：魔法威力"],["Sort: Accuracy","排序：命中率"],["Phys. Potency","物理威力"],["Mag. Potency","魔法威力"],["AP Cost","AP 消耗"],["PP Cost","PP 消耗"],["Hit Count","攻击次数"],["Hit Rate","命中率"],["Trait","特性"],["Target","目标"],["Single","单体"],["Double","2 个目标"],["All enemies","敌方全体"],["Enemy row","敌方一排"],["Front-back","前后纵列"],["Changes how many targets the skill hits. Every option is a real in-game targeting shape, but an unusual pairing may look odd in the battle animation.","改变技能命中的目标数量。所有选项都是游戏中实际存在的目标范围，但非常规组合的战斗动画可能稍显异常。"],["Imperfect Preview","模糊战斗预览"],["Hide Battle Preview","隐藏战斗预览"],["By default the Unicorn Overlord battle preview shows exactly what is going to happen in the fight. This encourages arbitrarily tweaking your formation not to improve your strategy, but to fish for a different random seed: maybe your thief dodges, maybe you land a lucky crit, and so on.","默认情况下，《圣兽之王》的战斗预览会准确显示接下来发生的结果。这容易让人反复随意调整阵型来刷新随机结果，而不是改进策略，例如期待盗贼闪避或碰巧打出暴击。"],["This mod removes the absolute certainty of the result while still communicating the likely outcome. In other words you can still tell roughly what to expect (a draw, an easy victory, an overwhelming defeat).","此 Mod 不再给出绝对确定的结果，但仍会显示大致趋势，例如平局、轻松获胜或惨败。"],["Under the hood, the mod simulates the battle 5 times and displays the average of the results.","Mod 会在后台模拟战斗 5 次并显示平均结果。"],["Hides the battle preview bar entirely.","完全隐藏战斗预览条。"],["Freezes the battle timer, giving you unlimited time to complete battles.","冻结战斗的限制时间，使关卡不再受时间限制。"],["Randomizes the order in which you receive characters while proceeding through the story. The only characters left out are the five in the tutorial (Alain, Josef, Lex, Chloe, and Scarlett); everyone else is in the shuffle. Does not affect cutscenes or field interactions; they still happen on schedule. A cutscene may name one character while a different one joins, and overworld abilities fire at their normal point (e.g. Sharon will still cleanse graveyards once you reach her recruitment mission, even though a different, random character joined your army there).","随机改变推进剧情时角色的加入顺序。教程中的 5 人（亚连、约瑟夫、雷克斯、克洛伊和斯嘉丽）不会参与，其余角色均会随机。过场动画和地图互动不受影响，仍按原定进度发生，因此过场中提到的角色可能与实际加入者不同；地图能力也会在原定节点触发（例如到达莎伦的加入任务时，她仍会净化墓地，即使当时实际加入的是另一名随机角色）。"],["Read before using — more experimental than the other mods.","使用前请阅读：此功能比其他 Mod 更具实验性。"],["Start a new game with this enabled. Don't add it to an existing save.","请在启用后开始新游戏，不要中途加入已有存档。"],["Don't remove it mid-playthrough. Your characters stay in your save, but the game reads \"who joined\" from them — without the mod those reads desync and can soft-lock the story. Re-add the mod to restore it; safest is to keep it on the whole run.","不要在流程中途移除此 Mod。角色仍会留在存档中，但游戏会据此读取“谁已加入”；失去 Mod 后数据会不同步，可能导致剧情无法继续。重新加入 Mod 可恢复，最稳妥的做法是全流程保持启用。"],["There's a real risk of game-breaking bugs. Keep a backup save.","确实存在导致游戏无法继续的风险，请保留存档备份。"],["Re-roll","重新随机"],["Mix tiers","混合转职阶段"],["Clear","清除"],["By default swaps stay within a promotion tier, so an unpromoted character is only ever replaced by another unpromoted one (and promoted with promoted) and you never get a fully promoted unit where a base-class one was due. Check Mix tiers and re-roll to allow swaps across tiers.","默认只在相同转职阶段内交换，因此未转职角色只会被其他未转职角色替换，已转职角色亦然，不会在原本应加入基础职业时获得已完全转职的角色。勾选“混合转职阶段”并重新随机即可跨阶段交换。"],["Retune each class's per-level stat growths and the active and passive skills it learns (and at what level). Search for a class, then edit it in place.","调整每个职业的每级能力成长，以及可习得的主动技能、被动技能和习得等级。搜索职业后即可直接编辑。"],["The skill picker only offers skills a class can actually animate, so a swapped-in skill won't break in battle. Growths are percentages where 100 is the baseline (higher = faster-growing stat).","技能选择器只提供该职业可正常播放动画的技能，因此替换技能不会导致战斗异常。成长以百分比表示，100 为基准，数值越高成长越快。"],["Base + Promoted","基础 + 转职"],["Base (1 AP/PP)","基础职业（1 AP/PP）"],["Promoted (2 AP/PP)","转职职业（2 AP/PP）"],["Any weapon","任意武器"],["Axe","斧"],["Bow","弓"],["Lance","枪"],["Spear","枪"],["Rod","杖"],["Staff","杖"],["Sword","剑"],["Shield","盾"],["Greatshield","大盾"],["Accessory","饰品"],["Any movement","任意移动类型"],["Foot","步兵"],["Cavalry","骑兵"],["Flying","飞行"],["Sort: Weapon","排序：武器"],["Stat growths (100 = baseline)","能力成长（100 为基准）"],["HP","HP"],["Phys. Atk","物理攻击"],["Phys. Def","物理防御"],["Mag. Atk","魔法攻击"],["Mag. Def","魔法防御"],["Accuracy","命中"],["Evasion","闪避"],["Crit","暴击"],["Guard","格挡"],["Initiative","行动速度"],["Skill points (AP = active, PP = passive)","技能点（AP = 主动，PP = 被动）"],["Active skills","主动技能"],["Passive skills","被动技能"],["(empty)","（空）"],["Edit which generic class is recruitable at each fort's hire guild. Pick any class per slot, or hit Randomize for a shuffled starting point you can then tweak.","编辑各堡垒雇佣公会可招募的通用职业。每个栏位都可任选职业，也可先点击“随机化”生成初始结果后再调整。"],["Randomize keeps each tier together by default (unpromoted with unpromoted, promoted and late-game with promoted). Mix tiers lets late classes (like Angels and Bestrals) turn up at early forts. Manual picks ignore tiers.","随机化默认保持相同阶段（未转职与未转职互换，转职和后期职业与转职职业互换）。“混合转职阶段”可让天使、兽人等后期职业出现在前期堡垒；手动选择不受阶段限制。"],["Randomize","随机化"],["Cornia","科尔尼亚"],["Drakenhold","德拉肯加德"],["Elheim","艾尔海姆"],["Bastorias","巴斯特利亚斯"],["Albion","阿尔比昂"],["Retunes the overworld mining minigame loot tables. For each slot you can change how often it drops (its weight relative to the other slots in that region), the dig target number (higher is harder to dig out in time), and the most copies that can drop in a single run of the minigame (its max per run).","调整大地图采掘小游戏的掉落表。每个栏位都可更改掉落频率（相对于该地区其他栏位的权重）、挖掘目标数值（越高越难在限时内挖出）以及一次小游戏最多掉落的数量。"],["Treasure maps (and other one-off finds) can't have their max-per-run changed, since the game only ever hands each of those out once. A weight only matters up to a slot's max per run, so raise the cap if you want a capped item (like the Divine Shard) to drop more in a run.","藏宝图等一次性物品无法更改每次上限，因为游戏只会发放一次。权重只在达到该栏位的每次上限前生效；若想让天之碎片等有上限的物品单次掉落更多，请同时提高上限。"],["Item dropped","掉落物品"],["Weight","权重"],["Drop %","掉落率"],["Dig target","挖掘目标"],["Max per run","每次上限"],["once","仅一次"],["Corsite Stone","科尔塞特石"],["Iron Ore","铁矿石"],["Divine Shard","天之碎片"],["Dig Time Extension (S)","挖掘时间延长（小）"],["Dig Time Extension (M)","挖掘时间延长（中）"],["Dig Time Extension (L)","挖掘时间延长（大）"],["Edit what the game's shops sell. Pick a shop, then for each item you can swap it for another, change how much is in stock (use -1 for unlimited), and change its cost.","编辑游戏商店出售的商品。选择商店后，可逐项替换物品、更改库存数量（-1 表示无限）和价格。"],["Gold shops share one price per item, so changing an item's gold cost changes its buy price in every gold shop that sells it, and its sell-back value follows at the usual 10%. The Divine Shard and Coliseum exchanges price each listing on their own. A shop marked shared draws from a stock list used by other towns, so editing it changes them as well.","使用金币的商店会共享每件物品的价格，因此更改金币价格会同时改变所有出售该物品商店的购买价，出售价格仍为通常的 10%。天之碎片与斗技场兑换所的各项价格独立计算。标有“共享”的商店使用其他城镇共用的库存表，编辑后也会影响这些城镇。"],["Randomize armorers","随机化武具店"],["Shuffle across all regions","跨全部地区打乱"],["Shuffles the items each town's armorer sells (its town-specific lineup, not the shared recruit gear), keeping the same overall set within each region. You can still hand-edit any shop afterward.","打乱各城镇武具店出售的物品（仅限城镇专属商品，不含共享的新兵装备），同时保持每个地区的商品总集合不变。之后仍可手动编辑任意商店。"],["Exchanges","兑换所"],["Armorers","武具店"],["Provisioners","道具店"],["Black Market","地下商店"],["Armorer","武具店"],["Provisioner","道具店"],["Item","物品"],["Stock","库存"],["Price (gold)","价格（金币）"],["SHARED","共享"],["Allows units to be upgraded to have six members at Renown Rank S for 500 honors.","声望达到 S 级后，可花费 500 勋章将小队扩充至 6 人。"],["Important: before removing this mod, take any actual sixth member back out of your units. A unit still holding a sixth member when the mod is gone will likely crash the game. A unit that was only upgraded to allow six but has five or fewer members is fine.","重要：移除此 Mod 前，请先把小队中的第 6 名成员移出。若移除 Mod 后小队仍有 6 人，游戏很可能崩溃；仅完成六人扩充但实际成员不超过 5 人的小队不受影响。"],["Search the game's English text and rewrite any line: rapport and story dialogue, or skill trigger conditions. You can change the wording freely, but the in-game formatting tags must stay intact: you may reposition them, but not delete, change, or invent them.","搜索并改写游戏英文文本，包括亲密度与剧情对话、技能发动条件。可自由修改措辞，但必须保留游戏内格式标签；标签可移动，但不能删除、修改或自行添加。"],["You can also edit the pool of names generic units draw from, so you can name your recruits after your friends (or whoever you like).","还可编辑通用单位使用的姓名池，让雇佣兵采用朋友或任何喜欢的名字。"],["Start with ChthonVII's Text Fixes (used with permission): 25 typo and grammar corrections, applied as a starting point you can extend.","以经授权使用的 ChthonVII 文本修正为起点：预先应用 25 处拼写和语法修正，并可继续扩展。"],["Dialogue & story","对话与剧情"],["Skill conditions","技能发动条件"],["Unit names","单位姓名"],["Type to search for a line to edit.","输入内容以搜索要编辑的文本。"],["Reset all changes","重置全部更改"],["Revert","还原"],["How to install","安装方法"],["Download zip","下载 ZIP"],["Reset all","全部重置"],["Includes the selected patches, install instructions, a summary of every change, and a link to reload or share this exact setup.","包含所选补丁、安装说明、全部更改摘要，以及用于重新载入或分享当前配置的链接。"],["Patches apply to Unicorn Overlord v1.05 for the Nintendo Switch via original hardware (Atmosphere), or emulators (Ryubing, Eden etc). Requires a legitimate copy of the game. Melisand.re is not affiliated in any way with Atlus, Vanillaware, Nintendo, or any other entity.","补丁适用于 Nintendo Switch 版《圣兽之王》v1.05，可在原机（Atmosphere）或模拟器（Ryubing、Eden 等）上使用。必须拥有正版游戏。Melisand.re 与 Atlus、Vanillaware、Nintendo 或其他相关实体不存在任何隶属关系。"],["We can't find the internet","无法连接网络"],["Attempting to reconnect","正在尝试重新连接"],["Something went wrong!","出现错误！"],["Search skills…","搜索技能…"],["Search classes…","搜索职业…"],["Search items…","搜索物品…"],["Search text…","搜索文本…"],["The zip has two folders -- use the one for your platform. A modded Switch and an emulator read different patch formats, so you only need one.","ZIP 包含两个文件夹，请使用与平台对应的一个。破解 Switch 与模拟器读取的补丁格式不同，因此只需使用其中一个。"],["On an emulator (Ryubing, Eden, etc.)","在模拟器上（Ryubing、Eden 等）"],["On a modded Switch (Atmosphère)","在破解 Switch 上（Atmosphère）"],["Unzip the download.","解压下载的文件。"],["Merge the emulator/contents/ folder into your emulator's mod directory: Ryubing/contents/ or Eden/mods/contents/.","将 emulator/contents/ 文件夹合并到模拟器的 Mod 目录：Ryubing/contents/ 或 Eden/mods/contents/。"],["Copy the atmosphere/ folder from inside modded-switch/ onto the root of your SD card, merging with the atmosphere folder already there.","将 modded-switch/ 内的 atmosphere/ 文件夹复制到 SD 卡根目录，并与已有的 atmosphere 文件夹合并。"],["Launch the game. The patches load automatically.","启动游戏，补丁会自动载入。"],["Launch the game. The patches apply automatically by build ID.","启动游戏，补丁会按 Build ID 自动应用。"],["Atmosphère only reads compiled .ips patches, not raw pchtxt, so we compile them for you -- a raw pchtxt dropped in contents/ does nothing on real hardware.","Atmosphère 只读取已编译的 .ips 补丁，不能直接读取 pchtxt，因此网站已代为编译；把原始 pchtxt 放进 contents/ 在实机上不会生效。"],["These same steps are included as a README in the download.","下载包的 README 中也包含相同步骤。"]].map(([source, target]) => [normalizeSpace(source), target]));
   const learnedItemNames = new Map();
   const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEXTAREA', 'INPUT', 'PRE', 'CODE']);
-  let translating = false;
+  const textCache = new WeakMap();
+  const wholeTextCache = new WeakMap();
+  const pendingRoots = new Set();
+  const ENTITY_SELECTOR = 'button[phx-click="skill_select"], [phx-click*="skill"][phx-value-id], button[phx-click="class_select"], [phx-value-class], button[phx-click="fort_open"], button[phx-click="shop_open"], [phx-click="shop_pick_choose"], option, p, li';
+  const scheduleFrame = window.requestAnimationFrame?.bind(window) || ((callback) => window.setTimeout(callback, 16));
   let observer = null;
+  let frameId = 0;
 
   function normalizeSpace(value) {
     return value.replace(/\s+/g, ' ').trim();
@@ -36,6 +41,11 @@
   }
 
   function translateDynamic(core) {
+    if (core.includes(' · ')) {
+      const parts = core.split(' · ');
+      const translated = parts.map((part) => EXACT.get(normalizeSpace(part)));
+      if (translated.every(Boolean)) return translated.join(' · ');
+    }
     let match = core.match(/^Showing (\d+) of (\d+) skills(?: \(narrow your search to see more\))?\. (\d+) skill\(s\) changed\.$/);
     if (match) return `显示 ${match[1]}/${match[2]} 个技能。已更改 ${match[3]} 个技能。`;
     match = core.match(/^Showing (\d+) of (\d+) classes(?: \(narrow your search to see more\))?\. (\d+) class\(es\) changed\.$/);
@@ -166,8 +176,24 @@
     const nodes = root.nodeType === Node.TEXT_NODE ? [root] : [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
     for (const node of nodes) {
+      if (textCache.get(node) === node.nodeValue) continue;
       const next = translateString(node.nodeValue);
       if (next !== node.nodeValue) node.nodeValue = next;
+      textCache.set(node, node.nodeValue);
+    }
+  }
+
+  function translateWholeText(root) {
+    const scope = root.nodeType === Node.ELEMENT_NODE ? root : root.parentElement;
+    if (!scope) return;
+    const elements = [scope.matches?.('p, li') ? scope : null, ...scope.querySelectorAll('p, li')].filter(Boolean);
+    for (const element of elements) {
+      if (!element.children.length || element.querySelector('a, button, input, select, textarea')) continue;
+      const current = normalizeSpace(element.textContent || '');
+      if (wholeTextCache.get(element) === current) continue;
+      const translated = EXACT.get(current);
+      if (translated && translated !== current) element.textContent = translated;
+      wholeTextCache.set(element, normalizeSpace(element.textContent || ''));
     }
   }
 
@@ -185,24 +211,57 @@
   }
 
   function translateRoot(root) {
-    if (!root || translating) return;
-    const reconnect = observer !== null;
-    if (reconnect) observer.disconnect();
-    translating = true;
-    try {
-      translateEntities(root);
-      translateTextNodes(root);
-      translateAttributes(root);
-      document.documentElement.lang = 'zh-CN';
-      document.title = document.title.replace('Unicorn Overlord Mods: Randomizer, Editors & More', '《圣兽之王》Mod：随机化与编辑工具');
-    } finally {
-      translating = false;
-      if (reconnect) observePage();
-    }
+    if (!root || !root.isConnected) return;
+    translateEntities(root);
+    translateWholeText(root);
+    translateTextNodes(root);
+    translateAttributes(root);
+    document.documentElement.lang = 'zh-CN';
+    document.title = document.title.replace('Unicorn Overlord Mods: Randomizer, Editors & More', '《圣兽之王》Mod：随机化与编辑工具');
   }
 
   function observePage() {
-    observer.observe(document.documentElement, {subtree: true, childList: true, characterData: true});
+    observer.observe(document.documentElement, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ['placeholder', 'title', 'aria-label', 'phx-value-id', 'phx-value-class', 'value'],
+    });
+  }
+
+  function translationBoundary(node) {
+    const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+    if (!element) return null;
+    const entity = element.closest(ENTITY_SELECTOR);
+    if (entity) return entity;
+    const form = element.closest('form');
+    const skillButton = form?.parentElement?.querySelector(':scope > button[phx-click="skill_select"][phx-value-id]');
+    return skillButton || element;
+  }
+
+  function queueTranslation(node) {
+    const root = translationBoundary(node);
+    if (!root || !root.isConnected) return;
+    for (const pending of pendingRoots) {
+      if (pending === root || pending.contains(root)) return;
+      if (root.contains(pending)) pendingRoots.delete(pending);
+    }
+    pendingRoots.add(root);
+    if (!frameId) frameId = scheduleFrame(flushTranslations);
+  }
+
+  function flushTranslations() {
+    frameId = 0;
+    if (!pendingRoots.size) return;
+    observer.disconnect();
+    const roots = [...pendingRoots];
+    pendingRoots.clear();
+    try {
+      for (const root of roots) translateRoot(root);
+    } finally {
+      observePage();
+    }
   }
 
   const style = document.createElement('style');
@@ -218,18 +277,17 @@
     (document.head || document.documentElement).appendChild(style);
     translateRoot(document.body);
     observer = new MutationObserver((mutations) => {
-      if (translating) return;
       for (const mutation of mutations) {
-        if (mutation.type === 'characterData') translateRoot(mutation.target);
-        for (const node of mutation.addedNodes) translateRoot(node);
+        if (mutation.type !== 'childList') queueTranslation(mutation.target);
+        for (const node of mutation.addedNodes) queueTranslation(node);
       }
     });
     observePage();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start, {once: true});
-  } else {
+  if (document.documentElement) {
     start();
+  } else {
+    document.addEventListener('readystatechange', start, {once: true});
   }
 })();

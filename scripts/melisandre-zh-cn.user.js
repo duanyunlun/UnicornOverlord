@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         melisand.re 简体中文（圣兽之王官方术语）
 // @namespace    https://github.com/duanyunlun/UnicornOverlord
-// @version      1.3.0
+// @version      1.3.1
 // @description  使用游戏官方简体中文文本持续翻译 melisand.re，支持中英双语显示，不调用在线翻译服务。
 // @match        https://melisand.re/*
 // @run-at       document-start
@@ -397,6 +397,12 @@
 
   const style = document.createElement('style');
   style.textContent = `
+    @media (min-width: 1024px) {
+      main > .mx-auto.max-w-2xl {
+        width: 100%;
+        max-width: 90rem !important;
+      }
+    }
     .uo-zh-bilingual-block { white-space: pre-line; }
     [data-uo-zh-skill-description] > * { display: none !important; }
     [data-uo-zh-skill-description]::after {

@@ -6,7 +6,7 @@
         x:Class="UnicornOverlord.MainWindow"
         x:Name="Root"
         mc:Ignorable="d"
-        Title="独角兽之王 存档编辑器"
+        Title="独角兽之王 存档与 MOD 编辑器"
         Width="1120" Height="760" MinWidth="900" MinHeight="620"
         WindowStartupLocation="CenterScreen"
         Background="#F3F4F6">
@@ -78,7 +78,7 @@
       <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
         <StackPanel Spacing="2">
           <TextBlock Text="独角兽之王" FontSize="22" FontWeight="SemiBold" Foreground="White" />
-          <TextBlock Text="Nintendo Switch 存档编辑器" Foreground="#BFC6CE" FontSize="12" />
+          <TextBlock Text="Nintendo Switch 存档与 MOD 编辑器" Foreground="#BFC6CE" FontSize="12" />
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
           <Button Classes="header" Content="打开" Command="{Binding OpenFileCommand}" />
@@ -295,6 +295,53 @@
                 </DataTemplate>
               </ListBox.ItemTemplate>
             </ListBox>
+          </Grid>
+        </Border>
+      </TabItem>
+
+      <TabItem Header="MOD">
+        <Border Classes="panel" Margin="0,12,0,0">
+          <Grid RowDefinitions="Auto,*,Auto">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" Margin="18,14">
+              <StackPanel Spacing="3">
+                <TextBlock Classes="section-title" Text="MOD 工作区" />
+                <TextBlock Classes="caption" Text="{Binding ModTargetSummary}" TextWrapping="Wrap" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <TextBlock Classes="caption" Text="{Binding ModSelectionSummary}" VerticalAlignment="Center" />
+                <Button Classes="primary" Content="导出 MOD 包" Command="{Binding ExportModPackageCommand}"
+                        IsEnabled="{Binding CanExportMods}" />
+              </StackPanel>
+            </Grid>
+
+            <ListBox Grid.Row="1" ItemsSource="{Binding ModModules}" BorderThickness="0,1,0,1"
+                     BorderBrush="{StaticResource BorderBrush}">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="Auto,90,*,76" ColumnSpacing="14" MinHeight="58">
+                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" IsEnabled="{Binding IsAvailable}"
+                              VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1" Text="{Binding Category}" Foreground="{StaticResource AccentBrush}"
+                               FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center">
+                      <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                      <TextBlock Classes="caption" Text="{Binding Description}" TextWrapping="Wrap" />
+                      <TextBlock Foreground="#A24A37" FontSize="12" Text="{Binding Warning}" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <Border Grid.Column="3" Background="#EEF0F2" CornerRadius="4" Padding="8,4"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <TextBlock Text="{Binding StateText}" FontSize="12" />
+                    </Border>
+                  </Grid>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="18,12" ColumnSpacing="12">
+              <TextBlock Classes="caption" Text="当前可导出：冻结战斗计时器、职业成长保底。其他板块尚未写入任何补丁数据。"
+                         TextWrapping="Wrap" VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1" Classes="caption" Text="仅生成模拟器 pchtxt · 不修改游戏与存档" VerticalAlignment="Center" />
+            </Grid>
           </Grid>
         </Border>
       </TabItem>

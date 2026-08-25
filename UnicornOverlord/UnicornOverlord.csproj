@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Content Include="info/**/*" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="mods/**/*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

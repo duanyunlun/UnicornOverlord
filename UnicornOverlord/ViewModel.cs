@@ -21,6 +21,10 @@ internal class ViewModel : INotifyPropertyChanged
 	{
 		Patterns = ["*.uocd"],
 	};
+	private static readonly FilePickerFileType ModPackageFileType = new("ZIP 压缩包")
+	{
+		Patterns = ["*.zip"],
+	};
 
 	private readonly Window mOwner;
 	private readonly Info Info = Info.Instance();
@@ -49,14 +53,20 @@ internal class ViewModel : INotifyPropertyChanged
 	public ICommand InsertCharacterCommand { get; }
 	public ICommand ChangeItemCountMaxCommand { get; }
 	public ICommand ChangeCharacterBondMaxCommand { get; }
+	public ICommand ExportModPackageCommand { get; }
 
 	public Basic Basic { get; } = new();
 	public ObservableCollection<Character> Characters { get; private set; } = [];
 	public ObservableCollection<Item> Items { get; private set; } = [];
 	public ObservableCollection<Item> Equipments { get; private set; } = [];
 	public ObservableCollection<Unit> Units { get; } = [];
+	public ObservableCollection<ModModule> ModModules { get; } = CreateModModules();
 	public IReadOnlyList<String> Languages { get; } = ["英文", "日文", "简体中文"];
 	public String InventorySummary => $"物品 {Items.Count} 条，装备 {Equipments.Count} 条，共 {Items.Count + Equipments.Count} / {InventoryCapacity} 条库存记录";
+	public String ModTargetSummary => $"{ModPackageBuilder.GameVersion} · Title ID {ModPackageBuilder.TitleId} · Build ID {ModPackageBuilder.BuildId}";
+	public int SelectedModCount => ModModules.Count(module => module.IsSelected);
+	public bool CanExportMods => SelectedModCount > 0;
+	public String ModSelectionSummary => CanExportMods ? $"已选择 {SelectedModCount} 个可用模块" : "请选择至少一个已接入模块";
 
 	public bool IsSaveLoaded
 	{
@@ -131,6 +141,33 @@ internal class ViewModel : INotifyPropertyChanged
 		InsertCharacterCommand = new ActionCommand(InsertCharacter);
 		ChangeItemCountMaxCommand = new ActionCommand(ChangeItemCountMax);
 		ChangeCharacterBondMaxCommand = new ActionCommand(ChangeCharacterBondMax);
+		ExportModPackageCommand = new ActionCommand(ExportModPackage);
+		foreach (ModModule module in ModModules) module.PropertyChanged += ModModule_PropertyChanged;
+	}
+
+	private static ObservableCollection<ModModule> CreateModModules()
+	{
+		return
+		[
+			new() { Key = "ability_editor", Category = "技能", Name = "技能编辑器", Description = "修改技能 AP/PP 消耗、威力、命中与目标范围。", IsAvailable = false },
+			new() { Key = "battle_preview", Category = "战斗", Name = "战斗预览调整", Description = "降低战斗预览的确定性，或隐藏预览结果。", IsAvailable = false },
+			new() { Key = "battle_timer_freeze", Category = "战斗", Name = "冻结战斗计时器", Description = "冻结关卡实时计时器，战斗不再受时间限制。", IsAvailable = true, TemplateFile = "battle_timer_freeze.pchtxt" },
+			new() { Key = "character_randomizer", Category = "角色", Name = "角色加入随机化", Description = "随机调整剧情中角色的加入顺序。", IsAvailable = false, Warning = "实验性功能，只适用于新游戏。" },
+			new() { Key = "class_growth_safe", Category = "职业", Name = "职业成长保底", Description = "保留职业成长差异，并让 Lv1 至 Lv50 每次升级的十项能力至少增加 1。", IsAvailable = true, TemplateFile = "class_growth_safe.pchtxt" },
+			new() { Key = "fort_editor", Category = "据点", Name = "据点雇佣编辑器", Description = "调整各据点雇佣公会可招募的泛用职业。", IsAvailable = false },
+			new() { Key = "mine_editor", Category = "采矿", Name = "采矿掉落编辑器", Description = "调整矿场掉落权重、挖掘目标与单局掉落上限。", IsAvailable = false },
+			new() { Key = "shop_editor", Category = "商店", Name = "商店库存编辑器", Description = "调整商店商品、库存数量和价格。", IsAvailable = false },
+			new() { Key = "six_member_units", Category = "编队", Name = "六人编队", Description = "允许 S 级声望下将部队扩充至六人。", IsAvailable = false, Warning = "移除 MOD 前必须先撤下实际的第六名成员。" },
+			new() { Key = "text_editor", Category = "文本", Name = "文本编辑器", Description = "修改对话、技能条件文本与泛用角色姓名池。", IsAvailable = false },
+		];
+	}
+
+	private void ModModule_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName != nameof(ModModule.IsSelected)) return;
+		OnPropertyChanged(nameof(SelectedModCount));
+		OnPropertyChanged(nameof(CanExportMods));
+		OnPropertyChanged(nameof(ModSelectionSummary));
 	}
 
 	private void InitializeData()
@@ -250,6 +287,36 @@ internal class ViewModel : INotifyPropertyChanged
 		catch (Exception exception)
 		{
 			StatusMessage = $"另存为失败：{exception.Message}";
+		}
+	}
+
+	private async void ExportModPackage(object? parameter)
+	{
+		ModModule[] selectedModules = ModModules.Where(module => module.IsSelected && module.IsAvailable).ToArray();
+		if (selectedModules.Length == 0)
+		{
+			StatusMessage = "请至少选择一个已接入的 MOD 模块。";
+			return;
+		}
+
+		try
+		{
+			var file = await mOwner.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+			{
+				Title = "导出独角兽之王 MOD 包",
+				FileTypeChoices = [ModPackageFileType],
+				DefaultExtension = "zip",
+				SuggestedFileName = "UnicornOverlord-v1.0.5-Mods.zip",
+			});
+			String? filename = file?.TryGetLocalPath();
+			if (String.IsNullOrEmpty(filename)) return;
+
+			ModPackageBuilder.Create(filename, selectedModules);
+			StatusMessage = $"MOD 包导出成功：包含 {selectedModules.Length} 个模块。";
+		}
+		catch (Exception exception)
+		{
+			StatusMessage = $"MOD 包导出失败：{exception.Message}";
 		}
 	}
 

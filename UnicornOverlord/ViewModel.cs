@@ -9,6 +9,9 @@ namespace UnicornOverlord;
 
 internal class ViewModel : INotifyPropertyChanged
 {
+	private const int InventoryCapacity = 3800;
+	private const int MaximumItemCount = 999;
+
 	private static readonly FilePickerFileType SaveFileType = new("独角兽之王存档")
 	{
 		Patterns = ["UCSAVEFILE*.DAT", "*.DAT", "*.dat"],
@@ -26,6 +29,8 @@ internal class ViewModel : INotifyPropertyChanged
 	private String mFileLocation = "当前没有活动文件";
 	private String mStatusMessage;
 	private int mLanguageIndex;
+	private int mSelectedCharacterIndex = -1;
+	private int mItemCountTarget = 99;
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -37,6 +42,8 @@ internal class ViewModel : INotifyPropertyChanged
 	public ICommand ChoiceClassCommand { get; }
 	public ICommand AppendItemCommand { get; }
 	public ICommand AppendEquipmentCommand { get; }
+	public ICommand AppendAllItemsCommand { get; }
+	public ICommand AppendAllEquipmentCommand { get; }
 	public ICommand ExportCharacterCommand { get; }
 	public ICommand ImportCharacterCommand { get; }
 	public ICommand InsertCharacterCommand { get; }
@@ -49,6 +56,7 @@ internal class ViewModel : INotifyPropertyChanged
 	public ObservableCollection<Item> Equipments { get; private set; } = [];
 	public ObservableCollection<Unit> Units { get; } = [];
 	public IReadOnlyList<String> Languages { get; } = ["英文", "日文", "简体中文"];
+	public String InventorySummary => $"物品 {Items.Count} 条，装备 {Equipments.Count} 条，共 {Items.Count + Equipments.Count} / {InventoryCapacity} 条库存记录";
 
 	public bool IsSaveLoaded
 	{
@@ -88,6 +96,18 @@ internal class ViewModel : INotifyPropertyChanged
 		}
 	}
 
+	public int SelectedCharacterIndex
+	{
+		get => mSelectedCharacterIndex;
+		set => SetField(ref mSelectedCharacterIndex, value, nameof(SelectedCharacterIndex));
+	}
+
+	public int ItemCountTarget
+	{
+		get => mItemCountTarget;
+		set => SetField(ref mItemCountTarget, Math.Clamp(value, 1, MaximumItemCount), nameof(ItemCountTarget));
+	}
+
 	public ViewModel(Window owner)
 	{
 		mOwner = owner;
@@ -104,6 +124,8 @@ internal class ViewModel : INotifyPropertyChanged
 		ChoiceClassCommand = new ActionCommand(ChoiceClass);
 		AppendItemCommand = new ActionCommand(AppendItem);
 		AppendEquipmentCommand = new ActionCommand(AppendEquipment);
+		AppendAllItemsCommand = new ActionCommand(AppendAllItems);
+		AppendAllEquipmentCommand = new ActionCommand(AppendAllEquipment);
 		ExportCharacterCommand = new ActionCommand(ExportCharacter);
 		ImportCharacterCommand = new ActionCommand(ImportCharacter);
 		InsertCharacterCommand = new ActionCommand(InsertCharacter);
@@ -113,6 +135,7 @@ internal class ViewModel : INotifyPropertyChanged
 
 	private void InitializeData()
 	{
+		SelectedCharacterIndex = -1;
 		Characters.Clear();
 		Items.Clear();
 		Equipments.Clear();
@@ -144,7 +167,7 @@ internal class ViewModel : INotifyPropertyChanged
 			Characters.Add(character);
 		}
 
-		for (uint index = 0; index < 3800; index++)
+		for (uint index = 0; index < InventoryCapacity; index++)
 		{
 			var item = new Item(0xA0 + index * 20);
 			if (item.Index == 0) break;
@@ -158,6 +181,8 @@ internal class ViewModel : INotifyPropertyChanged
 		}
 
 		OnPropertyChanged(nameof(Basic));
+		SelectedCharacterIndex = Characters.Count > 0 ? 0 : -1;
+		OnPropertyChanged(nameof(InventorySummary));
 	}
 
 	private async void OpenFile(object? parameter)
@@ -260,39 +285,100 @@ internal class ViewModel : INotifyPropertyChanged
 
 	private async void AppendItem(object? parameter)
 	{
-		var item = await AppendItemAsync(ChoiceWindow.eType.eItem);
-		if (item == null) return;
-		item.Count = 1;
-		Items.Add(item);
+		IReadOnlyList<uint> selectedIDs = await SelectInventoryIDsAsync(ChoiceWindow.eType.eItem);
+		if (!EnsureInventoryCapacity(selectedIDs.Count)) return;
+		foreach (uint id in selectedIDs)
+		{
+			var item = CreateInventoryItem(id);
+			item.Count = 1;
+			Items.Add(item);
+		}
+		if (selectedIDs.Count > 0) StatusMessage = $"已添加 {selectedIDs.Count} 条物品记录。";
+		NotifyInventoryChanged();
 	}
 
 	private async void AppendEquipment(object? parameter)
 	{
-		var item = await AppendItemAsync(ChoiceWindow.eType.eEquipment);
-		if (item != null) Equipments.Add(item);
+		IReadOnlyList<uint> selectedIDs = await SelectInventoryIDsAsync(ChoiceWindow.eType.eEquipment);
+		if (!EnsureInventoryCapacity(selectedIDs.Count)) return;
+		foreach (uint id in selectedIDs) Equipments.Add(CreateInventoryItem(id));
+		if (selectedIDs.Count > 0) StatusMessage = $"已添加 {selectedIDs.Count} 条装备记录。";
+		NotifyInventoryChanged();
 	}
 
-	private async Task<Item?> AppendItemAsync(ChoiceWindow.eType type)
+	private async Task<IReadOnlyList<uint>> SelectInventoryIDsAsync(ChoiceWindow.eType type)
+	{
+		var dialog = new ChoiceWindow { Type = type, AllowMultiple = true };
+		if (!await dialog.ShowDialog<bool>(mOwner)) return [];
+		return dialog.SelectedIDs.Where(id => id != 0).Distinct().ToArray();
+	}
+
+	private Item CreateInventoryItem(uint id)
 	{
 		uint index = (uint)(Items.Count + Equipments.Count);
-		if (index >= 3800)
-		{
-			StatusMessage = "物品栏记录已达到上限。";
-			return null;
-		}
-
-		var dialog = new ChoiceWindow { Type = type };
-		if (!await dialog.ShowDialog<bool>(mOwner) || dialog.ID == 0) return null;
-
 		var item = new Item(0xA0 + index * 20)
 		{
-			ID = dialog.ID,
+			ID = id,
 			Index = index + 1,
 			Status = 2,
 		};
 		var info = Info.Search(Info.Kind, item.ID);
 		if (info != null && uint.TryParse(info.Name, out uint status)) item.Status = status;
 		return item;
+	}
+
+	private void AppendAllItems(object? parameter)
+	{
+		HashSet<uint> existingIDs = Items.Select(item => item.ID).ToHashSet();
+		uint[] missingIDs = Info.Item
+			.Where(info => IsSafeBulkItem(info.Value) && !existingIDs.Contains(info.Value))
+			.Select(info => info.Value)
+			.Distinct()
+			.ToArray();
+		if (!EnsureInventoryCapacity(missingIDs.Length)) return;
+
+		foreach (uint id in missingIDs)
+		{
+			var item = CreateInventoryItem(id);
+			item.Count = 1;
+			Items.Add(item);
+		}
+		StatusMessage = missingIDs.Length == 0 ? "所有安全消耗道具均已存在。" : $"已补齐 {missingIDs.Length} 种安全消耗道具，每种数量为 1。";
+		NotifyInventoryChanged();
+	}
+
+	private void AppendAllEquipment(object? parameter)
+	{
+		HashSet<uint> existingIDs = Equipments.Select(item => item.ID).ToHashSet();
+		uint[] missingIDs = Info.Item
+			.Where(info => Info.Search(Info.Kind, info.Value) != null && !existingIDs.Contains(info.Value))
+			.Select(info => info.Value)
+			.Distinct()
+			.ToArray();
+		if (!EnsureInventoryCapacity(missingIDs.Length)) return;
+
+		foreach (uint id in missingIDs) Equipments.Add(CreateInventoryItem(id));
+		StatusMessage = missingIDs.Length == 0 ? "所有已知装备均已存在。" : $"已添加 {missingIDs.Length} 种当前缺少的装备。";
+		NotifyInventoryChanged();
+	}
+
+	private bool EnsureInventoryCapacity(int requestedCount)
+	{
+		if (requestedCount == 0) return true;
+		int remainingCount = InventoryCapacity - Items.Count - Equipments.Count;
+		if (requestedCount <= remainingCount) return true;
+		StatusMessage = $"库存容量不足：需要 {requestedCount} 条空记录，当前仅剩 {remainingCount} 条。未写入任何记录。";
+		return false;
+	}
+
+	private static bool IsSafeBulkItem(uint id)
+	{
+		return id is >= 8 and <= 69 or 71 or >= 73 and <= 171;
+	}
+
+	private void NotifyInventoryChanged()
+	{
+		OnPropertyChanged(nameof(InventorySummary));
 	}
 
 	private async void ExportCharacter(object? parameter)
@@ -327,7 +413,7 @@ internal class ViewModel : INotifyPropertyChanged
 		{
 			var files = await mOwner.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
 			{
-				Title = "导入角色",
+				Title = "用文件替换当前角色",
 				AllowMultiple = false,
 				FileTypeFilter = [CharacterFileType],
 			});
@@ -337,7 +423,7 @@ internal class ViewModel : INotifyPropertyChanged
 			Byte[] buffer = File.ReadAllBytes(filename);
 			if (buffer.Length != 464)
 			{
-				StatusMessage = "角色导入失败：角色数据必须正好为 464 字节。";
+				StatusMessage = "替换角色失败：角色数据必须正好为 464 字节。";
 				return;
 			}
 
@@ -347,11 +433,11 @@ internal class ViewModel : INotifyPropertyChanged
 			Array.Copy(BitConverter.GetBytes(id), buffer, 4);
 			SaveData.Instance().WriteValue(address, buffer);
 			Characters[index] = new Character(address);
-			StatusMessage = "角色导入成功。";
+			StatusMessage = "当前角色替换成功。";
 		}
 		catch (Exception exception)
 		{
-			StatusMessage = $"角色导入失败：{exception.Message}";
+			StatusMessage = $"替换角色失败：{exception.Message}";
 		}
 	}
 
@@ -362,7 +448,7 @@ internal class ViewModel : INotifyPropertyChanged
 		{
 			var files = await mOwner.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
 			{
-				Title = "插入角色",
+				Title = "从文件新增角色",
 				AllowMultiple = true,
 				FileTypeFilter = [CharacterFileType],
 			});
@@ -391,21 +477,22 @@ internal class ViewModel : INotifyPropertyChanged
 				Characters.Add(character);
 				inserted++;
 			}
-			StatusMessage = $"已插入 {inserted} 条角色记录。";
+			StatusMessage = $"已新增 {inserted} 条角色记录。";
 		}
 		catch (Exception exception)
 		{
-			StatusMessage = $"插入角色失败：{exception.Message}";
+			StatusMessage = $"新增角色失败：{exception.Message}";
 		}
 	}
 
 	private void ChangeItemCountMax(object? parameter)
 	{
+		uint targetCount = (uint)ItemCountTarget;
 		foreach (var item in Items)
 		{
-			if (item.ID > 4) item.Count = 99;
+			if (item.ID > 4) item.Count = targetCount;
 		}
-		StatusMessage = "可修改的物品数量已全部设为 99。";
+		StatusMessage = $"可修改的物品数量已全部设为 {targetCount}。";
 	}
 
 	private void ChangeCharacterBondMax(object? parameter)
@@ -467,12 +554,15 @@ internal class ViewModel : INotifyPropertyChanged
 
 	private void RefreshLocalizedCollections()
 	{
+		int selectedCharacterIndex = SelectedCharacterIndex;
 		Characters = new ObservableCollection<Character>(Characters);
 		Items = new ObservableCollection<Item>(Items);
 		Equipments = new ObservableCollection<Item>(Equipments);
 		OnPropertyChanged(nameof(Characters));
 		OnPropertyChanged(nameof(Items));
 		OnPropertyChanged(nameof(Equipments));
+		OnPropertyChanged(nameof(InventorySummary));
+		SelectedCharacterIndex = selectedCharacterIndex;
 	}
 
 	private void SetField<T>(ref T field, T value, String propertyName)

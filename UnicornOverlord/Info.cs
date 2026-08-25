@@ -56,7 +56,7 @@
 				String[] values = line.Split('\t');
 				if (values.Length < 2) continue;
 				if (String.IsNullOrEmpty(values[0])) continue;
-				if (String.IsNullOrEmpty(values[1])) continue;
+				if (values.Skip(1).All(String.IsNullOrEmpty)) continue;
 
 				Type type = new Type();
 				if (type.Line(values))

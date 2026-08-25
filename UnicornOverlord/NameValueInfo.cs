@@ -10,14 +10,8 @@
 			get
 			{
 				var index = ApplicationSettings.Language;
-				if (index >= mNames.Count) index = 0;
-
-				var value = mNames[index];
-				if(String.IsNullOrEmpty(value))
-				{
-					value = mNames[0];
-				}
-				return value;
+				if (index < mNames.Count && !String.IsNullOrEmpty(mNames[index])) return mNames[index];
+				return mNames.FirstOrDefault(name => !String.IsNullOrEmpty(name)) ?? Value.ToString();
 			}
 		}
 

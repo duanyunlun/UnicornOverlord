@@ -46,6 +46,20 @@
       <Setter Property="Foreground" Value="White" />
       <Setter Property="Padding" Value="16,8" />
     </Style>
+    <Style Selector="Button.header">
+      <Setter Property="Background" Value="#35414C" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="BorderBrush" Value="#7D8994" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="16,8" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="Button.header:pointerover">
+      <Setter Property="Background" Value="#4A5865" />
+    </Style>
+    <Style Selector="Button.header:disabled">
+      <Setter Property="Opacity" Value="0.55" />
+    </Style>
     <Style Selector="Button.compact">
       <Setter Property="Padding" Value="10,6" />
       <Setter Property="MinHeight" Value="32" />
@@ -67,8 +81,8 @@
           <TextBlock Text="Nintendo Switch 存档编辑器" Foreground="#BFC6CE" FontSize="12" />
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-          <Button Classes="compact" Content="打开" Command="{Binding OpenFileCommand}" />
-          <Button Classes="compact" Content="另存为" Command="{Binding SaveAsFileCommand}" IsEnabled="{Binding IsSaveLoaded}" />
+          <Button Classes="header" Content="打开" Command="{Binding OpenFileCommand}" />
+          <Button Classes="header" Content="另存为" Command="{Binding SaveAsFileCommand}" IsEnabled="{Binding IsSaveLoaded}" />
           <Button Classes="primary" Content="保存" Command="{Binding SaveFileCommand}" IsEnabled="{Binding IsSaveLoaded}" />
         </StackPanel>
       </Grid>
@@ -115,7 +129,9 @@
                 <TextBlock Classes="section-title" Text="角色列表" />
                 <TextBlock Classes="caption" Text="{Binding Characters.Count, StringFormat='{}{0} 名角色'}" />
               </StackPanel>
-              <ListBox Grid.Row="1" x:Name="CharacterList" ItemsSource="{Binding Characters}" BorderThickness="0,1,0,1" BorderBrush="{StaticResource BorderBrush}">
+              <ListBox Grid.Row="1" x:Name="CharacterList" ItemsSource="{Binding Characters}"
+                       SelectedIndex="{Binding SelectedCharacterIndex, Mode=TwoWay}"
+                       BorderThickness="0,1,0,1" BorderBrush="{StaticResource BorderBrush}">
                 <ListBox.ItemTemplate>
                   <DataTemplate>
                     <TextBlock Text="{Binding Name, Converter={StaticResource NameIDConverter}}" TextTrimming="CharacterEllipsis" />
@@ -123,9 +139,12 @@
                 </ListBox.ItemTemplate>
               </ListBox>
               <Grid Grid.Row="2" ColumnDefinitions="*,*,*" ColumnSpacing="6" Margin="10">
-                <Button Classes="compact" Content="导出" Command="{Binding ExportCharacterCommand}" CommandParameter="{Binding SelectedIndex, ElementName=CharacterList}" />
-                <Button Grid.Column="1" Classes="compact" Content="导入" Command="{Binding ImportCharacterCommand}" CommandParameter="{Binding SelectedIndex, ElementName=CharacterList}" />
-                <Button Grid.Column="2" Classes="compact" Content="插入" Command="{Binding InsertCharacterCommand}" />
+                <Button Classes="compact" Content="导出角色" ToolTip.Tip="将当前角色保存为 .uocd 文件"
+                        Command="{Binding ExportCharacterCommand}" CommandParameter="{Binding SelectedIndex, ElementName=CharacterList}" />
+                <Button Grid.Column="1" Classes="compact" Content="替换角色" ToolTip.Tip="用 .uocd 文件替换当前角色，保留当前角色 ID"
+                        Command="{Binding ImportCharacterCommand}" CommandParameter="{Binding SelectedIndex, ElementName=CharacterList}" />
+                <Button Grid.Column="2" Classes="compact" Content="新增角色" ToolTip.Tip="从一个或多个 .uocd 文件新增角色"
+                        Command="{Binding InsertCharacterCommand}" />
               </Grid>
             </Grid>
           </Border>
@@ -148,23 +167,23 @@
                   <TextBox Grid.Row="3" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.Exp, ElementName=CharacterList, Mode=TwoWay}" />
                   <TextBlock Grid.Row="4" Text="生命加成" VerticalAlignment="Center" />
                   <TextBox Grid.Row="4" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.HPPlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="5" Text="物理攻击" VerticalAlignment="Center" />
+                  <TextBlock Grid.Row="5" Text="物理攻击加成" VerticalAlignment="Center" />
                   <TextBox Grid.Row="5" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.AttackPlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="6" Text="物理防御" VerticalAlignment="Center" />
+                  <TextBlock Grid.Row="6" Text="物理防御加成" VerticalAlignment="Center" />
                   <TextBox Grid.Row="6" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.DefensePlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="7" Text="魔法攻击" VerticalAlignment="Center" />
+                  <TextBlock Grid.Row="7" Text="魔法攻击加成" VerticalAlignment="Center" />
                   <TextBox Grid.Row="7" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.MagicAttackPlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="8" Text="魔法防御" VerticalAlignment="Center" />
+                  <TextBlock Grid.Row="8" Text="魔法防御加成" VerticalAlignment="Center" />
                   <TextBox Grid.Row="8" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.MagicDefensePlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="9" Text="命中" VerticalAlignment="Center" />
+                  <TextBlock Grid.Row="9" Text="命中加成" VerticalAlignment="Center" />
                   <TextBox Grid.Row="9" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.HitRatePlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="10" Text="闪避" VerticalAlignment="Center" />
+                  <TextBlock Grid.Row="10" Text="闪避加成" VerticalAlignment="Center" />
                   <TextBox Grid.Row="10" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.AVoidPlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="11" Text="暴击率" VerticalAlignment="Center" />
+                  <TextBlock Grid.Row="11" Text="暴击率加成" VerticalAlignment="Center" />
                   <TextBox Grid.Row="11" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.CriticalPlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="12" Text="格挡率" VerticalAlignment="Center" />
+                  <TextBlock Grid.Row="12" Text="格挡率加成" VerticalAlignment="Center" />
                   <TextBox Grid.Row="12" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.GuardPlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="13" Text="行动速度" VerticalAlignment="Center" />
+                  <TextBlock Grid.Row="13" Text="行动速度加成" VerticalAlignment="Center" />
                   <TextBox Grid.Row="13" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.SpeedPlus, ElementName=CharacterList, Mode=TwoWay}" />
                 </Grid>
               </StackPanel>
@@ -197,20 +216,28 @@
       <TabItem Header="物品">
         <Border Classes="panel" Margin="0,12,0,0">
           <Grid RowDefinitions="Auto,*">
-            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" Margin="18,14">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="18,14">
               <StackPanel Spacing="2">
                 <TextBlock Classes="section-title" Text="消耗品与材料" />
-                <TextBlock Classes="caption" Text="{Binding Items.Count, StringFormat='{}{0} 条物品记录'}" />
+                <TextBlock Classes="caption" Text="{Binding InventorySummary}" />
               </StackPanel>
-              <Button Grid.Column="1" Classes="compact" Content="数量全部设为 99" Command="{Binding ChangeItemCountMaxCommand}" />
-              <Button Grid.Column="2" Classes="primary" Content="添加物品" Command="{Binding AppendItemCommand}" />
+              <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <Button Classes="compact" Content="全消耗道具" ToolTip.Tip="补齐非剧情关键的消耗品、素材和礼物，每种数量为 1"
+                        Command="{Binding AppendAllItemsCommand}" />
+                <TextBlock Text="数量全部设为" VerticalAlignment="Center" />
+                <NumericUpDown Width="110" Minimum="1" Maximum="999" Increment="1" FormatString="0"
+                               Value="{Binding ItemCountTarget, Mode=TwoWay}" />
+                <Button Classes="compact" Content="应用" Command="{Binding ChangeItemCountMaxCommand}" />
+                <Button Classes="primary" Content="添加物品" Command="{Binding AppendItemCommand}" />
+              </StackPanel>
             </Grid>
             <ListBox Grid.Row="1" ItemsSource="{Binding Items}" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush}">
               <ListBox.ItemTemplate>
                 <DataTemplate>
                   <Grid ColumnDefinitions="*,110,100" ColumnSpacing="12">
                     <TextBlock Text="{Binding ID, Converter={StaticResource ItemIDConverter}}" VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1" Text="{Binding Count, Mode=TwoWay}" />
+                    <NumericUpDown Grid.Column="1" Minimum="1" Maximum="999" Increment="1" FormatString="0"
+                                   Value="{Binding Count, Mode=TwoWay}" />
                     <Button Grid.Column="2" Classes="compact" Content="替换" Command="{Binding $parent[Window].DataContext.ChoiceItemCommand}" CommandParameter="{Binding}" />
                   </Grid>
                 </DataTemplate>
@@ -223,12 +250,16 @@
       <TabItem Header="装备">
         <Border Classes="panel" Margin="0,12,0,0">
           <Grid RowDefinitions="Auto,*">
-            <Grid ColumnDefinitions="*,Auto" Margin="18,14">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="18,14">
               <StackPanel Spacing="2">
                 <TextBlock Classes="section-title" Text="装备列表" />
-                <TextBlock Classes="caption" Text="{Binding Equipments.Count, StringFormat='{}{0} 条装备记录'}" />
+                <TextBlock Classes="caption" Text="{Binding InventorySummary}" />
               </StackPanel>
-              <Button Grid.Column="1" Classes="primary" Content="添加装备" Command="{Binding AppendEquipmentCommand}" />
+              <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                <Button Classes="compact" Content="一键添加所有装备" ToolTip.Tip="为每种当前没有的装备添加一条记录"
+                        Command="{Binding AppendAllEquipmentCommand}" />
+                <Button Classes="primary" Content="添加装备" Command="{Binding AppendEquipmentCommand}" />
+              </StackPanel>
             </Grid>
             <ListBox Grid.Row="1" ItemsSource="{Binding Equipments}" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush}">
               <ListBox.ItemTemplate>

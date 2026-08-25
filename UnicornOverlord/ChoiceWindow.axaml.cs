@@ -16,6 +16,8 @@ public partial class ChoiceWindow : Window
 
 	public uint ID { get; set; }
 	public eType Type { get; set; } = eType.eItem;
+	public bool AllowMultiple { get; set; }
+	public IReadOnlyList<uint> SelectedIDs { get; private set; } = [];
 
 	public ChoiceWindow()
 	{
@@ -33,6 +35,12 @@ public partial class ChoiceWindow : Window
 
 	private void Window_Loaded(object? sender, RoutedEventArgs e)
 	{
+		ItemList.SelectionMode = AllowMultiple ? SelectionMode.Multiple : SelectionMode.Single;
+		if (AllowMultiple)
+		{
+			Title = "选择一个或多个条目";
+			DecisionButton.Content = "添加选中项";
+		}
 		CreateItemList(String.Empty);
 		foreach (var item in ItemList.Items)
 		{
@@ -51,13 +59,14 @@ public partial class ChoiceWindow : Window
 
 	private void ListBoxItem_SelectionChanged(object? sender, SelectionChangedEventArgs e)
 	{
-		DecisionButton.IsEnabled = ItemList.SelectedIndex >= 0;
+		DecisionButton.IsEnabled = ItemList.SelectedItems?.Count > 0;
 	}
 
 	private void ButtonDecision_Click(object? sender, RoutedEventArgs e)
 	{
-		if (ItemList.SelectedItem is not NameValueInfo info) return;
-		ID = info.Value;
+		SelectedIDs = ItemList.SelectedItems?.OfType<NameValueInfo>().Select(info => info.Value).ToArray() ?? [];
+		if (SelectedIDs.Count == 0) return;
+		ID = SelectedIDs[0];
 		Close(true);
 	}
 

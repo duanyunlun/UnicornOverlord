@@ -18,6 +18,8 @@ internal static class ModPatchGenerator
 	private const uint ItemStride = 0xB8;
 	private const uint ClassGrowthBase = 0x00D2DFCC;
 	private const uint ClassGrowthStride = 0x58;
+	private const uint ClassSkillBase = 0x00D36E40;
+	private const uint ClassSkillStride = 0x8C;
 
 	public static String Generate(ModModule module, ModTarget target)
 	{
@@ -41,7 +43,7 @@ internal static class ModPatchGenerator
 		String source = Path.Combine(AppContext.BaseDirectory, "mods", templateFile);
 		if (!File.Exists(source)) throw new FileNotFoundException($"缺少 MOD 模板：{templateFile}", source);
 		String content = File.ReadAllText(source);
-		if (module.Key == "character_randomizer") content = ApplyCharacterRandomizer(content, module.ValueA);
+		if (module.Key == "character_randomizer") content = ApplyCharacterRandomizer(content, module.ValueA, module.MixPromotionTiers);
 		if (module.Key == "six_member_units")
 		{
 			content = ReplaceWrite(content, 0x00B1ACAC, UInt32Bytes(CheckedUInt(module.ValueA, 0, 999999, "扩编费用")));
@@ -67,17 +69,31 @@ internal static class ModPatchGenerator
 		};
 	}
 
-	private static String ApplyCharacterRandomizer(String template, int seed)
+	private static String ApplyCharacterRandomizer(String template, int seed, bool mixPromotionTiers)
 	{
 		int[] ids = [12, 13, 15, 16, 20, 21, 23, 27, 29, 32, 36, 37, 38, 41, 43, 46, 52, 60, 61, 63, 72,
 			73, 75, 76, 77, 78, 79, 82, 83, 84, 86, 100, 108, 109, 115, 116, 121, 129, 130, 131, 133,
 			142, 143, 144, 145, 146, 148, 153, 156, 157, 163, 164, 167, 168, 169, 171, 172, 191, 192, 193, 194, 195, 196];
 		int[] shuffled = [.. ids];
 		var random = new Random(seed);
-		for (int index = shuffled.Length - 1; index > 0; index--)
+		if (mixPromotionTiers)
 		{
-			int other = random.Next(index + 1);
-			(shuffled[index], shuffled[other]) = (shuffled[other], shuffled[index]);
+			Shuffle(shuffled, random);
+		}
+		else
+		{
+			// 两组成员由官网两次“保持相同转职阶段”补丁的置换闭包交叉校验得到。
+			int[] baseTier = [12, 13, 15, 16, 20, 23, 27, 29, 32, 36, 37, 41, 43, 52, 60, 61, 63, 72, 73, 75, 76, 77, 78, 79, 82, 83, 108, 109, 196];
+			int[] promotedTier = ids.Except(baseTier).ToArray();
+			int[] originalBaseTier = [.. baseTier];
+			int[] originalPromotedTier = [.. promotedTier];
+			Shuffle(baseTier, random);
+			Shuffle(promotedTier, random);
+			for (int index = 0; index < ids.Length; index++)
+			{
+				int baseIndex = Array.IndexOf(originalBaseTier, ids[index]);
+				shuffled[index] = baseIndex >= 0 ? baseTier[baseIndex] : promotedTier[Array.IndexOf(originalPromotedTier, ids[index])];
+			}
 		}
 		byte[] sigma = Enumerable.Range(0, 256).Select(value => (byte)value).ToArray();
 		byte[] inverse = Enumerable.Range(0, 256).Select(value => (byte)value).ToArray();
@@ -88,13 +104,24 @@ internal static class ModPatchGenerator
 			.Replace("{{CHARACTER_SIGMA_INVERSE_TABLE}}", Convert.ToHexString(inverse), StringComparison.Ordinal);
 	}
 
+	private static void Shuffle<T>(T[] values, Random random)
+	{
+		for (int index = values.Length - 1; index > 0; index--)
+		{
+			int other = random.Next(index + 1);
+			(values[index], values[other]) = (values[other], values[index]);
+		}
+	}
+
 	private static List<PatchWrite> GenerateAbility(ModModule module)
 	{
-		uint id = CheckedUInt(module.RecordId, 0, 2047, "技能 ID");
+		uint id = CheckedUInt(module.RecordId, 28, 468, "技能 ID");
 		uint address = SkillBase + id * SkillStride;
+		ModSkillInfo skill = ModCatalog.Skills.FirstOrDefault(item => item.Choice.Value == checked((int)id))
+			?? throw new InvalidOperationException($"技能 ID {id} 不在已校准列表中。");
 		return
 		[
-			new(address + (module.ValueN == 1 ? 0x0Cu : 0x0Au), UInt16Bytes(CheckedUShort(module.ValueA, 0, 10, "AP/PP 消耗")), module.ValueN == 1 ? "PP 消耗" : "AP 消耗"),
+			new(address + (skill.IsPassive ? 0x0Cu : 0x0Au), UInt16Bytes(CheckedUShort(module.ValueA, 0, 10, "AP/PP 消耗")), skill.IsPassive ? "PP 消耗" : "AP 消耗"),
 			new(address + 0x18, FloatBytes(module.ValueD), "物理威力"),
 			new(address + 0x1C, FloatBytes(module.ValueE), "魔法威力"),
 			new(address + 0x22, UInt16Bytes(CheckedUShort(module.ValueB, 0, 999, "命中")), "命中"),
@@ -105,7 +132,7 @@ internal static class ModPatchGenerator
 
 	private static List<PatchWrite> GenerateClass(ModModule module)
 	{
-		uint id = CheckedUInt(module.RecordId, 0, 73, "职业 ID");
+		uint id = CheckedUInt(module.RecordId, 1, 73, "职业 ID");
 		uint growth = ClassGrowthBase + id * ClassGrowthStride;
 		double[] values = [module.ValueD, module.ValueE, module.ValueF, module.ValueG, module.ValueH,
 			module.ValueI, module.ValueJ, module.ValueK, module.ValueL, module.ValueM];
@@ -116,18 +143,32 @@ internal static class ModPatchGenerator
 			if (values[index] < 0 || values[index] > 1000) throw new InvalidOperationException($"{names[index]}成长必须在 0 到 1000 之间。");
 			writes.Add(new PatchWrite(growth + (uint)(index * 4), FloatBytes(values[index]), $"{names[index]}成长"));
 		}
-		uint? skills = id switch { 1 => 0x00D36E40, 21 => 0x00D37930, _ => null };
-		if (skills.HasValue)
+		uint skills = ClassSkillBase + (id - 1) * ClassSkillStride;
+		int ap = CheckedInt(module.ValueA, 1, 4, "AP");
+		int pp = CheckedInt(module.ValueB, 1, 4, "PP");
+		for (int index = 0; index < 4; index++)
 		{
-			int ap = CheckedInt(module.ValueA, 1, 4, "AP");
-			int pp = CheckedInt(module.ValueB, 1, 4, "PP");
-			for (int index = 0; index < 4; index++)
+			writes.Add(new PatchWrite(skills + 0x20u + (uint)(index * 4), UInt32Bytes(index < ap ? 1u : 0u), "AP 点数"));
+			writes.Add(new PatchWrite(skills + 0x50u + (uint)(index * 4), UInt32Bytes(index < pp ? 1u : 0u), "PP 点数"));
+		}
+		AppendClassSkillWrites(writes, skills, module.ActiveSkills, 0x04, "主动");
+		AppendClassSkillWrites(writes, skills, module.PassiveSkills, 0x34, "被动");
+		return writes;
+	}
+
+	private static void AppendClassSkillWrites(List<PatchWrite> writes, uint address, IReadOnlyList<ModSkillSlot> slots, uint offset, String type)
+	{
+		for (int index = 0; index < slots.Count; index++)
+		{
+			uint skillId = CheckedUInt(slots[index].SelectedSkill?.Value ?? 0, 0, 468, $"{type}技能 ID");
+			uint skillOffset = index == 0 ? offset : offset + (uint)(index * 8);
+			writes.Add(new PatchWrite(address + skillOffset, UInt32Bytes(skillId), $"{type}技能 {index + 1}"));
+			if (index > 0)
 			{
-				writes.Add(new PatchWrite(skills.Value + 0x20u + (uint)(index * 4), UInt32Bytes(index < ap ? 1u : 0u), "AP 点数"));
-				writes.Add(new PatchWrite(skills.Value + 0x50u + (uint)(index * 4), UInt32Bytes(index < pp ? 1u : 0u), "PP 点数"));
+				uint level = skillId == 0 ? 0u : CheckedUInt(slots[index].Level, 1, 99, $"{type}技能 {index + 1} 习得等级");
+				writes.Add(new PatchWrite(address + skillOffset - 4, UInt32Bytes(level), $"{type}技能 {index + 1} 习得等级"));
 			}
 		}
-		return writes;
 	}
 
 	private static List<PatchWrite> GenerateFort(ModModule module)

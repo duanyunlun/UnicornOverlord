@@ -166,16 +166,16 @@ internal class ViewModel : INotifyPropertyChanged
 	{
 		return
 		[
-			new() { Key = "ability_editor", Category = "技能", Name = "技能编辑器", Description = "按技能 ID 修改消耗、威力、命中、目标范围和首个效果参数。", IsAvailable = true, CalibrationState = "字段已校准", RecordId = 372, ValueN = 1, ValueA = 1, ValueB = 100, ValueC = 1 },
-			new() { Key = "battle_preview", Category = "战斗", Name = "战斗预览调整", Description = "选择完全隐藏或只显示不完美战斗预览。", IsAvailable = true, CalibrationState = "亚洲版已重定位", TemplateFile = "battle_preview_hidden.pchtxt" },
+			new() { Key = "ability_editor", Category = "技能", Name = "技能编辑器", Description = "从 441 个已校准技能中选择主动或被动技能，修改其 AP/PP 消耗、威力、命中、目标范围和首个效果参数。技能类型由游戏数据决定，不能手动互换。", IsAvailable = true, CalibrationState = "441 个技能已校准", RecordId = 372 },
+			new() { Key = "battle_preview", Category = "战斗", Name = "战斗预览调整", Description = "“不完美预览”用 5 次模拟的平均值展示大致趋势；“完全隐藏”则移除整个预览条。", IsAvailable = true, CalibrationState = "亚洲版已重定位", TemplateFile = "battle_preview_hidden.pchtxt", RecordId = 0 },
 			new() { Key = "battle_timer_freeze", Category = "战斗", Name = "冻结战斗计时器", Description = "冻结关卡实时计时器，战斗不再受时间限制。", IsAvailable = true, TemplateFile = "battle_timer_freeze.pchtxt" },
-			new() { Key = "character_randomizer", Category = "角色", Name = "角色加入随机化", Description = "按种子随机调整 63 名剧情角色的加入顺序。", IsAvailable = true, CalibrationState = "亚洲版已重定位", TemplateFile = "character_randomizer_base.pchtxt", ValueA = 20260826, Warning = "实验性功能，只用于新游戏；同一种子会生成同一置换。" },
-			new() { Key = "class_editor", Category = "职业", Name = "职业编辑器", Description = "按职业 ID 修改十项成长率与 AP/PP。", IsAvailable = true, CalibrationState = "字段已校准", RecordId = 1, ValueA = 1, ValueB = 1, ValueD = 120, ValueE = 100, ValueF = 120, ValueG = 100, ValueH = 110, ValueI = 115, ValueJ = 120, ValueK = 100, ValueL = 140, ValueM = 120 },
-			new() { Key = "fort_editor", Category = "据点", Name = "据点雇佣编辑器", Description = "修改 1 至 248 号雇佣槽的职业 ID。", IsAvailable = true, CalibrationState = "248 槽已校准", RecordId = 1, ValueA = 3, Warning = "仅写职业字段，亚洲版附加字段保持不变。" },
-			new() { Key = "mine_editor", Category = "采矿", Name = "采矿掉落编辑器", Description = "修改 63 条掉落记录的物品、权重、挖掘时间与上限。", IsAvailable = true, CalibrationState = "63 条已校准", RecordId = 0, ValueA = 95, ValueB = 50, ValueC = 40, ValueD = 999 },
-			new() { Key = "shop_editor", Category = "商店", Name = "商店库存编辑器", Description = "修改已标定普通商店记录的商品、库存与全局金币价格。", IsAvailable = true, CalibrationState = "2 槽已校准", RecordId = 0, ValueA = 645, ValueB = 1, ValueC = 2000, Warning = "当前只开放逐字节确认的两个普通商品槽；兑换商店尚不套用金币价格。" },
+			new() { Key = "character_randomizer", Category = "角色", Name = "角色加入随机化", Description = "随机改变教程五人以外的 63 名剧情角色加入顺序；过场、地图事件和能力触发时点不变。", IsAvailable = true, CalibrationState = "亚洲版已重定位", TemplateFile = "character_randomizer_base.pchtxt", ValueA = 20260826, Warning = "实验性功能：只用于新游戏，全流程保持启用并备份存档；中途移除可能使剧情读取不同步。" },
+			new() { Key = "class_editor", Category = "职业", Name = "职业编辑器", Description = "按职业名称修改 73 个职业的十项成长率、AP/PP，以及 4 个主动和 4 个被动技能及习得等级。", IsAvailable = true, CalibrationState = "73 个职业字段已校准", RecordId = 1 },
+			new() { Key = "fort_editor", Category = "据点", Name = "据点雇佣编辑器", Description = "修改五大地区全部 248 个雇佣槽的可招募职业。当前选槽后会载入原版职业，手动选择不受转职阶段限制。", IsAvailable = true, CalibrationState = "248 槽已校准", RecordId = 1, Warning = "仅写职业字段，亚洲版记录中的性别与附加类型保持不变。" },
+			new() { Key = "mine_editor", Category = "采矿", Name = "采矿掉落编辑器", Description = "修改五个地区共 63 条掉落记录：物品、相对权重、挖掘目标和单局上限。权重仅表示同地区内的相对概率。", IsAvailable = true, CalibrationState = "63 条已校准", RecordId = 0, Warning = "藏宝图等一次性物品由游戏另行限制；提高权重时也要检查单局上限。" },
+			new() { Key = "shop_editor", Category = "商店", Name = "商店库存编辑器", Description = "修改已逐字节校准的普通商店商品、库存和金币价格；-1 表示无限库存，金币价格会对出售同一物品的商店全局生效。", IsAvailable = true, CalibrationState = "2 个普通商店槽已校准", RecordId = 0, Warning = "兑换所价格和共享库存使用不同结构，当前不会错误套用普通金币价格。" },
 			new() { Key = "six_member_units", Category = "编队", Name = "六人编队", Description = "允许 S 级声望下将部队扩充至六人，并可设置荣誉费用。", IsAvailable = true, CalibrationState = "亚洲版已重定位", TemplateFile = "six_member_units.pchtxt", ValueA = 500, Warning = "卸载前必须先撤下所有部队的第六名成员。" },
-			new() { Key = "type_matchups", Category = "战斗", Name = "类型克制", Description = "分别设置骑兵、弓兵和飞行单位的固有克制倍率。", IsAvailable = true, CalibrationState = "三项已校准", ValueD = 2, ValueE = 2, ValueF = 2 },
+			new() { Key = "type_matchups", Category = "战斗", Name = "类型克制", Description = "设置游戏内三种固有兵种克制倍率。它会作用于对应单位的所有攻击，并与技能自身的“对某类型威力加成”叠加；不写入存档，可随时启停。", IsAvailable = true, CalibrationState = "三项已校准", ValueD = 2, ValueE = 2, ValueF = 2 },
 		];
 	}
 
@@ -638,6 +638,7 @@ internal class ViewModel : INotifyPropertyChanged
 
 	private void RefreshLocalizedCollections()
 	{
+		ModCatalog.RefreshLocalizedNames();
 		int selectedCharacterIndex = SelectedCharacterIndex;
 		Characters = new ObservableCollection<Character>(Characters);
 		Items = new ObservableCollection<Item>(Items);
@@ -646,6 +647,7 @@ internal class ViewModel : INotifyPropertyChanged
 		OnPropertyChanged(nameof(Items));
 		OnPropertyChanged(nameof(Equipments));
 		OnPropertyChanged(nameof(InventorySummary));
+		foreach (ModModule module in ModModules) module.RefreshLocalizedChoices();
 		SelectedCharacterIndex = selectedCharacterIndex;
 	}
 

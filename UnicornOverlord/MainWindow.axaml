@@ -95,7 +95,7 @@
           <TextBlock Classes="caption" Text="{Binding FileLocation}" TextTrimming="CharacterEllipsis" />
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-          <TextBlock Text="名称语言" VerticalAlignment="Center" />
+          <TextBlock Text="编辑器语言" ToolTip.Tip="切换技能、职业、物品等游戏数据名称的显示语言" VerticalAlignment="Center" />
           <ComboBox Width="116" ItemsSource="{Binding Languages}" SelectedIndex="{Binding LanguageIndex, Mode=TwoWay}" />
         </StackPanel>
       </Grid>
@@ -344,17 +344,23 @@
                     <TextBlock Classes="section-title" Text="{Binding Name}" />
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                     <TextBlock Foreground="#A24A37" FontSize="12" Text="{Binding Warning}" TextWrapping="Wrap" />
+                    <ToggleSwitch IsVisible="{Binding ShowStandardEnableToggle}" IsChecked="{Binding IsSelected, Mode=TwoWay}" OnContent="已启用并加入导出" OffContent="未启用" HorizontalAlignment="Left" />
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsAbilityEditor}" Spacing="12">
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Text="技能 ID"/><NumericUpDown Value="{Binding RecordId}" Minimum="0" Maximum="2047"/></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="技能类型"/><ComboBox ItemsSource="{Binding CostTypes}" SelectedIndex="{Binding ValueN}"/></StackPanel>
+                      <StackPanel Spacing="5">
+                        <TextBlock Text="技能"/>
+                        <ComboBox ItemsSource="{Binding SkillChoices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}" MaxDropDownHeight="360">
+                          <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}" /></DataTemplate></ComboBox.ItemTemplate>
+                        </ComboBox>
+                      </StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="固有类型"/><TextBox Text="{Binding AbilityTypeText}" IsReadOnly="True"/><TextBlock Classes="caption" Text="主动/被动由技能记录决定，不能改成另一种类型。" TextWrapping="Wrap"/></StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Text="AP / PP 消耗"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="10"/></StackPanel>
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="命中"/><NumericUpDown Value="{Binding ValueB}" Minimum="0" Maximum="999"/></StackPanel>
-                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="目标范围 ID"/><NumericUpDown Value="{Binding ValueC}" Minimum="0" Maximum="255"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="目标范围"/><ComboBox ItemsSource="{Binding TargetShapes}" SelectedItem="{Binding SelectedTargetShape, Mode=TwoWay}"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Text="物理威力"/><NumericUpDown Value="{Binding ValueD}" Minimum="0" Maximum="9999" Increment="1"/></StackPanel>
@@ -365,20 +371,25 @@
 
                   <StackPanel IsVisible="{Binding IsBattlePreview}" Spacing="5">
                     <TextBlock Text="预览模式"/><ComboBox ItemsSource="{Binding PreviewModes}" SelectedIndex="{Binding RecordId}"/>
+                    <TextBlock Classes="caption" Text="{Binding PreviewModeDescription}" TextWrapping="Wrap"/>
                   </StackPanel>
 
-                  <StackPanel IsVisible="{Binding IsCharacterRandomizer}" Spacing="5">
-                    <TextBlock Text="随机种子"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="2147483647"/>
-                    <TextBlock Classes="caption" Text="同一种子会生成相同的 63 名剧情角色置换。"/>
+                  <StackPanel IsVisible="{Binding IsCharacterRandomizer}" Spacing="8">
+                    <TextBlock Text="随机种子"/>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                      <NumericUpDown Value="{Binding ValueA}" Minimum="1" Maximum="2147483647"/>
+                      <Button Grid.Column="1" Classes="compact" Content="重新随机" Command="{Binding RerollCommand}"/>
+                    </Grid>
+                    <ToggleSwitch IsChecked="{Binding MixPromotionTiers, Mode=TwoWay}" OnContent="混合转职阶段" OffContent="保持相同转职阶段" HorizontalAlignment="Left"/>
+                    <TextBlock Classes="caption" Text="默认只在相同转职阶段内交换；启用后允许基础、转职及后期角色跨阶段交换。同一种子和选项会生成相同置换。" TextWrapping="Wrap"/>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsClassEditor}" Spacing="12">
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Text="职业 ID"/><NumericUpDown Value="{Binding RecordId}" Minimum="0" Maximum="73"/></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="AP"/><NumericUpDown Value="{Binding ValueA}" Minimum="1" Maximum="4" IsEnabled="{Binding CanEditClassPoints}"/></StackPanel>
-                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="PP"/><NumericUpDown Value="{Binding ValueB}" Minimum="1" Maximum="4" IsEnabled="{Binding CanEditClassPoints}"/></StackPanel>
+                      <StackPanel Spacing="5"><TextBlock Text="职业"/><ComboBox ItemsSource="{Binding ClassChoices}" SelectedItem="{Binding SelectedClass, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="AP"/><NumericUpDown Value="{Binding ValueA}" Minimum="1" Maximum="4"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="PP"/><NumericUpDown Value="{Binding ValueB}" Minimum="1" Maximum="4"/></StackPanel>
                     </Grid>
-                    <TextBlock Classes="caption" Text="AP/PP 当前已标定职业 ID 1 与 21；其他职业仍可安全修改十项成长率。"/>
                     <TextBlock FontWeight="SemiBold" Text="每级成长率（100 为基准）"/>
                     <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
                       <StackPanel Spacing="4"><TextBlock Text="生命"/><NumericUpDown Value="{Binding ValueD}" Minimum="0" Maximum="1000"/></StackPanel>
@@ -392,38 +403,60 @@
                       <StackPanel Grid.Row="1" Grid.Column="3" Spacing="4"><TextBlock Text="格挡"/><NumericUpDown Value="{Binding ValueL}" Minimum="0" Maximum="1000"/></StackPanel>
                       <StackPanel Grid.Row="1" Grid.Column="4" Spacing="4"><TextBlock Text="速度"/><NumericUpDown Value="{Binding ValueM}" Minimum="0" Maximum="1000"/></StackPanel>
                     </Grid>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="6">
+                        <TextBlock FontWeight="SemiBold" Text="主动技能"/>
+                        <ItemsControl ItemsSource="{Binding ActiveSkills}">
+                          <ItemsControl.ItemTemplate><DataTemplate><Grid ColumnDefinitions="70,*,82" ColumnSpacing="6" Margin="0,0,0,6"><TextBlock Text="{Binding SlotName}" VerticalAlignment="Center"/><ComboBox Grid.Column="1" ItemsSource="{Binding Choices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}" MaxDropDownHeight="300"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox><NumericUpDown Grid.Column="2" Value="{Binding Level}" Minimum="1" Maximum="99" IsEnabled="{Binding CanEditLevel}" ToolTip.Tip="习得等级；第一项固定 1 级"/></Grid></DataTemplate></ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                      </StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="6">
+                        <TextBlock FontWeight="SemiBold" Text="被动技能"/>
+                        <ItemsControl ItemsSource="{Binding PassiveSkills}">
+                          <ItemsControl.ItemTemplate><DataTemplate><Grid ColumnDefinitions="70,*,82" ColumnSpacing="6" Margin="0,0,0,6"><TextBlock Text="{Binding SlotName}" VerticalAlignment="Center"/><ComboBox Grid.Column="1" ItemsSource="{Binding Choices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}" MaxDropDownHeight="300"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox><NumericUpDown Grid.Column="2" Value="{Binding Level}" Minimum="1" Maximum="99" IsEnabled="{Binding CanEditLevel}" ToolTip.Tip="习得等级；第一项固定 1 级"/></Grid></DataTemplate></ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                      </StackPanel>
+                    </Grid>
+                    <TextBlock Classes="caption" Text="技能下拉按主动/被动分开；第一项固定 1 级，后续技能可设置习得等级。更换为职业无法播放其动画的技能可能显示异常。" TextWrapping="Wrap"/>
                   </StackPanel>
 
-                  <Grid IsVisible="{Binding IsFortEditor}" ColumnDefinitions="*,*" ColumnSpacing="12">
-                    <StackPanel Spacing="5"><TextBlock Text="雇佣槽位（1-248）"/><NumericUpDown Value="{Binding RecordId}" Minimum="1" Maximum="248"/></StackPanel>
-                    <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="职业 ID"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="73"/></StackPanel>
-                  </Grid>
+                  <StackPanel IsVisible="{Binding IsFortEditor}" Spacing="8">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Text="雇佣槽位（1-248）"/><NumericUpDown Value="{Binding RecordId}" Minimum="1" Maximum="248"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="可招募职业"/><ComboBox ItemsSource="{Binding ClassChoices}" SelectedItem="{Binding SelectedFortClass, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                    </Grid>
+                    <TextBlock Classes="caption" Text="槽位按游戏表的五大地区连续编号；选择槽位时载入原版职业。仅修改职业，不覆盖亚洲版额外字段。" TextWrapping="Wrap"/>
+                  </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsMineEditor}" Spacing="12">
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Text="掉落槽位（0-62）"/><NumericUpDown Value="{Binding RecordId}" Minimum="0" Maximum="62"/></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="物品 ID"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="970"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="掉落物品"/><ComboBox ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding SelectedMineItem, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Text="掉落权重"/><NumericUpDown Value="{Binding ValueB}" Minimum="0" Maximum="1000000"/></StackPanel>
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="挖掘目标"/><NumericUpDown Value="{Binding ValueC}" Minimum="0" Maximum="1000000"/></StackPanel>
                       <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="单局上限"/><NumericUpDown Value="{Binding ValueD}" Minimum="1" Maximum="999999"/></StackPanel>
                     </Grid>
+                    <TextBlock Classes="caption" Text="掉落权重是同地区各槽之间的相对概率；挖掘目标越高越难在限时内挖出；单局上限限制一次采矿最多取得数量。" TextWrapping="Wrap"/>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsShopEditor}" Spacing="12">
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Text="已标定商店槽位（0-1）"/><NumericUpDown Value="{Binding RecordId}" Minimum="0" Maximum="1"/></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="商品 ID"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="970"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="商品"/><ComboBox ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding SelectedShopItem, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Text="库存（-1 为无限）"/><NumericUpDown Value="{Binding ValueB}" Minimum="-1" Maximum="9999"/></StackPanel>
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="金币买价"/><NumericUpDown Value="{Binding ValueC}" Minimum="0" Maximum="65535"/></StackPanel>
                     </Grid>
+                    <TextBlock Classes="caption" Text="普通金币商店按物品共享买价，卖价自动设为买价的 10%；兑换所与共享库存结构不同，本页不会混用。" TextWrapping="Wrap"/>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsSixMemberUnits}" Spacing="5">
+                    <ToggleSwitch IsChecked="{Binding IsSelected, Mode=TwoWay}" OnContent="六人小队已开启" OffContent="六人小队已关闭" HorizontalAlignment="Left"/>
                     <TextBlock Text="第五人扩充到第六人的荣誉费用"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="999999"/>
+                    <TextBlock Classes="caption" Text="并非默认开启：只有打开此开关并导出安装补丁后，S 级声望的小队才可扩充到六人。" TextWrapping="Wrap"/>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsTypeMatchups}" Spacing="10">
@@ -432,6 +465,7 @@
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="弓兵对飞行"/><ComboBox ItemsSource="{Binding MatchupValues}" SelectedItem="{Binding ValueE}"/></StackPanel>
                       <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="飞龙/狮鹫对骑兵"/><ComboBox ItemsSource="{Binding MatchupValues}" SelectedItem="{Binding ValueF}"/></StackPanel>
                     </Grid>
+                    <TextBlock Classes="caption" Text="三项倍率作用于对应兵种的每一次攻击，与技能自身的类型加成相乘。例如骑兵对步兵设为 1 表示取消固有双倍克制。" TextWrapping="Wrap"/>
                   </StackPanel>
 
                   <TextBlock IsVisible="{Binding HasNoOptions}" Classes="caption" Text="此模块本身只有启用或停用，没有额外参数。"/>

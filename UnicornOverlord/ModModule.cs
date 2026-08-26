@@ -15,7 +15,8 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public required bool IsAvailable { get; init; }
 	public String? TemplateFile { get; init; }
 	public String? Warning { get; init; }
-	public String StateText => IsAvailable ? "已接入" : "待解析";
+	public String? CalibrationState { get; init; }
+	public String StateText => CalibrationState ?? (IsAvailable ? "已接入" : "待解析");
 
 	public bool IsSelected
 	{

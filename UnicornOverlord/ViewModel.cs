@@ -149,16 +149,16 @@ internal class ViewModel : INotifyPropertyChanged
 	{
 		return
 		[
-			new() { Key = "ability_editor", Category = "技能", Name = "技能编辑器", Description = "修改技能 AP/PP 消耗、威力、命中与目标范围。", IsAvailable = false },
-			new() { Key = "battle_preview", Category = "战斗", Name = "战斗预览调整", Description = "降低战斗预览的确定性，或隐藏预览结果。", IsAvailable = false },
+			new() { Key = "ability_editor", Category = "技能", Name = "技能编辑器", Description = "修改技能 AP/PP 消耗、威力、命中与目标范围。", IsAvailable = false, CalibrationState = "单点已校准", Warning = "已核对技能 372 的 PP 字段；完整技能表与简体中文名称映射尚未完成。" },
+			new() { Key = "battle_preview", Category = "战斗", Name = "战斗预览调整", Description = "降低战斗预览的确定性，或隐藏预览结果。", IsAvailable = false, CalibrationState = "版本偏移", Warning = "欧美版 8 个隐藏预览写入点在亚洲版均未命中对应原始指令，禁止直接移植。" },
 			new() { Key = "battle_timer_freeze", Category = "战斗", Name = "冻结战斗计时器", Description = "冻结关卡实时计时器，战斗不再受时间限制。", IsAvailable = true, TemplateFile = "battle_timer_freeze.pchtxt" },
-			new() { Key = "character_randomizer", Category = "角色", Name = "角色加入随机化", Description = "随机调整剧情中角色的加入顺序。", IsAvailable = false, Warning = "实验性功能，只适用于新游戏。" },
+			new() { Key = "character_randomizer", Category = "角色", Name = "角色加入随机化", Description = "随机调整剧情中角色的加入顺序。", IsAvailable = false, CalibrationState = "待映射", Warning = "包含角色 ID 表、代码钩子与代码洞；实验性功能且只适用于新游戏。" },
 			new() { Key = "class_growth_safe", Category = "职业", Name = "职业成长保底", Description = "保留职业成长差异，并让 Lv1 至 Lv50 每次升级的十项能力至少增加 1。", IsAvailable = true, TemplateFile = "class_growth_safe.pchtxt" },
-			new() { Key = "fort_editor", Category = "据点", Name = "据点雇佣编辑器", Description = "调整各据点雇佣公会可招募的泛用职业。", IsAvailable = false },
-			new() { Key = "mine_editor", Category = "采矿", Name = "采矿掉落编辑器", Description = "调整矿场掉落权重、挖掘目标与单局掉落上限。", IsAvailable = false },
-			new() { Key = "shop_editor", Category = "商店", Name = "商店库存编辑器", Description = "调整商店商品、库存数量和价格。", IsAvailable = false },
-			new() { Key = "six_member_units", Category = "编队", Name = "六人编队", Description = "允许 S 级声望下将部队扩充至六人。", IsAvailable = false, Warning = "移除 MOD 前必须先撤下实际的第六名成员。" },
-			new() { Key = "text_editor", Category = "文本", Name = "文本编辑器", Description = "修改对话、技能条件文本与泛用角色姓名池。", IsAvailable = false },
+			new() { Key = "fort_editor", Category = "据点", Name = "据点雇佣编辑器", Description = "调整各据点雇佣公会可招募的泛用职业。", IsAvailable = false, CalibrationState = "全表已校准", Warning = "248 个槽位地址均对齐；其中 8 条亚洲版附加字段不同，编辑器必须保留亚洲版原值。" },
+			new() { Key = "mine_editor", Category = "采矿", Name = "采矿掉落编辑器", Description = "调整矿场掉落权重、挖掘目标与单局掉落上限。", IsAvailable = false, CalibrationState = "全表已校准", Warning = "63 条记录全部对齐；藏宝图等一次性掉落必须保持原有限制。" },
+			new() { Key = "shop_editor", Category = "商店", Name = "商店库存编辑器", Description = "调整商店商品、库存数量和价格。", IsAvailable = false, CalibrationState = "单点已校准", Warning = "已核对一条库存记录；完整商店表仍需分批校验。" },
+			new() { Key = "six_member_units", Category = "编队", Name = "六人编队", Description = "允许 S 级声望下将部队扩充至六人。", IsAvailable = false, CalibrationState = "版本偏移", Warning = "欧美版运行代码偏移与亚洲版不一致。移除有效补丁前还必须先撤下第六名成员。" },
+			new() { Key = "text_editor", Category = "文本", Name = "文本编辑器", Description = "修改对话、技能条件文本与泛用角色姓名池。", IsAvailable = false, CalibrationState = "需中文 CPK", Warning = "网站输出 Unicorn_US.CPK；亚洲中文版必须改写并重封 Unicorn_CN.CPK。" },
 		];
 	}
 

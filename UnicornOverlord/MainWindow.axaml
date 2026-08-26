@@ -318,7 +318,7 @@
                      BorderBrush="{StaticResource BorderBrush}">
               <ListBox.ItemTemplate>
                 <DataTemplate>
-                  <Grid ColumnDefinitions="Auto,90,*,76" ColumnSpacing="14" MinHeight="58">
+                  <Grid ColumnDefinitions="Auto,90,*,112" ColumnSpacing="14" MinHeight="58">
                     <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" IsEnabled="{Binding IsAvailable}"
                               VerticalAlignment="Center" />
                     <TextBlock Grid.Column="1" Text="{Binding Category}" Foreground="{StaticResource AccentBrush}"
@@ -338,7 +338,7 @@
             </ListBox>
 
             <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="18,12" ColumnSpacing="12">
-              <TextBlock Classes="caption" Text="当前可导出：冻结战斗计时器、职业成长保底。其他板块尚未写入任何补丁数据。"
+              <TextBlock Classes="caption" Text="已完成网站十个板块采样；当前仅导出通过亚洲版验证的冻结计时器与职业成长保底。"
                          TextWrapping="Wrap" VerticalAlignment="Center" />
               <TextBlock Grid.Column="1" Classes="caption" Text="仅生成模拟器 pchtxt · 不修改游戏与存档" VerticalAlignment="Center" />
             </Grid>

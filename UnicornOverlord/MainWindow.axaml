@@ -22,6 +22,8 @@
     <local:NameIDConverter x:Key="NameIDConverter" />
     <SolidColorBrush x:Key="AccentBrush" Color="#287764" />
     <SolidColorBrush x:Key="AccentSoftBrush" Color="#E5F2EE" />
+    <SolidColorBrush x:Key="SaveAccentBrush" Color="#315F78" />
+    <SolidColorBrush x:Key="SaveSoftBrush" Color="#E7F0F5" />
     <SolidColorBrush x:Key="BorderBrush" Color="#D8DBE0" />
     <SolidColorBrush x:Key="MutedBrush" Color="#656B75" />
   </Window.Resources>
@@ -40,13 +42,6 @@
       <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="CornerRadius" Value="6" />
-    </Style>
-    <Style Selector="Border.context-bar">
-      <Setter Property="Background" Value="White" />
-      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
-      <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="CornerRadius" Value="6" />
-      <Setter Property="Padding" Value="18,12" />
     </Style>
     <Style Selector="Button.primary">
       <Setter Property="Background" Value="{StaticResource AccentBrush}" />
@@ -78,10 +73,30 @@
     <Style Selector="ListBoxItem">
       <Setter Property="Padding" Value="10,8" />
     </Style>
+    <Style Selector="ListBox">
+      <Setter Property="ScrollViewer.AllowAutoHide" Value="True" />
+      <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+      <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+    </Style>
+    <Style Selector="ScrollBar[AllowAutoHide=True][IsExpanded=False] /template/ Thumb">
+      <Setter Property="Opacity" Value="0" />
+    </Style>
     <Style Selector="TabItem.workspace">
       <Setter Property="FontSize" Value="17" />
       <Setter Property="FontWeight" Value="SemiBold" />
-      <Setter Property="Padding" Value="18,10" />
+      <Setter Property="Padding" Value="20,10" />
+      <Setter Property="MinWidth" Value="148" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="Background" Value="#E4E7EA" />
+      <Setter Property="Margin" Value="0,0,8,0" />
+    </Style>
+    <Style Selector="TabItem.workspace-save:selected">
+      <Setter Property="Background" Value="{StaticResource SaveSoftBrush}" />
+      <Setter Property="Foreground" Value="{StaticResource SaveAccentBrush}" />
+    </Style>
+    <Style Selector="TabItem.workspace-mod:selected">
+      <Setter Property="Background" Value="{StaticResource AccentSoftBrush}" />
+      <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
     </Style>
     <Style Selector="TabItem.section">
       <Setter Property="FontSize" Value="15" />
@@ -89,38 +104,30 @@
     </Style>
   </Window.Styles>
 
-  <Grid RowDefinitions="Auto,*,Auto">
+  <Grid RowDefinitions="Auto,*,Auto,Auto">
     <Border Grid.Row="0" Background="#20252B" Padding="24,16">
       <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
         <StackPanel Spacing="2">
           <TextBlock Text="独角兽之王" FontSize="22" FontWeight="SemiBold" Foreground="White" />
           <TextBlock Text="Nintendo Switch 存档与 MOD 编辑器" Foreground="#BFC6CE" FontSize="12" />
         </StackPanel>
-        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" IsVisible="{Binding IsModWorkspace}">
+            <TextBlock Text="目标版本" Foreground="#D7DCE1" VerticalAlignment="Center" />
+            <ComboBox Width="168" ItemsSource="{Binding ModTargets}" SelectedItem="{Binding ActiveModTarget, Mode=TwoWay}">
+              <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}" /></DataTemplate></ComboBox.ItemTemplate>
+            </ComboBox>
+          </StackPanel>
           <TextBlock Text="编辑器语言" Foreground="#D7DCE1" ToolTip.Tip="切换技能、职业、物品等游戏数据名称的显示语言" VerticalAlignment="Center" />
           <ComboBox Width="120" ItemsSource="{Binding Languages}" SelectedIndex="{Binding LanguageIndex, Mode=TwoWay}" />
         </StackPanel>
       </Grid>
     </Border>
 
-    <TabControl Grid.Row="1" Margin="16" SelectedIndex="{Binding WorkspaceIndex, Mode=TwoWay}">
-      <TabItem Classes="workspace" Header="存档编辑">
-        <Grid RowDefinitions="Auto,*" Margin="0,10,0,0">
-          <Border Classes="context-bar">
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" VerticalAlignment="Center">
-              <StackPanel Spacing="2">
-                <TextBlock Text="{Binding CurrentFileName}" FontSize="16" FontWeight="SemiBold" />
-                <TextBlock Classes="caption" Text="{Binding FileLocation}" TextTrimming="CharacterEllipsis" />
-              </StackPanel>
-              <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                <Button Classes="header" Content="打开存档" Command="{Binding OpenFileCommand}" />
-                <Button Classes="compact" Content="存档另存为" Command="{Binding SaveAsFileCommand}" IsEnabled="{Binding IsSaveLoaded}" />
-                <Button Classes="primary" Content="保存存档" Command="{Binding SaveFileCommand}" IsEnabled="{Binding IsSaveLoaded}" />
-              </StackPanel>
-            </Grid>
-          </Border>
-
-          <TabControl Grid.Row="1" Margin="0,10,0,0">
+    <TabControl Grid.Row="1" Margin="12,8,12,0" SelectedIndex="{Binding WorkspaceIndex, Mode=TwoWay}">
+      <TabItem Classes="workspace workspace-save" Header="存档编辑">
+        <Border Background="#F1F6F8" Padding="10,6,10,0">
+          <TabControl>
       <TabItem Classes="section" Header="概览">
         <Border Classes="panel" Padding="24" Margin="0,12,0,0">
           <StackPanel Spacing="20" MaxWidth="520" HorizontalAlignment="Left">
@@ -168,8 +175,8 @@
             </Grid>
           </Border>
 
-          <Border Grid.Column="1" Classes="panel" Padding="18">
-            <ScrollViewer>
+          <Border Grid.Column="1" Classes="panel" Padding="18,18,8,18">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Padding="0,0,14,0">
               <StackPanel Spacing="14">
                 <TextBlock Classes="section-title" Text="角色属性" />
                 <Grid ColumnDefinitions="150,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="10">
@@ -217,11 +224,11 @@
               </StackPanel>
               <Button Grid.Row="1" Classes="compact" Content="全部设为 1000" HorizontalAlignment="Left" Margin="16,4,16,12"
                       Command="{Binding ChangeCharacterBondMaxCommand}" CommandParameter="{Binding SelectedItem, ElementName=CharacterList}" />
-              <ListBox Grid.Row="2" ItemsSource="{Binding SelectedItem.Bonds, ElementName=CharacterList}" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush}">
+              <ListBox Grid.Row="2" ItemsSource="{Binding SelectedItem.Bonds, ElementName=CharacterList}" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush}" Padding="0,0,8,0">
                 <ListBox.ItemTemplate>
                   <DataTemplate>
                     <Grid ColumnDefinitions="*,90" ColumnSpacing="10">
-                      <TextBlock Text="{Binding ID, StringFormat='角色 ID {0}'}" VerticalAlignment="Center" />
+                      <TextBlock Text="{Binding ID, Converter={StaticResource NameIDConverter}}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                       <TextBox Grid.Column="1" Text="{Binding Value, Mode=TwoWay}" />
                     </Grid>
                   </DataTemplate>
@@ -318,46 +325,16 @@
         </Border>
       </TabItem>
 		  </TabControl>
-		</Grid>
+		</Border>
 	  </TabItem>
 
-      <TabItem Classes="workspace" Header="MOD 制作">
-		<Grid RowDefinitions="Auto,*" Margin="0,10,0,0">
-		  <Border Classes="context-bar">
-			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" VerticalAlignment="Center">
-			  <StackPanel Spacing="2">
-				<TextBlock Text="MOD 制作" FontSize="16" FontWeight="SemiBold" />
-				<TextBlock Classes="caption" Text="玩法补丁与文本补丁独立导出，不会写入当前存档。" />
-			  </StackPanel>
-			  <Border Grid.Column="1" Background="{StaticResource AccentSoftBrush}" CornerRadius="4" Padding="10,6" VerticalAlignment="Center">
-				<TextBlock Text="输出格式：模拟器 ZIP" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" VerticalAlignment="Center" />
-			  </Border>
-			</Grid>
-		  </Border>
-
-		  <TabControl Grid.Row="1" Margin="0,10,0,0">
+      <TabItem Classes="workspace workspace-mod" Header="MOD 制作">
+		<Border Background="#F0F6F4" Padding="10,6,10,0">
+		  <TabControl SelectedIndex="{Binding ModWorkspaceIndex, Mode=TwoWay}">
       <TabItem Classes="section" Header="玩法 MOD">
-        <Border Classes="panel" Margin="0,12,0,0">
-          <Grid RowDefinitions="Auto,*,Auto">
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" Margin="18,14">
-              <StackPanel Spacing="3">
-                <TextBlock Classes="section-title" Text="MOD 工作区" />
-                <TextBlock Classes="caption" Text="{Binding ModTargetSummary}" TextWrapping="Wrap" />
-              </StackPanel>
-              <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                <TextBlock Classes="caption" Text="目标版本" VerticalAlignment="Center" />
-                <ComboBox Width="150" ItemsSource="{Binding ModTargets}" SelectedItem="{Binding SelectedModTarget, Mode=TwoWay}">
-                  <ComboBox.ItemTemplate>
-                    <DataTemplate><TextBlock Text="{Binding DisplayName}" /></DataTemplate>
-                  </ComboBox.ItemTemplate>
-                </ComboBox>
-                <TextBlock Classes="caption" Text="{Binding ModSelectionSummary}" VerticalAlignment="Center" />
-                <Button Classes="primary" Content="导出 MOD 包" Command="{Binding ExportModPackageCommand}"
-                        IsEnabled="{Binding CanExportMods}" />
-              </StackPanel>
-            </Grid>
-
-            <Grid Grid.Row="1" ColumnDefinitions="340,*">
+        <Border Classes="panel" Margin="0,8,0,0">
+          <Grid>
+            <Grid ColumnDefinitions="320,*">
               <ListBox ItemsSource="{Binding ModModules}" SelectedItem="{Binding SelectedMod, Mode=TwoWay}"
                        BorderThickness="0,0,1,0" BorderBrush="{StaticResource BorderBrush}">
                 <ListBox.ItemTemplate>
@@ -375,7 +352,7 @@
                 </ListBox.ItemTemplate>
               </ListBox>
 
-              <ScrollViewer Grid.Column="1">
+              <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Padding="0,0,12,0">
                 <StackPanel Margin="24,18" Spacing="16" DataContext="{Binding SelectedMod}">
                   <StackPanel Spacing="4">
                     <TextBlock Classes="section-title" Text="{Binding Name}" />
@@ -510,18 +487,13 @@
               </ScrollViewer>
             </Grid>
 
-            <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="18,12" ColumnSpacing="12">
-              <TextBlock Classes="caption" Text="十个非文本模块均可配置；导出时会校验范围、地址冲突与亚洲版 Build ID。"
-                         TextWrapping="Wrap" VerticalAlignment="Center" />
-              <TextBlock Grid.Column="1" Classes="caption" Text="仅生成模拟器 pchtxt · 不修改游戏与存档" VerticalAlignment="Center" />
-            </Grid>
           </Grid>
         </Border>
       </TabItem>
 
 	  <TabItem Classes="section" Header="文本 MOD">
-		<Border Classes="panel" Margin="0,12,0,0" DataContext="{Binding TextEditor}">
-		  <Grid RowDefinitions="Auto,Auto,*,Auto">
+		<Border Classes="panel" Margin="0,8,0,0" DataContext="{Binding TextEditor}">
+		  <Grid RowDefinitions="Auto,Auto,*">
 			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" Margin="18,14">
 			  <StackPanel Spacing="3">
 				<TextBlock Classes="section-title" Text="文本编辑器" />
@@ -541,10 +513,6 @@
 				  <TextBlock Classes="caption" Text="{Binding ToolSummary}" TextTrimming="CharacterEllipsis" />
 				</StackPanel>
 				<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-				  <TextBlock Classes="caption" Text="目标版本" VerticalAlignment="Center" />
-				  <ComboBox Width="168" ItemsSource="{Binding Targets}" SelectedItem="{Binding SelectedTarget, Mode=TwoWay}">
-					<ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}" /></DataTemplate></ComboBox.ItemTemplate>
-				  </ComboBox>
 				  <TextBlock Classes="caption" Text="文本语言" VerticalAlignment="Center" />
 				  <ComboBox Width="122" ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}">
 					<ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Name}" /></DataTemplate></ComboBox.ItemTemplate>
@@ -587,7 +555,7 @@
 				</ListBox>
 			  </Grid>
 
-			  <ScrollViewer Grid.Column="2">
+			  <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Padding="0,0,12,0">
 				<StackPanel Margin="18" Spacing="10">
 				  <TextBlock Classes="section-title" Text="{Binding SelectedEntry.Index, StringFormat='索引 {0}'}" />
 				  <TextBlock Text="原文" FontWeight="SemiBold" />
@@ -601,20 +569,45 @@
 			  </ScrollViewer>
 			</Grid>
 
-			<Grid Grid.Row="3" ColumnDefinitions="*,Auto" Margin="18,12" ColumnSpacing="12">
-			  <TextBlock Classes="caption" Text="{Binding ChangeSummary}" VerticalAlignment="Center" />
-			  <Button Grid.Column="1" Classes="primary" Content="导出文本 MOD 包" Command="{Binding ExportCommand}" />
-			</Grid>
 		  </Grid>
 		</Border>
 	  </TabItem>
 		  </TabControl>
-		</Grid>
+		</Border>
 	  </TabItem>
 	</TabControl>
 
-    <Border Grid.Row="2" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="20,9">
-      <TextBlock Classes="caption" Text="{Binding StatusMessage}" />
+    <Border Grid.Row="2" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="16,8">
+      <Grid>
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" IsVisible="{Binding IsSaveWorkspace}">
+          <StackPanel Spacing="1" VerticalAlignment="Center">
+            <TextBlock Text="{Binding CurrentFileName}" FontWeight="SemiBold" />
+            <TextBlock Classes="caption" Text="{Binding FileLocation}" TextTrimming="CharacterEllipsis" />
+          </StackPanel>
+          <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+            <Button Classes="header" Content="打开存档" Command="{Binding OpenFileCommand}" />
+            <Button Classes="compact" Content="存档另存为" Command="{Binding SaveAsFileCommand}" IsEnabled="{Binding IsSaveLoaded}" />
+            <Button Classes="primary" Content="保存存档" Command="{Binding SaveFileCommand}" IsEnabled="{Binding IsSaveLoaded}" />
+          </StackPanel>
+        </Grid>
+
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" IsVisible="{Binding IsGameplayModWorkspace}">
+          <TextBlock Text="MOD 制作" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+          <Button Grid.Column="1" Classes="primary" Content="导出 MOD 包" Command="{Binding ExportModPackageCommand}" IsEnabled="{Binding CanExportMods}" />
+        </Grid>
+
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" IsVisible="{Binding IsTextModWorkspace}">
+          <TextBlock Text="文本 MOD" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+          <Button Grid.Column="1" Classes="primary" Content="导出文本 MOD 包" Command="{Binding TextEditor.ExportCommand}" />
+        </Grid>
+      </Grid>
+    </Border>
+
+    <Border Grid.Row="3" Background="#F8F9FA" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="16,6">
+      <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+        <TextBlock Classes="caption" Text="{Binding StatusMessage}" TextTrimming="CharacterEllipsis" />
+        <TextBlock Grid.Column="1" Classes="caption" Text="{Binding ContextStatusMessage}" TextTrimming="CharacterEllipsis" />
+      </Grid>
     </Border>
   </Grid>
 </Window>

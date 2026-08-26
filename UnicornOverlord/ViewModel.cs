@@ -33,6 +33,7 @@ internal class ViewModel : INotifyPropertyChanged
 	private String mFileLocation = "当前没有活动文件";
 	private String mStatusMessage;
 	private int mWorkspaceIndex;
+	private int mModWorkspaceIndex;
 	private int mLanguageIndex;
 	private int mSelectedCharacterIndex = -1;
 	private int mItemCountTarget = 99;
@@ -72,6 +73,12 @@ internal class ViewModel : INotifyPropertyChanged
 	public int SelectedModCount => ModModules.Count(module => module.IsSelected);
 	public bool CanExportMods => SelectedModCount > 0;
 	public String ModSelectionSummary => CanExportMods ? $"已选择 {SelectedModCount} 个可用模块" : "请选择至少一个已接入模块";
+	public String ContextStatusMessage => WorkspaceIndex switch
+	{
+		0 => IsSaveLoaded ? $"当前存档：{CurrentFileName}" : "存档编辑 · 尚未打开存档",
+		_ when ModWorkspaceIndex == 0 => $"{ModSelectionSummary} · 仅生成模拟器 pchtxt",
+		_ => $"{TextEditor.SourceSummary} · {TextEditor.ChangeSummary}",
+	};
 	public ModModule? SelectedMod { get => mSelectedMod; set => SetField(ref mSelectedMod, value, nameof(SelectedMod)); }
 	public ModTarget SelectedModTarget
 	{
@@ -81,13 +88,29 @@ internal class ViewModel : INotifyPropertyChanged
 			if (mSelectedModTarget == value) return;
 			SetField(ref mSelectedModTarget, value, nameof(SelectedModTarget));
 			OnPropertyChanged(nameof(ModTargetSummary));
+			OnPropertyChanged(nameof(ActiveModTarget));
+		}
+	}
+	public ModTarget ActiveModTarget
+	{
+		get => ModWorkspaceIndex == 0 ? SelectedModTarget : TextEditor.SelectedTarget;
+		set
+		{
+			if (ModWorkspaceIndex == 0) SelectedModTarget = value;
+			else TextEditor.SelectedTarget = value;
+			OnPropertyChanged(nameof(ActiveModTarget));
 		}
 	}
 
 	public bool IsSaveLoaded
 	{
 		get => mIsSaveLoaded;
-		private set => SetField(ref mIsSaveLoaded, value, nameof(IsSaveLoaded));
+		private set
+		{
+			if (mIsSaveLoaded == value) return;
+			SetField(ref mIsSaveLoaded, value, nameof(IsSaveLoaded));
+			OnPropertyChanged(nameof(ContextStatusMessage));
+		}
 	}
 
 	public String CurrentFileName
@@ -111,7 +134,36 @@ internal class ViewModel : INotifyPropertyChanged
 	public int WorkspaceIndex
 	{
 		get => mWorkspaceIndex;
-		set => SetField(ref mWorkspaceIndex, Math.Clamp(value, 0, 1), nameof(WorkspaceIndex));
+		set
+		{
+			int normalized = Math.Clamp(value, 0, 1);
+			if (mWorkspaceIndex == normalized) return;
+			SetField(ref mWorkspaceIndex, normalized, nameof(WorkspaceIndex));
+			OnPropertyChanged(nameof(IsSaveWorkspace));
+			OnPropertyChanged(nameof(IsModWorkspace));
+			OnPropertyChanged(nameof(IsGameplayModWorkspace));
+			OnPropertyChanged(nameof(IsTextModWorkspace));
+			OnPropertyChanged(nameof(ContextStatusMessage));
+		}
+	}
+	public bool IsSaveWorkspace => WorkspaceIndex == 0;
+	public bool IsModWorkspace => WorkspaceIndex == 1;
+	public bool IsGameplayModWorkspace => IsModWorkspace && ModWorkspaceIndex == 0;
+	public bool IsTextModWorkspace => IsModWorkspace && ModWorkspaceIndex == 1;
+
+	public int ModWorkspaceIndex
+	{
+		get => mModWorkspaceIndex;
+		set
+		{
+			int normalized = Math.Clamp(value, 0, 1);
+			if (mModWorkspaceIndex == normalized) return;
+			SetField(ref mModWorkspaceIndex, normalized, nameof(ModWorkspaceIndex));
+			OnPropertyChanged(nameof(IsGameplayModWorkspace));
+			OnPropertyChanged(nameof(IsTextModWorkspace));
+			OnPropertyChanged(nameof(ActiveModTarget));
+			OnPropertyChanged(nameof(ContextStatusMessage));
+		}
 	}
 
 	public int LanguageIndex
@@ -165,6 +217,7 @@ internal class ViewModel : INotifyPropertyChanged
 		ChangeCharacterBondMaxCommand = new ActionCommand(ChangeCharacterBondMax);
 		ExportModPackageCommand = new ActionCommand(ExportModPackage);
 		TextEditor = new TextEditorViewModel(mOwner, message => StatusMessage = message);
+		TextEditor.PropertyChanged += TextEditor_PropertyChanged;
 		foreach (ModModule module in ModModules) module.PropertyChanged += ModModule_PropertyChanged;
 		SelectedMod = ModModules.FirstOrDefault();
 	}
@@ -192,6 +245,13 @@ internal class ViewModel : INotifyPropertyChanged
 		OnPropertyChanged(nameof(SelectedModCount));
 		OnPropertyChanged(nameof(CanExportMods));
 		OnPropertyChanged(nameof(ModSelectionSummary));
+		OnPropertyChanged(nameof(ContextStatusMessage));
+	}
+
+	private void TextEditor_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == nameof(TextEditorViewModel.SelectedTarget)) OnPropertyChanged(nameof(ActiveModTarget));
+		OnPropertyChanged(nameof(ContextStatusMessage));
 	}
 
 	private void InitializeData()
@@ -651,6 +711,7 @@ internal class ViewModel : INotifyPropertyChanged
 		CurrentFileName = Path.GetFileName(filename);
 		FileLocation = filename;
 		IsSaveLoaded = true;
+		OnPropertyChanged(nameof(ContextStatusMessage));
 	}
 
 	private void RefreshLocalizedCollections()

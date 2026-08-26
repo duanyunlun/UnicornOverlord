@@ -329,8 +329,8 @@
 				<TextBlock Text="MOD 制作" FontSize="16" FontWeight="SemiBold" />
 				<TextBlock Classes="caption" Text="玩法补丁与文本补丁独立导出，不会写入当前存档。" />
 			  </StackPanel>
-			  <Border Grid.Column="1" Background="{StaticResource AccentSoftBrush}" CornerRadius="4" Padding="10,6">
-				<TextBlock Text="输出格式：模拟器 ZIP" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" />
+			  <Border Grid.Column="1" Background="{StaticResource AccentSoftBrush}" CornerRadius="4" Padding="10,6" VerticalAlignment="Center">
+				<TextBlock Text="输出格式：模拟器 ZIP" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" VerticalAlignment="Center" />
 			  </Border>
 			</Grid>
 		  </Border>

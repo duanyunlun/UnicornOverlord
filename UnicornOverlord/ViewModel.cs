@@ -56,6 +56,7 @@ internal class ViewModel : INotifyPropertyChanged
 	public ICommand ChangeItemCountMaxCommand { get; }
 	public ICommand ChangeCharacterBondMaxCommand { get; }
 	public ICommand ExportModPackageCommand { get; }
+	public TextEditorViewModel TextEditor { get; }
 
 	public Basic Basic { get; } = new();
 	public ObservableCollection<Character> Characters { get; private set; } = [];
@@ -156,6 +157,7 @@ internal class ViewModel : INotifyPropertyChanged
 		ChangeItemCountMaxCommand = new ActionCommand(ChangeItemCountMax);
 		ChangeCharacterBondMaxCommand = new ActionCommand(ChangeCharacterBondMax);
 		ExportModPackageCommand = new ActionCommand(ExportModPackage);
+		TextEditor = new TextEditorViewModel(mOwner, message => StatusMessage = message);
 		foreach (ModModule module in ModModules) module.PropertyChanged += ModModule_PropertyChanged;
 		SelectedMod = ModModules.FirstOrDefault();
 	}

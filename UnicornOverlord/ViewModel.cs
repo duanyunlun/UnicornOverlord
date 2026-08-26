@@ -32,6 +32,7 @@ internal class ViewModel : INotifyPropertyChanged
 	private String mCurrentFileName = "尚未打开存档";
 	private String mFileLocation = "当前没有活动文件";
 	private String mStatusMessage;
+	private int mWorkspaceIndex;
 	private int mLanguageIndex;
 	private int mSelectedCharacterIndex = -1;
 	private int mItemCountTarget = 99;
@@ -105,6 +106,12 @@ internal class ViewModel : INotifyPropertyChanged
 	{
 		get => mStatusMessage;
 		private set => SetField(ref mStatusMessage, value, nameof(StatusMessage));
+	}
+
+	public int WorkspaceIndex
+	{
+		get => mWorkspaceIndex;
+		set => SetField(ref mWorkspaceIndex, Math.Clamp(value, 0, 1), nameof(WorkspaceIndex));
 	}
 
 	public int LanguageIndex
@@ -241,6 +248,7 @@ internal class ViewModel : INotifyPropertyChanged
 
 	private async void OpenFile(object? parameter)
 	{
+		if (!EnsureSaveWorkspace()) return;
 		try
 		{
 			var files = await mOwner.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
@@ -270,6 +278,7 @@ internal class ViewModel : INotifyPropertyChanged
 
 	private void SaveFile(object? parameter)
 	{
+		if (!EnsureSaveWorkspace()) return;
 		try
 		{
 			StatusMessage = SaveData.Instance().Save() ? "存档保存成功。" : "当前未载入存档。";
@@ -282,6 +291,7 @@ internal class ViewModel : INotifyPropertyChanged
 
 	private async void SaveAsFile(object? parameter)
 	{
+		if (!EnsureSaveWorkspace()) return;
 		if (!IsSaveLoaded) return;
 		try
 		{
@@ -305,6 +315,13 @@ internal class ViewModel : INotifyPropertyChanged
 		{
 			StatusMessage = $"另存为失败：{exception.Message}";
 		}
+	}
+
+	private bool EnsureSaveWorkspace()
+	{
+		if (WorkspaceIndex == 0) return true;
+		StatusMessage = "当前位于 MOD 制作工作区，未执行存档操作。";
+		return false;
 	}
 
 	private async void ExportModPackage(object? parameter)

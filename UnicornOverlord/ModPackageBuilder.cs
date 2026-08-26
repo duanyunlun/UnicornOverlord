@@ -5,45 +5,61 @@ namespace UnicornOverlord;
 
 internal static class ModPackageBuilder
 {
-	public const String TitleId = "010054b01ad92000";
-	public const String BuildId = "9C3116F0333EA157526612D17354B3755737C4F2";
-	public const String GameVersion = "亚洲中文版 v1.0.5";
-
-	public static void Create(String filename, IReadOnlyCollection<ModModule> modules)
+	public static void Create(String filename, IReadOnlyCollection<ModModule> modules, ModTarget target)
 	{
 		if (modules.Count == 0) throw new InvalidOperationException("请至少选择一个已接入的 MOD。");
-		var templates = modules.Select(module =>
+		var patches = modules.Select(module =>
 		{
-			if (!module.IsAvailable || String.IsNullOrEmpty(module.TemplateFile))
+			if (!module.IsAvailable)
 			{
 				throw new InvalidOperationException($"MOD 模块尚未接入：{module.Name}");
 			}
-			String source = Path.Combine(AppContext.BaseDirectory, "mods", module.TemplateFile);
-			if (!File.Exists(source)) throw new FileNotFoundException($"缺少 MOD 模板：{module.TemplateFile}", source);
-			return (Module: module, Source: source);
+			return (Module: module, Content: ModPatchGenerator.Generate(module, target));
 		}).ToArray();
+		ValidateConflicts(patches);
 
 		using FileStream stream = File.Create(filename);
 		using var archive = new ZipArchive(stream, ZipArchiveMode.Create);
-		foreach (var template in templates)
+		foreach (var patch in patches)
 		{
-			String entryName = $"emulator/contents/{TitleId}/{template.Module.Key}/exefs/main.pchtxt";
-			archive.CreateEntryFromFile(template.Source, entryName, CompressionLevel.Optimal);
+			String entryName = $"emulator/contents/{target.TitleId}/{patch.Module.Key}/exefs/main.pchtxt";
+			WriteText(archive, entryName, patch.Content);
 		}
 
-		WriteText(archive, "README_CN.txt", CreateReadme(modules) + "\n");
-		WriteText(archive, "manifest.txt", CreateManifest(modules));
+		WriteText(archive, "README_CN.txt", CreateReadme(modules, target) + "\n");
+		WriteText(archive, "manifest.txt", CreateManifest(modules, target));
 	}
 
-	private static String CreateReadme(IEnumerable<ModModule> modules)
+	private static void ValidateConflicts(IEnumerable<(ModModule Module, String Content)> patches)
+	{
+		var ranges = new List<(uint Start, uint End, String Module)>();
+		foreach (var patch in patches)
+		{
+			foreach (String line in patch.Content.Replace("\r\n", "\n").Split('\n'))
+			{
+				if (line.Length < 10 || !uint.TryParse(line.AsSpan(0, 8), System.Globalization.NumberStyles.HexNumber,
+					System.Globalization.CultureInfo.InvariantCulture, out uint address)) continue;
+				String hex = line[9..].Trim();
+				if (hex.Length == 0 || hex.Length % 2 != 0 || !hex.All(Uri.IsHexDigit))
+					throw new InvalidDataException($"{patch.Module.Name} 包含无效补丁行：{line}");
+				uint end = checked(address + (uint)(hex.Length / 2));
+				var conflict = ranges.FirstOrDefault(range => range.Module != patch.Module.Name && address < range.End && end > range.Start);
+				if (conflict != default)
+					throw new InvalidOperationException($"{patch.Module.Name} 与 {conflict.Module} 在地址 {Math.Max(address, conflict.Start):X8} 冲突。");
+				ranges.Add((address, end, patch.Module.Name));
+			}
+		}
+	}
+
+	private static String CreateReadme(IEnumerable<ModModule> modules, ModTarget target)
 	{
 		String moduleNames = String.Join("、", modules.Select(module => module.Name));
 		return $"""
 		《独角兽之王》MOD 包
 
-		目标版本：{GameVersion}
-		Title ID：{TitleId}
-		Build ID：{BuildId}
+		目标版本：{target.Name} {target.GameVersion}
+		Title ID：{target.TitleId}
+		Build ID：{target.BuildId}
 		包含模块：{moduleNames}
 
 		Astris / 模拟器安装：
@@ -57,13 +73,13 @@ internal static class ModPackageBuilder
 		""";
 	}
 
-	private static String CreateManifest(IEnumerable<ModModule> modules)
+	private static String CreateManifest(IEnumerable<ModModule> modules, ModTarget target)
 	{
 		var lines = new List<String>
 		{
-			$"game_version={GameVersion}",
-			$"title_id={TitleId}",
-			$"build_id={BuildId}",
+			$"game_version={target.Name} {target.GameVersion}",
+			$"title_id={target.TitleId}",
+			$"build_id={target.BuildId}",
 		};
 		lines.AddRange(modules.Select(module => $"module={module.Key}|{module.Name}"));
 		return String.Join('\n', lines) + "\n";

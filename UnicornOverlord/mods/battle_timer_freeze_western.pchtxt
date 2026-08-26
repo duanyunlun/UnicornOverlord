@@ -1,0 +1,7 @@
+@nsobid-C841FFE2717FF03A13990480C51DA73F091C04FA
+@flag offset_shift 0x100
+@enabled
+// StageController::updateTimers 0x269740: bl 0x2880e4 (+0x970 tick_up) -> nop
+// freezes the real-time "Time Limit" arc gauge so the stage never times out
+00269740 1F2003D5
+@stop

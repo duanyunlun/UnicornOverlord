@@ -308,37 +308,139 @@
                 <TextBlock Classes="caption" Text="{Binding ModTargetSummary}" TextWrapping="Wrap" />
               </StackPanel>
               <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <TextBlock Classes="caption" Text="目标版本" VerticalAlignment="Center" />
+                <ComboBox Width="150" ItemsSource="{Binding ModTargets}" SelectedItem="{Binding SelectedModTarget, Mode=TwoWay}">
+                  <ComboBox.ItemTemplate>
+                    <DataTemplate><TextBlock Text="{Binding DisplayName}" /></DataTemplate>
+                  </ComboBox.ItemTemplate>
+                </ComboBox>
                 <TextBlock Classes="caption" Text="{Binding ModSelectionSummary}" VerticalAlignment="Center" />
                 <Button Classes="primary" Content="导出 MOD 包" Command="{Binding ExportModPackageCommand}"
                         IsEnabled="{Binding CanExportMods}" />
               </StackPanel>
             </Grid>
 
-            <ListBox Grid.Row="1" ItemsSource="{Binding ModModules}" BorderThickness="0,1,0,1"
-                     BorderBrush="{StaticResource BorderBrush}">
-              <ListBox.ItemTemplate>
-                <DataTemplate>
-                  <Grid ColumnDefinitions="Auto,90,*,112" ColumnSpacing="14" MinHeight="58">
-                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" IsEnabled="{Binding IsAvailable}"
-                              VerticalAlignment="Center" />
-                    <TextBlock Grid.Column="1" Text="{Binding Category}" Foreground="{StaticResource AccentBrush}"
-                               FontWeight="SemiBold" VerticalAlignment="Center" />
-                    <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center">
-                      <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
-                      <TextBlock Classes="caption" Text="{Binding Description}" TextWrapping="Wrap" />
-                      <TextBlock Foreground="#A24A37" FontSize="12" Text="{Binding Warning}" TextWrapping="Wrap" />
-                    </StackPanel>
-                    <Border Grid.Column="3" Background="#EEF0F2" CornerRadius="4" Padding="8,4"
-                            HorizontalAlignment="Center" VerticalAlignment="Center">
-                      <TextBlock Text="{Binding StateText}" FontSize="12" />
-                    </Border>
+            <Grid Grid.Row="1" ColumnDefinitions="340,*">
+              <ListBox ItemsSource="{Binding ModModules}" SelectedItem="{Binding SelectedMod, Mode=TwoWay}"
+                       BorderThickness="0,0,1,0" BorderBrush="{StaticResource BorderBrush}">
+                <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <Grid ColumnDefinitions="Auto,58,*" ColumnSpacing="10" MinHeight="62">
+                      <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalAlignment="Center" />
+                      <TextBlock Grid.Column="1" Text="{Binding Category}" Foreground="{StaticResource AccentBrush}"
+                                 FontWeight="SemiBold" VerticalAlignment="Center" />
+                      <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                        <TextBlock Classes="caption" Text="{Binding StateText}" />
+                      </StackPanel>
+                    </Grid>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+
+              <ScrollViewer Grid.Column="1">
+                <StackPanel Margin="24,18" Spacing="16" DataContext="{Binding SelectedMod}">
+                  <StackPanel Spacing="4">
+                    <TextBlock Classes="section-title" Text="{Binding Name}" />
+                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                    <TextBlock Foreground="#A24A37" FontSize="12" Text="{Binding Warning}" TextWrapping="Wrap" />
+                  </StackPanel>
+
+                  <StackPanel IsVisible="{Binding IsAbilityEditor}" Spacing="12">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Text="技能 ID"/><NumericUpDown Value="{Binding RecordId}" Minimum="0" Maximum="2047"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="技能类型"/><ComboBox ItemsSource="{Binding CostTypes}" SelectedIndex="{Binding ValueN}"/></StackPanel>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Text="AP / PP 消耗"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="10"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="命中"/><NumericUpDown Value="{Binding ValueB}" Minimum="0" Maximum="999"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="目标范围 ID"/><NumericUpDown Value="{Binding ValueC}" Minimum="0" Maximum="255"/></StackPanel>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Text="物理威力"/><NumericUpDown Value="{Binding ValueD}" Minimum="0" Maximum="9999" Increment="1"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="魔法威力"/><NumericUpDown Value="{Binding ValueE}" Minimum="0" Maximum="9999" Increment="1"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="首个效果参数"/><NumericUpDown Value="{Binding ValueF}" Minimum="-9999" Maximum="9999" Increment="1"/></StackPanel>
+                    </Grid>
+                  </StackPanel>
+
+                  <StackPanel IsVisible="{Binding IsBattlePreview}" Spacing="5">
+                    <TextBlock Text="预览模式"/><ComboBox ItemsSource="{Binding PreviewModes}" SelectedIndex="{Binding RecordId}"/>
+                  </StackPanel>
+
+                  <StackPanel IsVisible="{Binding IsCharacterRandomizer}" Spacing="5">
+                    <TextBlock Text="随机种子"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="2147483647"/>
+                    <TextBlock Classes="caption" Text="同一种子会生成相同的 63 名剧情角色置换。"/>
+                  </StackPanel>
+
+                  <StackPanel IsVisible="{Binding IsClassEditor}" Spacing="12">
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Text="职业 ID"/><NumericUpDown Value="{Binding RecordId}" Minimum="0" Maximum="73"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="AP"/><NumericUpDown Value="{Binding ValueA}" Minimum="1" Maximum="4" IsEnabled="{Binding CanEditClassPoints}"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="PP"/><NumericUpDown Value="{Binding ValueB}" Minimum="1" Maximum="4" IsEnabled="{Binding CanEditClassPoints}"/></StackPanel>
+                    </Grid>
+                    <TextBlock Classes="caption" Text="AP/PP 当前已标定职业 ID 1 与 21；其他职业仍可安全修改十项成长率。"/>
+                    <TextBlock FontWeight="SemiBold" Text="每级成长率（100 为基准）"/>
+                    <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                      <StackPanel Spacing="4"><TextBlock Text="生命"/><NumericUpDown Value="{Binding ValueD}" Minimum="0" Maximum="1000"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="4"><TextBlock Text="物攻"/><NumericUpDown Value="{Binding ValueE}" Minimum="0" Maximum="1000"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="4"><TextBlock Text="物防"/><NumericUpDown Value="{Binding ValueF}" Minimum="0" Maximum="1000"/></StackPanel>
+                      <StackPanel Grid.Column="3" Spacing="4"><TextBlock Text="魔攻"/><NumericUpDown Value="{Binding ValueG}" Minimum="0" Maximum="1000"/></StackPanel>
+                      <StackPanel Grid.Column="4" Spacing="4"><TextBlock Text="魔防"/><NumericUpDown Value="{Binding ValueH}" Minimum="0" Maximum="1000"/></StackPanel>
+                      <StackPanel Grid.Row="1" Spacing="4"><TextBlock Text="命中"/><NumericUpDown Value="{Binding ValueI}" Minimum="0" Maximum="1000"/></StackPanel>
+                      <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4"><TextBlock Text="闪避"/><NumericUpDown Value="{Binding ValueJ}" Minimum="0" Maximum="1000"/></StackPanel>
+                      <StackPanel Grid.Row="1" Grid.Column="2" Spacing="4"><TextBlock Text="暴击"/><NumericUpDown Value="{Binding ValueK}" Minimum="0" Maximum="1000"/></StackPanel>
+                      <StackPanel Grid.Row="1" Grid.Column="3" Spacing="4"><TextBlock Text="格挡"/><NumericUpDown Value="{Binding ValueL}" Minimum="0" Maximum="1000"/></StackPanel>
+                      <StackPanel Grid.Row="1" Grid.Column="4" Spacing="4"><TextBlock Text="速度"/><NumericUpDown Value="{Binding ValueM}" Minimum="0" Maximum="1000"/></StackPanel>
+                    </Grid>
+                  </StackPanel>
+
+                  <Grid IsVisible="{Binding IsFortEditor}" ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <StackPanel Spacing="5"><TextBlock Text="雇佣槽位（1-248）"/><NumericUpDown Value="{Binding RecordId}" Minimum="1" Maximum="248"/></StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="职业 ID"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="73"/></StackPanel>
                   </Grid>
-                </DataTemplate>
-              </ListBox.ItemTemplate>
-            </ListBox>
+
+                  <StackPanel IsVisible="{Binding IsMineEditor}" Spacing="12">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Text="掉落槽位（0-62）"/><NumericUpDown Value="{Binding RecordId}" Minimum="0" Maximum="62"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="物品 ID"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="970"/></StackPanel>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Text="掉落权重"/><NumericUpDown Value="{Binding ValueB}" Minimum="0" Maximum="1000000"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="挖掘目标"/><NumericUpDown Value="{Binding ValueC}" Minimum="0" Maximum="1000000"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="单局上限"/><NumericUpDown Value="{Binding ValueD}" Minimum="1" Maximum="999999"/></StackPanel>
+                    </Grid>
+                  </StackPanel>
+
+                  <StackPanel IsVisible="{Binding IsShopEditor}" Spacing="12">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Text="已标定商店槽位（0-1）"/><NumericUpDown Value="{Binding RecordId}" Minimum="0" Maximum="1"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="商品 ID"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="970"/></StackPanel>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Text="库存（-1 为无限）"/><NumericUpDown Value="{Binding ValueB}" Minimum="-1" Maximum="9999"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="金币买价"/><NumericUpDown Value="{Binding ValueC}" Minimum="0" Maximum="65535"/></StackPanel>
+                    </Grid>
+                  </StackPanel>
+
+                  <StackPanel IsVisible="{Binding IsSixMemberUnits}" Spacing="5">
+                    <TextBlock Text="第五人扩充到第六人的荣誉费用"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="999999"/>
+                  </StackPanel>
+
+                  <StackPanel IsVisible="{Binding IsTypeMatchups}" Spacing="10">
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Text="骑兵对步兵"/><ComboBox ItemsSource="{Binding MatchupValues}" SelectedItem="{Binding ValueD}"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="弓兵对飞行"/><ComboBox ItemsSource="{Binding MatchupValues}" SelectedItem="{Binding ValueE}"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="飞龙/狮鹫对骑兵"/><ComboBox ItemsSource="{Binding MatchupValues}" SelectedItem="{Binding ValueF}"/></StackPanel>
+                    </Grid>
+                  </StackPanel>
+
+                  <TextBlock IsVisible="{Binding HasNoOptions}" Classes="caption" Text="此模块本身只有启用或停用，没有额外参数。"/>
+                </StackPanel>
+              </ScrollViewer>
+            </Grid>
 
             <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="18,12" ColumnSpacing="12">
-              <TextBlock Classes="caption" Text="已完成网站十个板块采样；当前仅导出通过亚洲版验证的冻结计时器与职业成长保底。"
+              <TextBlock Classes="caption" Text="十个非文本模块均可配置；导出时会校验范围、地址冲突与亚洲版 Build ID。"
                          TextWrapping="Wrap" VerticalAlignment="Center" />
               <TextBlock Grid.Column="1" Classes="caption" Text="仅生成模拟器 pchtxt · 不修改游戏与存档" VerticalAlignment="Center" />
             </Grid>

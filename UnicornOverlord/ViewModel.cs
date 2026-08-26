@@ -35,6 +35,8 @@ internal class ViewModel : INotifyPropertyChanged
 	private int mLanguageIndex;
 	private int mSelectedCharacterIndex = -1;
 	private int mItemCountTarget = 99;
+	private ModModule? mSelectedMod;
+	private ModTarget mSelectedModTarget = ModTarget.Asia;
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -61,12 +63,24 @@ internal class ViewModel : INotifyPropertyChanged
 	public ObservableCollection<Item> Equipments { get; private set; } = [];
 	public ObservableCollection<Unit> Units { get; } = [];
 	public ObservableCollection<ModModule> ModModules { get; } = CreateModModules();
+	public IReadOnlyList<ModTarget> ModTargets { get; } = ModTarget.All;
 	public IReadOnlyList<String> Languages { get; } = ["英文", "日文", "简体中文"];
 	public String InventorySummary => $"物品 {Items.Count} 条，装备 {Equipments.Count} 条，共 {Items.Count + Equipments.Count} / {InventoryCapacity} 条库存记录";
-	public String ModTargetSummary => $"{ModPackageBuilder.GameVersion} · Title ID {ModPackageBuilder.TitleId} · Build ID {ModPackageBuilder.BuildId}";
+	public String ModTargetSummary => $"{SelectedModTarget.DisplayName} · Title ID {SelectedModTarget.TitleId} · Build ID {SelectedModTarget.BuildId}";
 	public int SelectedModCount => ModModules.Count(module => module.IsSelected);
 	public bool CanExportMods => SelectedModCount > 0;
 	public String ModSelectionSummary => CanExportMods ? $"已选择 {SelectedModCount} 个可用模块" : "请选择至少一个已接入模块";
+	public ModModule? SelectedMod { get => mSelectedMod; set => SetField(ref mSelectedMod, value, nameof(SelectedMod)); }
+	public ModTarget SelectedModTarget
+	{
+		get => mSelectedModTarget;
+		set
+		{
+			if (mSelectedModTarget == value) return;
+			SetField(ref mSelectedModTarget, value, nameof(SelectedModTarget));
+			OnPropertyChanged(nameof(ModTargetSummary));
+		}
+	}
 
 	public bool IsSaveLoaded
 	{
@@ -143,22 +157,23 @@ internal class ViewModel : INotifyPropertyChanged
 		ChangeCharacterBondMaxCommand = new ActionCommand(ChangeCharacterBondMax);
 		ExportModPackageCommand = new ActionCommand(ExportModPackage);
 		foreach (ModModule module in ModModules) module.PropertyChanged += ModModule_PropertyChanged;
+		SelectedMod = ModModules.FirstOrDefault();
 	}
 
-	private static ObservableCollection<ModModule> CreateModModules()
+	internal static ObservableCollection<ModModule> CreateModModules()
 	{
 		return
 		[
-			new() { Key = "ability_editor", Category = "技能", Name = "技能编辑器", Description = "修改技能 AP/PP 消耗、威力、命中与目标范围。", IsAvailable = false, CalibrationState = "单点已校准", Warning = "已核对技能 372 的 PP 字段；完整技能表与简体中文名称映射尚未完成。" },
-			new() { Key = "battle_preview", Category = "战斗", Name = "战斗预览调整", Description = "降低战斗预览的确定性，或隐藏预览结果。", IsAvailable = false, CalibrationState = "版本偏移", Warning = "欧美版 8 个隐藏预览写入点在亚洲版均未命中对应原始指令，禁止直接移植。" },
+			new() { Key = "ability_editor", Category = "技能", Name = "技能编辑器", Description = "按技能 ID 修改消耗、威力、命中、目标范围和首个效果参数。", IsAvailable = true, CalibrationState = "字段已校准", RecordId = 372, ValueN = 1, ValueA = 1, ValueB = 100, ValueC = 1 },
+			new() { Key = "battle_preview", Category = "战斗", Name = "战斗预览调整", Description = "选择完全隐藏或只显示不完美战斗预览。", IsAvailable = true, CalibrationState = "亚洲版已重定位", TemplateFile = "battle_preview_hidden.pchtxt" },
 			new() { Key = "battle_timer_freeze", Category = "战斗", Name = "冻结战斗计时器", Description = "冻结关卡实时计时器，战斗不再受时间限制。", IsAvailable = true, TemplateFile = "battle_timer_freeze.pchtxt" },
-			new() { Key = "character_randomizer", Category = "角色", Name = "角色加入随机化", Description = "随机调整剧情中角色的加入顺序。", IsAvailable = false, CalibrationState = "待映射", Warning = "包含角色 ID 表、代码钩子与代码洞；实验性功能且只适用于新游戏。" },
-			new() { Key = "class_growth_safe", Category = "职业", Name = "职业成长保底", Description = "保留职业成长差异，并让 Lv1 至 Lv50 每次升级的十项能力至少增加 1。", IsAvailable = true, TemplateFile = "class_growth_safe.pchtxt" },
-			new() { Key = "fort_editor", Category = "据点", Name = "据点雇佣编辑器", Description = "调整各据点雇佣公会可招募的泛用职业。", IsAvailable = false, CalibrationState = "全表已校准", Warning = "248 个槽位地址均对齐；其中 8 条亚洲版附加字段不同，编辑器必须保留亚洲版原值。" },
-			new() { Key = "mine_editor", Category = "采矿", Name = "采矿掉落编辑器", Description = "调整矿场掉落权重、挖掘目标与单局掉落上限。", IsAvailable = false, CalibrationState = "全表已校准", Warning = "63 条记录全部对齐；藏宝图等一次性掉落必须保持原有限制。" },
-			new() { Key = "shop_editor", Category = "商店", Name = "商店库存编辑器", Description = "调整商店商品、库存数量和价格。", IsAvailable = false, CalibrationState = "单点已校准", Warning = "已核对一条库存记录；完整商店表仍需分批校验。" },
-			new() { Key = "six_member_units", Category = "编队", Name = "六人编队", Description = "允许 S 级声望下将部队扩充至六人。", IsAvailable = false, CalibrationState = "版本偏移", Warning = "欧美版运行代码偏移与亚洲版不一致。移除有效补丁前还必须先撤下第六名成员。" },
-			new() { Key = "text_editor", Category = "文本", Name = "文本编辑器", Description = "修改对话、技能条件文本与泛用角色姓名池。", IsAvailable = false, CalibrationState = "需中文 CPK", Warning = "网站输出 Unicorn_US.CPK；亚洲中文版必须改写并重封 Unicorn_CN.CPK。" },
+			new() { Key = "character_randomizer", Category = "角色", Name = "角色加入随机化", Description = "按种子随机调整 63 名剧情角色的加入顺序。", IsAvailable = true, CalibrationState = "亚洲版已重定位", TemplateFile = "character_randomizer_base.pchtxt", ValueA = 20260826, Warning = "实验性功能，只用于新游戏；同一种子会生成同一置换。" },
+			new() { Key = "class_editor", Category = "职业", Name = "职业编辑器", Description = "按职业 ID 修改十项成长率与 AP/PP。", IsAvailable = true, CalibrationState = "字段已校准", RecordId = 1, ValueA = 1, ValueB = 1, ValueD = 120, ValueE = 100, ValueF = 120, ValueG = 100, ValueH = 110, ValueI = 115, ValueJ = 120, ValueK = 100, ValueL = 140, ValueM = 120 },
+			new() { Key = "fort_editor", Category = "据点", Name = "据点雇佣编辑器", Description = "修改 1 至 248 号雇佣槽的职业 ID。", IsAvailable = true, CalibrationState = "248 槽已校准", RecordId = 1, ValueA = 3, Warning = "仅写职业字段，亚洲版附加字段保持不变。" },
+			new() { Key = "mine_editor", Category = "采矿", Name = "采矿掉落编辑器", Description = "修改 63 条掉落记录的物品、权重、挖掘时间与上限。", IsAvailable = true, CalibrationState = "63 条已校准", RecordId = 0, ValueA = 95, ValueB = 50, ValueC = 40, ValueD = 999 },
+			new() { Key = "shop_editor", Category = "商店", Name = "商店库存编辑器", Description = "修改已标定普通商店记录的商品、库存与全局金币价格。", IsAvailable = true, CalibrationState = "2 槽已校准", RecordId = 0, ValueA = 645, ValueB = 1, ValueC = 2000, Warning = "当前只开放逐字节确认的两个普通商品槽；兑换商店尚不套用金币价格。" },
+			new() { Key = "six_member_units", Category = "编队", Name = "六人编队", Description = "允许 S 级声望下将部队扩充至六人，并可设置荣誉费用。", IsAvailable = true, CalibrationState = "亚洲版已重定位", TemplateFile = "six_member_units.pchtxt", ValueA = 500, Warning = "卸载前必须先撤下所有部队的第六名成员。" },
+			new() { Key = "type_matchups", Category = "战斗", Name = "类型克制", Description = "分别设置骑兵、弓兵和飞行单位的固有克制倍率。", IsAvailable = true, CalibrationState = "三项已校准", ValueD = 2, ValueE = 2, ValueF = 2 },
 		];
 	}
 
@@ -306,12 +321,12 @@ internal class ViewModel : INotifyPropertyChanged
 				Title = "导出独角兽之王 MOD 包",
 				FileTypeChoices = [ModPackageFileType],
 				DefaultExtension = "zip",
-				SuggestedFileName = "UnicornOverlord-v1.0.5-Mods.zip",
+				SuggestedFileName = $"UnicornOverlord-{SelectedModTarget.Key}-{SelectedModTarget.GameVersion}-Mods.zip",
 			});
 			String? filename = file?.TryGetLocalPath();
 			if (String.IsNullOrEmpty(filename)) return;
 
-			ModPackageBuilder.Create(filename, selectedModules);
+			ModPackageBuilder.Create(filename, selectedModules, SelectedModTarget);
 			StatusMessage = $"MOD 包导出成功：包含 {selectedModules.Length} 个模块。";
 		}
 		catch (Exception exception)

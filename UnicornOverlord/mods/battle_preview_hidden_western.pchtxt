@@ -1,0 +1,22 @@
+@nsobid-C841FFE2717FF03A13990480C51DA73F091C04FA
+@flag offset_shift 0x100
+@enabled
+// hide_forecast v2: forecast widgets stay lifecycle-vanilla ("shown"),
+// but their private visual children are hidden instead of shown
+// StBattleForecast  shown-update: show [this+0x528] -> hide
+0052CF50 08BD40F9
+// StBattleForecast  helper: show [this+0x4e8] -> hide
+0052D114 08BD40F9
+// StBattleForecast  helper: show [this+0x4e8] -> hide
+0052D214 08BD40F9
+// StBattleForecast  helper: show [this+0x508] -> hide
+0052D2B4 08BD40F9
+// StBattleForecast2 post-update (sim done): show [this+0x448] -> hide
+0052D984 08BD40F9
+// StBattleForecast2 show-transition: show [this+0x448] -> hide
+0052DA28 08BD40F9
+// FlBattleForecast  post-update (sim done): show [this+0x448] -> hide
+0052E1B0 08BD40F9
+// FlBattleForecast  show-transition: show [this+0x448] -> hide
+0052E20C 08BD40F9
+@stop

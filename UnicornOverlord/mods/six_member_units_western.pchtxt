@@ -1,0 +1,63 @@
+@nsobid-C841FFE2717FF03A13990480C51DA73F091C04FA
+@flag offset_shift 0x100
+@enabled
+// six_member_units — player units to 6 members; rank-S fort upgrade + popup
+// fmt overflow #1: b.hi abort -> b.hi 0x3a332c (skip)
+003A328C 08050054
+// fmt overflow #2: b.hi abort -> b.hi 0x3a33fc (skip)
+003A3368 A8040054
+// expand apply: cmp w9,#5 -> #6
+003AB490 3F190071
+// expand apply: mov w20,#5 -> #6
+003AB498 D4008052
+// display maxed: cmp w8,#5 -> #6
+003AA914 1F190071
+// unit panel: cmp w21,#5 -> #6
+003AAC9C BF1A0071
+// skip-battle builder: 6th-member b.hs abort -> skip member
+0034EE74 A2FEFF54
+// skip-battle builder: cell-vs-position-vector b.hs abort -> skip member
+0034EE88 02FEFF54
+// getMaxMembers clamp: cmp w8,#5 -> #6
+002D7D98 1F190071
+// getMaxMembers clamp: mov w0,#5 -> #6
+002D7DA0 C0008052
+// expand-cost bound: cmp w8,#2 -> #3
+00048AFC 1F0D0071
+// availability size>4: mov w0,#3 -> b AVAIL
+003ABFF0 629EF117
+// dispatch nonzero: cbnz w8 -> b DISPATCH
+003ABB58 ACC1F117
+// --- AVAIL cave chain (rank-S gate, returns selector 4 when locked) ---
+00013978 1F150071
+0001397C 5B000014
+00013AE8 81FE0354
+00013AEC 33010014
+00013FB8 7F160071
+00013FBC 3F030014
+00014CB8 0B610154
+00014CBC 3B080014
+00016DA8 96540E14
+00016DAC 1F2003D5
+000178D8 80008052
+000178DC C6510E14
+0001BAB8 60008052
+0001BABC 4E410E14
+// --- DISPATCH cave chain (selector 4 -> "Must be Renown Rank S") ---
+0001C208 1F110071
+0001C20C 93000014
+0001C458 804E0454
+0001C45C 030C0014
+0001F468 88FB0134
+0001F46C EB0E0014
+00023018 FB220E14
+0002301C 1F2003D5
+000233D8 E1210E14
+000233DC 1F2003D5
+00024E28 542F8052
+00024E2C 2B000014
+00024ED8 A0008052
+00024EDC 3F1B0E14
+// expand-cost table[3] (5->6): 0 -> 500 honors
+00B1ACAC F4010000
+@stop

@@ -262,30 +262,32 @@ internal class ViewModel : INotifyPropertyChanged
 		Equipments.Clear();
 		Units.Clear();
 
-		var bondDictionary = new Dictionary<uint, ObservableCollection<Bond>>();
-		for (uint index = 0; index < 164; index++)
-		{
-			uint baseAddress = Util.calcBondAddress(index);
-			uint id = SaveData.Instance().ReadNumber(baseAddress, 4);
-			if (id == 0xFFFFFFFF) break;
-
-			var bonds = new ObservableCollection<Bond>();
-			bondDictionary.TryAdd(id, bonds);
-			for (uint count = 0; count < 164; count++)
-			{
-				uint address = baseAddress + 4 + count * 8;
-				id = SaveData.Instance().ReadNumber(address, 4);
-				if (id == 0xFFFFFFFF) break;
-				bonds.Add(new Bond(address));
-			}
-		}
-
+		var characterDictionary = new Dictionary<uint, Character>();
 		for (uint index = 0; index < 500; index++)
 		{
 			var character = new Character(Util.calcCharacterAddress(index));
 			if (character.ID == 0xFFFFFFFF) break;
-			if (bondDictionary.TryGetValue(character.ID, out var bonds)) character.Bonds = bonds;
+			characterDictionary.TryAdd(character.ID, character);
 			Characters.Add(character);
+		}
+
+		for (uint index = 0; index < 164; index++)
+		{
+			uint baseAddress = Util.calcBondAddress(index);
+			uint ownerID = SaveData.Instance().ReadNumber(baseAddress, 4);
+			if (ownerID == 0xFFFFFFFF) break;
+
+			var bonds = new ObservableCollection<Bond>();
+			for (uint count = 0; count < 164; count++)
+			{
+				uint address = baseAddress + 4 + count * 8;
+				uint targetID = SaveData.Instance().ReadNumber(address, 4);
+				if (targetID == 0xFFFFFFFF) break;
+				uint? nameID = characterDictionary.TryGetValue(targetID, out Character? target) ? target.Name : null;
+				bonds.Add(new Bond(address, nameID));
+			}
+
+			if (characterDictionary.TryGetValue(ownerID, out Character? owner)) owner.Bonds = bonds;
 		}
 
 		for (uint index = 0; index < InventoryCapacity; index++)

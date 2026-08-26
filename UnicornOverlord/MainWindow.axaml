@@ -228,7 +228,7 @@
                 <ListBox.ItemTemplate>
                   <DataTemplate>
                     <Grid ColumnDefinitions="*,90" ColumnSpacing="10">
-                      <TextBlock Text="{Binding ID, Converter={StaticResource NameIDConverter}}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                      <TextBlock Text="{Binding NameID, Converter={StaticResource NameIDConverter}, ConverterParameter={Binding}}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                       <TextBox Grid.Column="1" Text="{Binding Value, Mode=TwoWay}" />
                     </Grid>
                   </DataTemplate>

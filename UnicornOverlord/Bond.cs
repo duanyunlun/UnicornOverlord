@@ -7,10 +7,13 @@ namespace UnicornOverlord
 		public event PropertyChangedEventHandler? PropertyChanged;
 
 		private readonly uint mAddress;
-		public Bond(uint address)
+		public Bond(uint address, uint? nameID)
 		{
 			mAddress = address;
+			NameID = nameID;
 		}
+
+		public uint? NameID { get; }
 
 		public uint ID
 		{

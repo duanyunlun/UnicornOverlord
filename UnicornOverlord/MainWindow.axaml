@@ -73,6 +73,9 @@
       <Setter Property="MinWidth" Value="110" />
       <Setter Property="HorizontalAlignment" Value="Stretch" />
     </Style>
+    <Style Selector="NumericUpDown">
+      <Setter Property="ShowButtonSpinner" Value="False" />
+    </Style>
     <Style Selector="ListBoxItem">
       <Setter Property="Padding" Value="10,8" />
     </Style>
@@ -356,25 +359,27 @@
                     <TextBlock Foreground="#A24A37" FontSize="12" Text="{Binding Warning}" TextWrapping="Wrap" />
                   </StackPanel>
 
-                  <StackPanel IsVisible="{Binding IsAbilityEditor}" Spacing="12">
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                  <StackPanel IsVisible="{Binding IsAbilityEditor}" Spacing="10">
+                    <Grid ColumnDefinitions="160,*,*" ColumnSpacing="10">
+                      <StackPanel Spacing="5">
+                        <TextBlock Classes="option-title" Text="技能筛选"/>
+                        <ComboBox ItemsSource="{Binding AbilityFilters}" SelectedIndex="{Binding AbilityFilterIndex, Mode=TwoWay}" />
+                      </StackPanel>
                       <StackPanel Spacing="5">
                         <TextBlock Classes="option-title" Text="技能"/>
-                        <ComboBox ItemsSource="{Binding SkillChoices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}" MaxDropDownHeight="360">
+                        <ComboBox ItemsSource="{Binding FilteredSkillChoices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}" MaxDropDownHeight="360">
                           <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}" /></DataTemplate></ComboBox.ItemTemplate>
                         </ComboBox>
                       </StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="固有类型"/><TextBox Text="{Binding AbilityTypeText}" IsReadOnly="True"/><TextBlock Classes="caption" Text="主动/被动由技能记录决定，不能改成另一种类型。" TextWrapping="Wrap"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="固有类型"/><TextBox Text="{Binding AbilityTypeText}" IsReadOnly="True"/><TextBlock Classes="caption" Text="主动/被动由技能记录决定，不能改成另一种类型。" TextWrapping="Wrap"/></StackPanel>
                     </Grid>
-                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                    <Grid ColumnDefinitions="*,*,*,*,*,*" ColumnSpacing="10">
                       <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="AP / PP 消耗"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="10"/></StackPanel>
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="命中"/><NumericUpDown Value="{Binding ValueB}" Minimum="0" Maximum="999"/></StackPanel>
                       <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="目标范围"/><ComboBox ItemsSource="{Binding TargetShapes}" SelectedItem="{Binding SelectedTargetShape, Mode=TwoWay}"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
-                    </Grid>
-                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="物理威力"/><NumericUpDown Value="{Binding ValueD}" Minimum="0" Maximum="9999" Increment="1"/></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="魔法威力"/><NumericUpDown Value="{Binding ValueE}" Minimum="0" Maximum="9999" Increment="1"/></StackPanel>
-                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="首个效果参数"/><NumericUpDown Value="{Binding ValueF}" Minimum="-9999" Maximum="9999" Increment="1"/></StackPanel>
+                      <StackPanel Grid.Column="3" Spacing="5"><TextBlock Classes="option-title" Text="物理威力"/><NumericUpDown Value="{Binding ValueD}" Minimum="0" Maximum="9999" Increment="1"/></StackPanel>
+                      <StackPanel Grid.Column="4" Spacing="5"><TextBlock Classes="option-title" Text="魔法威力"/><NumericUpDown Value="{Binding ValueE}" Minimum="0" Maximum="9999" Increment="1"/></StackPanel>
+                      <StackPanel Grid.Column="5" Spacing="5"><TextBlock Classes="option-title" Text="首个效果参数"/><NumericUpDown Value="{Binding ValueF}" Minimum="-9999" Maximum="9999" Increment="1"/></StackPanel>
                     </Grid>
                   </StackPanel>
 

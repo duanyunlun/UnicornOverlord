@@ -28,6 +28,7 @@ internal sealed class ModModule : INotifyPropertyChanged
 	private double mValueM;
 	private int mValueN;
 	private bool mMixPromotionTiers;
+	private int mAbilityFilterIndex;
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -61,8 +62,15 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public bool ShowContentSeparator => Key is "battle_preview" or "battle_timer_freeze";
 	public bool HasNoOptions => Key == "battle_timer_freeze";
 	public IReadOnlyList<String> PreviewModes { get; } = ["完全隐藏", "不完美预览"];
+	public IReadOnlyList<String> AbilityFilters { get; } = ["全部技能", "主动技能（AP）", "被动技能（PP）"];
 	public IReadOnlyList<double> MatchupValues { get; } = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
 	public IReadOnlyList<ModChoice> SkillChoices => ModCatalog.SkillChoices;
+	public IReadOnlyList<ModChoice> FilteredSkillChoices => AbilityFilterIndex switch
+	{
+		1 => ModCatalog.ActiveSkillChoicesWithoutEmpty,
+		2 => ModCatalog.PassiveSkillChoicesWithoutEmpty,
+		_ => ModCatalog.SkillChoices,
+	};
 	public IReadOnlyList<ModChoice> ClassChoices => ModCatalog.ClassChoices;
 	public IReadOnlyList<ModChoice> ItemChoices => ModCatalog.ItemChoices;
 	public IReadOnlyList<ModLocationChoice> FortLocations => ModCatalog.FortLocations;
@@ -104,6 +112,19 @@ internal sealed class ModModule : INotifyPropertyChanged
 	{
 		get => mMixPromotionTiers;
 		set => SetField(ref mMixPromotionTiers, value, nameof(MixPromotionTiers));
+	}
+	public int AbilityFilterIndex
+	{
+		get => mAbilityFilterIndex;
+		set
+		{
+			int normalized = Math.Clamp(value, 0, AbilityFilters.Count - 1);
+			if (mAbilityFilterIndex == normalized) return;
+			mAbilityFilterIndex = normalized;
+			Notify(nameof(AbilityFilterIndex), nameof(FilteredSkillChoices));
+			if (IsAbilityEditor && !FilteredSkillChoices.Any(choice => choice.Value == RecordId) && FilteredSkillChoices.FirstOrDefault() is ModChoice first)
+				RecordId = first.Value;
+		}
 	}
 
 	public int RecordId
@@ -153,7 +174,7 @@ internal sealed class ModModule : INotifyPropertyChanged
 
 	public void RefreshLocalizedChoices()
 	{
-		Notify(nameof(SkillChoices), nameof(ClassChoices), nameof(ItemChoices), nameof(FortLocations), nameof(MineLocations), nameof(ShopLocations), nameof(FortRecordsAtLocation), nameof(MineRecordsAtLocation), nameof(ShopRecordsAtLocation),
+		Notify(nameof(SkillChoices), nameof(FilteredSkillChoices), nameof(ClassChoices), nameof(ItemChoices), nameof(FortLocations), nameof(MineLocations), nameof(ShopLocations), nameof(FortRecordsAtLocation), nameof(MineRecordsAtLocation), nameof(ShopRecordsAtLocation),
 			nameof(SelectedSkill), nameof(SelectedClass), nameof(SelectedFortLocation), nameof(SelectedMineLocation), nameof(SelectedShopLocation), nameof(SelectedFortRecord), nameof(SelectedMineRecord), nameof(SelectedShopRecord),
 			nameof(SelectedFortClass), nameof(SelectedMineItem), nameof(SelectedShopItem), nameof(TargetShapes), nameof(SelectedTargetShape));
 		foreach (ModSkillSlot slot in ActiveSkills.Concat(PassiveSkills))

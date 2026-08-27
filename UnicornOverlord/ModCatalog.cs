@@ -117,6 +117,8 @@ internal static class ModCatalog
 	public static IReadOnlyList<ModChoice> SkillChoices { get; } = Skills.Select(skill => skill.Choice).ToArray();
 	public static IReadOnlyList<ModChoice> ActiveSkillChoices { get; } = CreateSkillChoices(false);
 	public static IReadOnlyList<ModChoice> PassiveSkillChoices { get; } = CreateSkillChoices(true);
+	public static IReadOnlyList<ModChoice> ActiveSkillChoicesWithoutEmpty { get; } = ActiveSkillChoices.Where(choice => choice.Value != 0).ToArray();
+	public static IReadOnlyList<ModChoice> PassiveSkillChoicesWithoutEmpty { get; } = PassiveSkillChoices.Where(choice => choice.Value != 0).ToArray();
 	public static IReadOnlyList<ModChoice> ClassChoices { get; } = Info.Instance().Class
 		.Where(item => item.Value is >= 1 and <= 73)
 		.Select(item => new ModChoice { Value = checked((int)item.Value), EnglishName = String.Empty, ChineseName = item.Name, Source = item })

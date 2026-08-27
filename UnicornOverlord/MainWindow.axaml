@@ -164,7 +164,7 @@
                   </DataTemplate>
                 </ListBox.ItemTemplate>
               </ListBox>
-              <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" Margin="10" HorizontalAlignment="Center">
+              <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="18" Margin="10" HorizontalAlignment="Center">
                 <Button Classes="compact" Content="导出" ToolTip.Tip="将当前角色保存为 .uocd 文件"
                         Command="{Binding ExportCharacterCommand}" CommandParameter="{Binding SelectedIndex, ElementName=CharacterList}" />
                 <Button Classes="compact" Content="替换" ToolTip.Tip="用 .uocd 文件替换当前角色，保留当前角色 ID"

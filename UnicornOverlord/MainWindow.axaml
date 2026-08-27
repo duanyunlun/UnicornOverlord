@@ -346,10 +346,13 @@
 	                    <DataTemplate>
 	                <StackPanel Spacing="16" Margin="0,0,0,24">
                   <StackPanel Spacing="4">
-                    <TextBlock Classes="section-title" Text="{Binding Name}" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                      <TextBlock Classes="section-title" Text="{Binding Name}" VerticalAlignment="Center" />
+                      <ToggleSwitch Grid.Column="1" IsVisible="{Binding ShowHeaderEnableToggle}" IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                    OnContent="" OffContent="" VerticalAlignment="Center" />
+                    </Grid>
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                     <TextBlock Foreground="#A24A37" FontSize="12" Text="{Binding Warning}" TextWrapping="Wrap" />
-                    <ToggleSwitch IsVisible="{Binding ShowStandardEnableToggle}" IsChecked="{Binding IsSelected, Mode=TwoWay}" OnContent="已启用并加入导出" OffContent="未启用" HorizontalAlignment="Left" />
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsAbilityEditor}" Spacing="12">
@@ -462,7 +465,6 @@
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsSixMemberUnits}" Spacing="5">
-                    <ToggleSwitch IsChecked="{Binding IsSelected, Mode=TwoWay}" OnContent="六人小队已开启" OffContent="六人小队已关闭" HorizontalAlignment="Left"/>
                     <TextBlock Classes="option-title" Text="第五人扩充到第六人的荣誉费用"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="999999"/>
                     <TextBlock Classes="caption" Text="并非默认开启：只有打开此开关并导出安装补丁后，S 级声望的小队才可扩充到六人。" TextWrapping="Wrap"/>
                   </StackPanel>

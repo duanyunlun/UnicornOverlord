@@ -165,11 +165,11 @@
                 </ListBox.ItemTemplate>
               </ListBox>
               <Grid Grid.Row="2" ColumnDefinitions="*,*,*" ColumnSpacing="6" Margin="10">
-                <Button Classes="compact" Content="导出角色" ToolTip.Tip="将当前角色保存为 .uocd 文件"
+                <Button Classes="compact" Content="导出" ToolTip.Tip="将当前角色保存为 .uocd 文件"
                         Command="{Binding ExportCharacterCommand}" CommandParameter="{Binding SelectedIndex, ElementName=CharacterList}" />
-                <Button Grid.Column="1" Classes="compact" Content="替换角色" ToolTip.Tip="用 .uocd 文件替换当前角色，保留当前角色 ID"
+                <Button Grid.Column="1" Classes="compact" Content="替换" ToolTip.Tip="用 .uocd 文件替换当前角色，保留当前角色 ID"
                         Command="{Binding ImportCharacterCommand}" CommandParameter="{Binding SelectedIndex, ElementName=CharacterList}" />
-                <Button Grid.Column="2" Classes="compact" Content="新增角色" ToolTip.Tip="从一个或多个 .uocd 文件新增角色"
+                <Button Grid.Column="2" Classes="compact" Content="新增" ToolTip.Tip="从一个或多个 .uocd 文件新增角色"
                         Command="{Binding InsertCharacterCommand}" />
               </Grid>
             </Grid>
@@ -179,7 +179,7 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Padding="0,0,14,0">
               <StackPanel Spacing="14">
                 <TextBlock Classes="section-title" Text="角色属性" />
-                <Grid ColumnDefinitions="150,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="10">
+                <Grid ColumnDefinitions="110,*" RowDefinitions="Auto,Auto" RowSpacing="10">
                   <TextBlock Text="启用" VerticalAlignment="Center" />
                   <ToggleSwitch Grid.Column="1" IsChecked="{Binding SelectedItem.Use, ElementName=CharacterList, Mode=TwoWay}" OnContent="启用" OffContent="停用" />
                   <TextBlock Grid.Row="1" Text="职业" VerticalAlignment="Center" />
@@ -187,30 +187,20 @@
                     <Button Classes="compact" Content="更换" Command="{Binding ChoiceClassCommand}" CommandParameter="{Binding SelectedItem, ElementName=CharacterList}" />
                     <TextBlock Text="{Binding SelectedItem.Class, ElementName=CharacterList, Converter={StaticResource ClassIDConverter}}" VerticalAlignment="Center" />
                   </StackPanel>
-                  <TextBlock Grid.Row="2" Text="等级" VerticalAlignment="Center" />
-                  <TextBox Grid.Row="2" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.Lv, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="3" Text="经验值" VerticalAlignment="Center" />
-                  <TextBox Grid.Row="3" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.Exp, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="4" Text="生命加成" VerticalAlignment="Center" />
-                  <TextBox Grid.Row="4" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.HPPlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="5" Text="物理攻击加成" VerticalAlignment="Center" />
-                  <TextBox Grid.Row="5" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.AttackPlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="6" Text="物理防御加成" VerticalAlignment="Center" />
-                  <TextBox Grid.Row="6" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.DefensePlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="7" Text="魔法攻击加成" VerticalAlignment="Center" />
-                  <TextBox Grid.Row="7" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.MagicAttackPlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="8" Text="魔法防御加成" VerticalAlignment="Center" />
-                  <TextBox Grid.Row="8" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.MagicDefensePlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="9" Text="命中加成" VerticalAlignment="Center" />
-                  <TextBox Grid.Row="9" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.HitRatePlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="10" Text="闪避加成" VerticalAlignment="Center" />
-                  <TextBox Grid.Row="10" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.AVoidPlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="11" Text="暴击率加成" VerticalAlignment="Center" />
-                  <TextBox Grid.Row="11" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.CriticalPlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="12" Text="格挡率加成" VerticalAlignment="Center" />
-                  <TextBox Grid.Row="12" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.GuardPlus, ElementName=CharacterList, Mode=TwoWay}" />
-                  <TextBlock Grid.Row="13" Text="行动速度加成" VerticalAlignment="Center" />
-                  <TextBox Grid.Row="13" Grid.Column="1" Classes="editor" Text="{Binding SelectedItem.SpeedPlus, ElementName=CharacterList, Mode=TwoWay}" />
+                </Grid>
+                <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="10">
+                  <StackPanel Spacing="4"><TextBlock Text="等级"/><TextBox Classes="editor" Text="{Binding SelectedItem.Lv, ElementName=CharacterList, Mode=TwoWay}"/></StackPanel>
+                  <StackPanel Grid.Column="1" Spacing="4"><TextBlock Text="经验值"/><TextBox Classes="editor" Text="{Binding SelectedItem.Exp, ElementName=CharacterList, Mode=TwoWay}"/></StackPanel>
+                  <StackPanel Grid.Column="2" Spacing="4"><TextBlock Text="生命加成"/><TextBox Classes="editor" Text="{Binding SelectedItem.HPPlus, ElementName=CharacterList, Mode=TwoWay}"/></StackPanel>
+                  <StackPanel Grid.Row="1" Spacing="4"><TextBlock Text="物理攻击加成"/><TextBox Classes="editor" Text="{Binding SelectedItem.AttackPlus, ElementName=CharacterList, Mode=TwoWay}"/></StackPanel>
+                  <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4"><TextBlock Text="物理防御加成"/><TextBox Classes="editor" Text="{Binding SelectedItem.DefensePlus, ElementName=CharacterList, Mode=TwoWay}"/></StackPanel>
+                  <StackPanel Grid.Row="1" Grid.Column="2" Spacing="4"><TextBlock Text="魔法攻击加成"/><TextBox Classes="editor" Text="{Binding SelectedItem.MagicAttackPlus, ElementName=CharacterList, Mode=TwoWay}"/></StackPanel>
+                  <StackPanel Grid.Row="2" Spacing="4"><TextBlock Text="魔法防御加成"/><TextBox Classes="editor" Text="{Binding SelectedItem.MagicDefensePlus, ElementName=CharacterList, Mode=TwoWay}"/></StackPanel>
+                  <StackPanel Grid.Row="2" Grid.Column="1" Spacing="4"><TextBlock Text="命中加成"/><TextBox Classes="editor" Text="{Binding SelectedItem.HitRatePlus, ElementName=CharacterList, Mode=TwoWay}"/></StackPanel>
+                  <StackPanel Grid.Row="2" Grid.Column="2" Spacing="4"><TextBlock Text="闪避加成"/><TextBox Classes="editor" Text="{Binding SelectedItem.AVoidPlus, ElementName=CharacterList, Mode=TwoWay}"/></StackPanel>
+                  <StackPanel Grid.Row="3" Spacing="4"><TextBlock Text="暴击率加成"/><TextBox Classes="editor" Text="{Binding SelectedItem.CriticalPlus, ElementName=CharacterList, Mode=TwoWay}"/></StackPanel>
+                  <StackPanel Grid.Row="3" Grid.Column="1" Spacing="4"><TextBlock Text="格挡率加成"/><TextBox Classes="editor" Text="{Binding SelectedItem.GuardPlus, ElementName=CharacterList, Mode=TwoWay}"/></StackPanel>
+                  <StackPanel Grid.Row="3" Grid.Column="2" Spacing="4"><TextBlock Text="行动速度加成"/><TextBox Classes="editor" Text="{Binding SelectedItem.SpeedPlus, ElementName=CharacterList, Mode=TwoWay}"/></StackPanel>
                 </Grid>
               </StackPanel>
             </ScrollViewer>

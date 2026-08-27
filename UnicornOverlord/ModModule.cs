@@ -105,6 +105,9 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public ModChoice? SelectedShopItem { get => ModCatalog.FindItem(ValueA); set { if (value != null) ValueA = value.Value; } }
 	public ModChoice? SelectedTargetShape { get => TargetShapes.FirstOrDefault(choice => choice.Value == ValueC); set { if (value != null) ValueC = value.Value; } }
 	public String AbilityTypeText => mValueN == 1 ? "被动技能（PP）" : "主动技能（AP）";
+	public bool IsActiveAbility => mValueN == 0;
+	public bool IsPassiveAbility => mValueN == 1;
+	public String AbilityDescription => ModCatalog.Skills.FirstOrDefault(skill => skill.Choice.Value == RecordId)?.Description ?? String.Empty;
 	public String PreviewModeDescription => RecordId == 1
 		? "后台模拟 5 次战斗并显示平均结果，只给出胜负趋势，不再泄露确定结果。"
 		: "完全隐藏战斗预览条；编队与战术判断不再得到结果提示。";
@@ -136,7 +139,8 @@ internal sealed class ModModule : INotifyPropertyChanged
 			mRecordId = value;
 			LoadRecordDefaults();
 			Notify(nameof(RecordId), nameof(SelectedSkill), nameof(SelectedClass), nameof(SelectedFortLocation), nameof(SelectedMineLocation), nameof(SelectedShopLocation),
-				nameof(FortRecordsAtLocation), nameof(MineRecordsAtLocation), nameof(ShopRecordsAtLocation), nameof(SelectedFortRecord), nameof(SelectedMineRecord), nameof(SelectedShopRecord), nameof(AbilityTypeText), nameof(PreviewModeDescription));
+				nameof(FortRecordsAtLocation), nameof(MineRecordsAtLocation), nameof(ShopRecordsAtLocation), nameof(SelectedFortRecord), nameof(SelectedMineRecord), nameof(SelectedShopRecord),
+				nameof(AbilityTypeText), nameof(IsActiveAbility), nameof(IsPassiveAbility), nameof(AbilityDescription), nameof(PreviewModeDescription));
 		}
 	}
 	public int ValueA { get => mValueA; set { SetField(ref mValueA, value, nameof(ValueA)); Notify(nameof(SelectedFortClass), nameof(SelectedMineItem), nameof(SelectedShopItem)); } }
@@ -176,7 +180,7 @@ internal sealed class ModModule : INotifyPropertyChanged
 	{
 		Notify(nameof(SkillChoices), nameof(FilteredSkillChoices), nameof(ClassChoices), nameof(ItemChoices), nameof(FortLocations), nameof(MineLocations), nameof(ShopLocations), nameof(FortRecordsAtLocation), nameof(MineRecordsAtLocation), nameof(ShopRecordsAtLocation),
 			nameof(SelectedSkill), nameof(SelectedClass), nameof(SelectedFortLocation), nameof(SelectedMineLocation), nameof(SelectedShopLocation), nameof(SelectedFortRecord), nameof(SelectedMineRecord), nameof(SelectedShopRecord),
-			nameof(SelectedFortClass), nameof(SelectedMineItem), nameof(SelectedShopItem), nameof(TargetShapes), nameof(SelectedTargetShape));
+			nameof(SelectedFortClass), nameof(SelectedMineItem), nameof(SelectedShopItem), nameof(TargetShapes), nameof(SelectedTargetShape), nameof(AbilityDescription));
 		foreach (ModSkillSlot slot in ActiveSkills.Concat(PassiveSkills))
 		{
 			ModChoice? choice = slot.SelectedSkill;

@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.ComponentModel;
+using System.Text;
 
 namespace UnicornOverlord;
 
@@ -29,7 +30,9 @@ internal sealed class ModSkillInfo
 	public required int Accuracy { get; init; }
 	public required int TargetShape { get; init; }
 	public required double EffectValue { get; init; }
+	public required String ChineseDescription { get; init; }
 	public String TypeText => IsPassive ? "被动技能（PP）" : "主动技能（AP）";
+	public String Description => ChineseDescription;
 }
 
 internal sealed class ModClassInfo
@@ -252,6 +255,8 @@ internal static class ModCatalog
 
 	private static IReadOnlyList<ModSkillInfo> LoadSkills()
 	{
+		IReadOnlyDictionary<int, String> descriptions = ReadRows("skilldesc-cn.txt").ToDictionary(values => ParseInt(values[0]),
+			values => Encoding.UTF8.GetString(Convert.FromBase64String(values[1])));
 		var result = new List<ModSkillInfo>();
 		foreach (String[] values in ReadRows("skill.txt"))
 		{
@@ -266,6 +271,7 @@ internal static class ModCatalog
 				Accuracy = ParseInt(values[7]),
 				TargetShape = ParseInt(values[8]),
 				EffectValue = ParseDouble(values[9]),
+				ChineseDescription = descriptions.GetValueOrDefault(ParseInt(values[0]), String.Empty),
 			});
 		}
 		return result;

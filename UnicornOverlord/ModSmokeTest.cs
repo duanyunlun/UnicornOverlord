@@ -39,10 +39,11 @@ internal static class ModSmokeTest
 		ModModule ability = modules.Single(module => module.Key == "ability_editor");
 		String abilityPatch = ModPatchGenerator.Generate(ability, ModTarget.Asia);
 		Require(ability.AbilityTypeText == "被动技能（PP）", "技能 372 应从游戏数据识别为被动技能。");
+		Require(!String.IsNullOrWhiteSpace(ability.AbilityDescription), "技能说明没有从亚洲版游戏数据载入。");
 		Require(abilityPatch.Contains("027A38F4", StringComparison.Ordinal), "被动技能消耗必须写入 PP 字段。");
-		Require(ModComboSearch.Matches("幽世瘴气", ability.SelectedSkill), "长下拉框必须能按当前语言的完整名称匹配技能。");
-		Require(ModComboSearch.Matches("372", ability.SelectedSkill), "长下拉框必须能按纯 ID 匹配技能。");
-		Require(!ModComboSearch.Matches("3720", ability.SelectedSkill), "长下拉框不能把无关 ID 匹配为技能。");
+		Require(ModSearchPicker.Matches("幽世瘴气", ability.SelectedSkill), "长下拉框必须能按当前语言的完整名称匹配技能。");
+		Require(ModSearchPicker.Matches("372", ability.SelectedSkill), "长下拉框必须能按纯 ID 匹配技能。");
+		Require(!ModSearchPicker.Matches("3720", ability.SelectedSkill), "长下拉框不能把无关 ID 匹配为技能。");
 		ability.AbilityFilterIndex = 1;
 		Require(ability.FilteredSkillChoices.Count == ModCatalog.ActiveSkillChoicesWithoutEmpty.Count &&
 			ability.FilteredSkillChoices.All(choice => ModCatalog.ActiveSkillChoicesWithoutEmpty.Contains(choice)), "主动技能筛选结果不完整。");

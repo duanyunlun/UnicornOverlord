@@ -360,23 +360,23 @@
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsAbilityEditor}" Spacing="10">
-                    <Grid ColumnDefinitions="160,*,*" ColumnSpacing="10">
-                      <StackPanel Spacing="5">
-                        <TextBlock Classes="option-title" Text="技能筛选"/>
-                        <ComboBox Height="40" ItemsSource="{Binding AbilityFilters}" SelectedIndex="{Binding AbilityFilterIndex, Mode=TwoWay}" />
-                      </StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5">
-                        <TextBlock Classes="option-title" Text="技能"/>
-                        <local:ModSearchPicker ItemsSource="{Binding FilteredSkillChoices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}"/>
-                      </StackPanel>
-                    </Grid>
+                    <StackPanel Width="160" HorizontalAlignment="Left" Spacing="5">
+                      <TextBlock Classes="option-title" Text="技能筛选"/>
+                      <ComboBox Height="40" ItemsSource="{Binding AbilityFilters}" SelectedIndex="{Binding AbilityFilterIndex, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Spacing="5">
+                      <TextBlock Classes="option-title" Text="技能"/>
+                      <local:ModSearchPicker ItemsSource="{Binding FilteredSkillChoices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}"/>
+                    </StackPanel>
                     <Grid ColumnDefinitions="*,*,*,*,*,*" ColumnSpacing="10">
                       <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="AP / PP 消耗"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="10"/></StackPanel>
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="命中"/><NumericUpDown Value="{Binding ValueB}" Minimum="0" Maximum="999"/></StackPanel>
                       <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="目标范围"/><ComboBox ItemsSource="{Binding TargetShapes}" SelectedItem="{Binding SelectedTargetShape, Mode=TwoWay}"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
-                      <StackPanel Grid.Column="3" Spacing="5"><TextBlock Classes="option-title" Text="物理威力"/><NumericUpDown Value="{Binding ValueD}" Minimum="0" Maximum="9999" Increment="1"/></StackPanel>
-                      <StackPanel Grid.Column="4" Spacing="5"><TextBlock Classes="option-title" Text="魔法威力"/><NumericUpDown Value="{Binding ValueE}" Minimum="0" Maximum="9999" Increment="1"/></StackPanel>
-                      <StackPanel Grid.Column="5" Spacing="5"><TextBlock Classes="option-title" Text="首个效果参数"/><NumericUpDown Value="{Binding ValueF}" Minimum="-9999" Maximum="9999" Increment="1"/></StackPanel>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*,*,*,*,*" ColumnSpacing="10">
+                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="物理威力"/><NumericUpDown Value="{Binding ValueD}" Minimum="0" Maximum="9999" Increment="1"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="魔法威力"/><NumericUpDown Value="{Binding ValueE}" Minimum="0" Maximum="9999" Increment="1"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="首个效果参数"/><NumericUpDown Value="{Binding ValueF}" Minimum="-9999" Maximum="9999" Increment="1"/></StackPanel>
                     </Grid>
                     <StackPanel Spacing="14" Margin="0,20,0,0">
                       <StackPanel Orientation="Horizontal" Spacing="10">

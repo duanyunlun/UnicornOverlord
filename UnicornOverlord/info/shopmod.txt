@@ -1,3 +1,212 @@
-# 槽位	物品ID	库存	金币买价
-0	645	1	2000
-1	876	1	2000
+# id	address	itemId	stock	price	englishLocation	japaneseLocation	chineseLocation	group	shared
+0	0x00D46A58	645	1	2000	Palevia Town	パレヴィアの町	帕雷比亚镇	C0_WEAPON_0 (Armorer)	0
+1	0x00D46A6C	876	1	2000	Palevia Town	パレヴィアの町	帕雷比亚镇	C0_WEAPON_0 (Armorer)	0
+2	0x00D484FC	283	2	1500	Palevia Town	パレヴィアの町	帕雷比亚镇	WEAPON_C_ATK_1 (Armorer)	1
+3	0x00D48510	416	2	1500	Palevia Town	パレヴィアの町	帕雷比亚镇	WEAPON_C_ATK_1 (Armorer)	1
+4	0x00D48524	350	2	1500	Palevia Town	パレヴィアの町	帕雷比亚镇	WEAPON_C_ATK_1 (Armorer)	1
+5	0x00D48538	482	2	1500	Palevia Town	パレヴィアの町	帕雷比亚镇	WEAPON_C_ATK_1 (Armorer)	1
+6	0x00D4854C	548	2	1500	Palevia Town	パレヴィアの町	帕雷比亚镇	WEAPON_C_ATK_1 (Armorer)	1
+7	0x00D46B0C	386	1	3000	Ouvrir Harbor	港町ウーヴリール	港镇乌夫里尔	C1_WEAPON_0 (Armorer)	0
+8	0x00D46B20	330	1	12000	Ouvrir Harbor	港町ウーヴリール	港镇乌夫里尔	C1_WEAPON_0 (Armorer)	0
+9	0x00D484FC	283	2	1500	Ouvrir Harbor	港町ウーヴリール	港镇乌夫里尔	WEAPON_C_ATK_1 (Armorer)	1
+10	0x00D48510	416	2	1500	Ouvrir Harbor	港町ウーヴリール	港镇乌夫里尔	WEAPON_C_ATK_1 (Armorer)	1
+11	0x00D48524	350	2	1500	Ouvrir Harbor	港町ウーヴリール	港镇乌夫里尔	WEAPON_C_ATK_1 (Armorer)	1
+12	0x00D48538	482	2	1500	Ouvrir Harbor	港町ウーヴリール	港镇乌夫里尔	WEAPON_C_ATK_1 (Armorer)	1
+13	0x00D4854C	548	2	1500	Ouvrir Harbor	港町ウーヴリール	港镇乌夫里尔	WEAPON_C_ATK_1 (Armorer)	1
+14	0x00D46AA8	593	1	15000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	TK_C01_WEAPON (Armorer)	0
+15	0x00D46ABC	671	1	8000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	TK_C01_WEAPON (Armorer)	0
+16	0x00D46AD0	889	1	5000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	TK_C01_WEAPON (Armorer)	0
+17	0x00D46AE4	786	1	10000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	TK_C01_WEAPON (Armorer)	0
+18	0x00D46AF8	805	1	10000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	TK_C01_WEAPON (Armorer)	0
+19	0x00D48718	283	2	1500	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+20	0x00D4872C	416	2	1500	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+21	0x00D48740	350	2	1500	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+22	0x00D48754	482	2	1500	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+23	0x00D48768	548	2	1500	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+24	0x00D4877C	643	2	1500	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+25	0x00D48790	711	2	1500	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+26	0x00D487A4	284	1	2000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+27	0x00D487B8	417	1	2000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+28	0x00D487CC	351	1	2000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+29	0x00D487E0	483	1	2000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+30	0x00D487F4	549	1	2000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+31	0x00D48808	644	1	2000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+32	0x00D4881C	712	1	2000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+33	0x00D48830	790	3	1000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+34	0x00D48844	793	3	1000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+35	0x00D48858	796	2	1500	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+36	0x00D4886C	799	2	1500	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+37	0x00D48880	811	2	1500	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+38	0x00D48894	813	2	1500	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+39	0x00D488A8	815	2	1500	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+40	0x00D488BC	818	2	1500	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+41	0x00D488D0	926	2	1000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+42	0x00D488E4	927	2	1000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+43	0x00D488F8	928	2	1000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+44	0x00D4890C	929	2	1000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+45	0x00D48920	931	2	1000	Walled City of Barbatimo	城塞都市バールバチモ	要塞都市巴巴奇莫	WEAPON_C_SP_1 (Armorer)	0
+46	0x00D46A80	713	1	2000	Palevia Harbor	パレヴィア港	帕雷比亚港	C0_WEAPON_1 (Armorer)	0
+47	0x00D46A94	329	1	15000	Palevia Harbor	パレヴィア港	帕雷比亚港	C0_WEAPON_1 (Armorer)	0
+48	0x00D485C4	643	2	1500	Palevia Harbor	パレヴィア港	帕雷比亚港	WEAPON_C_DEF_1 (Armorer)	1
+49	0x00D485D8	711	2	1500	Palevia Harbor	パレヴィア港	帕雷比亚港	WEAPON_C_DEF_1 (Armorer)	1
+50	0x00D485EC	790	3	1000	Palevia Harbor	パレヴィア港	帕雷比亚港	WEAPON_C_DEF_1 (Armorer)	1
+51	0x00D48600	793	3	1000	Palevia Harbor	パレヴィア港	帕雷比亚港	WEAPON_C_DEF_1 (Armorer)	1
+52	0x00D46BD4	829	1	10000	Bellum Ghoria Hamlet	ベレムゴリアの里	贝雷姆戈利亚村	C3_WEAPON_1 (Armorer)	0
+53	0x00D46BE8	398	1	12000	Bellum Ghoria Hamlet	ベレムゴリアの里	贝雷姆戈利亚村	C3_WEAPON_1 (Armorer)	0
+54	0x00D484FC	283	2	1500	Bellum Ghoria Hamlet	ベレムゴリアの里	贝雷姆戈利亚村	WEAPON_C_ATK_1 (Armorer)	1
+55	0x00D48510	416	2	1500	Bellum Ghoria Hamlet	ベレムゴリアの里	贝雷姆戈利亚村	WEAPON_C_ATK_1 (Armorer)	1
+56	0x00D48524	350	2	1500	Bellum Ghoria Hamlet	ベレムゴリアの里	贝雷姆戈利亚村	WEAPON_C_ATK_1 (Armorer)	1
+57	0x00D48538	482	2	1500	Bellum Ghoria Hamlet	ベレムゴリアの里	贝雷姆戈利亚村	WEAPON_C_ATK_1 (Armorer)	1
+58	0x00D4854C	548	2	1500	Bellum Ghoria Hamlet	ベレムゴリアの里	贝雷姆戈利亚村	WEAPON_C_ATK_1 (Armorer)	1
+59	0x00D46B5C	315	1	3000	Thulust Harbor	港町スルスド	港镇苏尔苏德	C2_WEAPON_0 (Armorer)	0
+60	0x00D46B70	828	1	10000	Thulust Harbor	港町スルスド	港镇苏尔苏德	C2_WEAPON_0 (Armorer)	0
+61	0x00D484FC	283	2	1500	Thulust Harbor	港町スルスド	港镇苏尔苏德	WEAPON_C_ATK_1 (Armorer)	1
+62	0x00D48510	416	2	1500	Thulust Harbor	港町スルスド	港镇苏尔苏德	WEAPON_C_ATK_1 (Armorer)	1
+63	0x00D48524	350	2	1500	Thulust Harbor	港町スルスド	港镇苏尔苏德	WEAPON_C_ATK_1 (Armorer)	1
+64	0x00D48538	482	2	1500	Thulust Harbor	港町スルスド	港镇苏尔苏德	WEAPON_C_ATK_1 (Armorer)	1
+65	0x00D4854C	548	2	1500	Thulust Harbor	港町スルスド	港镇苏尔苏德	WEAPON_C_ATK_1 (Armorer)	1
+66	0x00D46BAC	879	1	3000	Lebouge Hamlet	レブージェの里	勒布杰村	C3_WEAPON_0 (Armorer)	0
+67	0x00D46BC0	582	1	10000	Lebouge Hamlet	レブージェの里	勒布杰村	C3_WEAPON_0 (Armorer)	0
+68	0x00D486DC	852	1	5000	Lebouge Hamlet	レブージェの里	勒布杰村	WEAPON_C_ACC_2 (Armorer)	1
+69	0x00D486F0	876	1	2000	Lebouge Hamlet	レブージェの里	勒布杰村	WEAPON_C_ACC_2 (Armorer)	1
+70	0x00D48704	877	1	2000	Lebouge Hamlet	レブージェの里	勒布杰村	WEAPON_C_ACC_2 (Armorer)	1
+71	0x00D46C74	676	1	3000	Lisière Town	リジエールの町	利吉艾尔镇	TK_C03_WEAPON (Armorer)	0
+72	0x00D46C88	848	1	10000	Lisière Town	リジエールの町	利吉艾尔镇	TK_C03_WEAPON (Armorer)	0
+73	0x00D48560	284	1	2000	Lisière Town	リジエールの町	利吉艾尔镇	WEAPON_C_ATK_2 (Armorer)	1
+74	0x00D48574	417	1	2000	Lisière Town	リジエールの町	利吉艾尔镇	WEAPON_C_ATK_2 (Armorer)	1
+75	0x00D48588	351	1	2000	Lisière Town	リジエールの町	利吉艾尔镇	WEAPON_C_ATK_2 (Armorer)	1
+76	0x00D4859C	483	1	2000	Lisière Town	リジエールの町	利吉艾尔镇	WEAPON_C_ATK_2 (Armorer)	1
+77	0x00D485B0	549	1	2000	Lisière Town	リジエールの町	利吉艾尔镇	WEAPON_C_ATK_2 (Armorer)	1
+78	0x00D46C24	645	1	2000	Façon Town	ファソンの町	法森镇	C4_WEAPON_0 (Armorer)	0
+79	0x00D46C38	390	1	5000	Façon Town	ファソンの町	法森镇	C4_WEAPON_0 (Armorer)	0
+80	0x00D48560	284	1	2000	Façon Town	ファソンの町	法森镇	WEAPON_C_ATK_2 (Armorer)	1
+81	0x00D48574	417	1	2000	Façon Town	ファソンの町	法森镇	WEAPON_C_ATK_2 (Armorer)	1
+82	0x00D48588	351	1	2000	Façon Town	ファソンの町	法森镇	WEAPON_C_ATK_2 (Armorer)	1
+83	0x00D4859C	483	1	2000	Façon Town	ファソンの町	法森镇	WEAPON_C_ATK_2 (Armorer)	1
+84	0x00D485B0	549	1	2000	Façon Town	ファソンの町	法森镇	WEAPON_C_ATK_2 (Armorer)	1
+85	0x00D46C4C	321	1	10000	Nordplage Town	ノルドプラージュの町	诺德普拉日镇	C4_WEAPON_1 (Armorer)	0
+86	0x00D46C60	386	1	3000	Nordplage Town	ノルドプラージュの町	诺德普拉日镇	C4_WEAPON_1 (Armorer)	0
+87	0x00D48614	644	1	2000	Nordplage Town	ノルドプラージュの町	诺德普拉日镇	WEAPON_C_DEF_2 (Armorer)	1
+88	0x00D48628	712	1	2000	Nordplage Town	ノルドプラージュの町	诺德普拉日镇	WEAPON_C_DEF_2 (Armorer)	1
+89	0x00D4863C	790	3	1000	Nordplage Town	ノルドプラージュの町	诺德普拉日镇	WEAPON_C_DEF_2 (Armorer)	1
+90	0x00D48650	793	3	1000	Nordplage Town	ノルドプラージュの町	诺德普拉日镇	WEAPON_C_DEF_2 (Armorer)	1
+91	0x00D46DC8	854	1	10000	Prashvari Town	プラシュヴァリの町	普拉修瓦利镇	TK_C04_WEAPON (Armorer)	0
+92	0x00D46DDC	757	1	5000	Prashvari Town	プラシュヴァリの町	普拉修瓦利镇	TK_C04_WEAPON (Armorer)	0
+93	0x00D48560	284	1	2000	Prashvari Town	プラシュヴァリの町	普拉修瓦利镇	WEAPON_C_ATK_2 (Armorer)	1
+94	0x00D48574	417	1	2000	Prashvari Town	プラシュヴァリの町	普拉修瓦利镇	WEAPON_C_ATK_2 (Armorer)	1
+95	0x00D48588	351	1	2000	Prashvari Town	プラシュヴァリの町	普拉修瓦利镇	WEAPON_C_ATK_2 (Armorer)	1
+96	0x00D4859C	483	1	2000	Prashvari Town	プラシュヴァリの町	普拉修瓦利镇	WEAPON_C_ATK_2 (Armorer)	1
+97	0x00D485B0	549	1	2000	Prashvari Town	プラシュヴァリの町	普拉修瓦利镇	WEAPON_C_ATK_2 (Armorer)	1
+98	0x00D46CEC	525	1	12000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	C5_WEAPON_0 (Armorer)	0
+99	0x00D46D00	786	1	10000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	C5_WEAPON_0 (Armorer)	0
+100	0x00D46D14	805	1	10000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	C5_WEAPON_0 (Armorer)	0
+101	0x00D48934	286	1	2000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+102	0x00D48948	353	1	2000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+103	0x00D4895C	419	1	2000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+104	0x00D48970	485	1	2000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+105	0x00D48984	551	1	2000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+106	0x00D48998	646	1	1500	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+107	0x00D489AC	714	1	1500	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+108	0x00D489C0	790	3	1000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+109	0x00D489D4	793	3	1000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+110	0x00D489E8	796	2	1500	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+111	0x00D489FC	799	2	1500	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+112	0x00D48A10	811	2	1500	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+113	0x00D48A24	813	2	1500	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+114	0x00D48A38	815	2	1500	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+115	0x00D48A4C	818	2	1500	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+116	0x00D48A60	852	1	5000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+117	0x00D48A74	876	1	2000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+118	0x00D48A88	877	1	2000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+119	0x00D48A9C	926	2	1000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+120	0x00D48AB0	927	2	1000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+121	0x00D48AC4	928	2	1000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+122	0x00D48AD8	929	2	1000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+123	0x00D48AEC	931	2	1000	Walled City of Eucuit	城塞都市ユークイット	要塞都市尤奎特	WEAPON_C_SP_2 (Armorer)	0
+124	0x00D46D28	386	1	3000	Avague Village	アヴァーグの村	阿瓦格村	C5_WEAPON_1 (Armorer)	0
+125	0x00D46D3C	515	1	3000	Avague Village	アヴァーグの村	阿瓦格村	C5_WEAPON_1 (Armorer)	0
+126	0x00D484FC	283	2	1500	Avague Village	アヴァーグの村	阿瓦格村	WEAPON_C_ATK_1 (Armorer)	1
+127	0x00D48510	416	2	1500	Avague Village	アヴァーグの村	阿瓦格村	WEAPON_C_ATK_1 (Armorer)	1
+128	0x00D48524	350	2	1500	Avague Village	アヴァーグの村	阿瓦格村	WEAPON_C_ATK_1 (Armorer)	1
+129	0x00D48538	482	2	1500	Avague Village	アヴァーグの村	阿瓦格村	WEAPON_C_ATK_1 (Armorer)	1
+130	0x00D4854C	548	2	1500	Avague Village	アヴァーグの村	阿瓦格村	WEAPON_C_ATK_1 (Armorer)	1
+131	0x00D46D50	802	1	5000	Grupont Town	グルポントの町	古尔彭特镇	C5_WEAPON_2 (Armorer)	0
+132	0x00D46D64	450	1	6000	Grupont Town	グルポントの町	古尔彭特镇	C5_WEAPON_2 (Armorer)	0
+133	0x00D484FC	283	2	1500	Grupont Town	グルポントの町	古尔彭特镇	WEAPON_C_ATK_1 (Armorer)	1
+134	0x00D48510	416	2	1500	Grupont Town	グルポントの町	古尔彭特镇	WEAPON_C_ATK_1 (Armorer)	1
+135	0x00D48524	350	2	1500	Grupont Town	グルポントの町	古尔彭特镇	WEAPON_C_ATK_1 (Armorer)	1
+136	0x00D48538	482	2	1500	Grupont Town	グルポントの町	古尔彭特镇	WEAPON_C_ATK_1 (Armorer)	1
+137	0x00D4854C	548	2	1500	Grupont Town	グルポントの町	古尔彭特镇	WEAPON_C_ATK_1 (Armorer)	1
+138	0x00D46E90	848	1	10000	Fontille Harbor	港町フォンティエ	港镇冯提艾	TK_C05_WEAPON (Armorer)	0
+139	0x00D46EA4	920	1	12000	Fontille Harbor	港町フォンティエ	港镇冯提艾	TK_C05_WEAPON (Armorer)	0
+140	0x00D48614	644	1	2000	Fontille Harbor	港町フォンティエ	港镇冯提艾	WEAPON_C_DEF_2 (Armorer)	1
+141	0x00D48628	712	1	2000	Fontille Harbor	港町フォンティエ	港镇冯提艾	WEAPON_C_DEF_2 (Armorer)	1
+142	0x00D4863C	790	3	1000	Fontille Harbor	港町フォンティエ	港镇冯提艾	WEAPON_C_DEF_2 (Armorer)	1
+143	0x00D48650	793	3	1000	Fontille Harbor	港町フォンティエ	港镇冯提艾	WEAPON_C_DEF_2 (Armorer)	1
+144	0x00D46DA0	449	1	3000	Riviere Town	リヴィエの町	利维艾镇	TK_C06_WEAPON (Armorer)	0
+145	0x00D46DB4	524	1	5000	Riviere Town	リヴィエの町	利维艾镇	TK_C06_WEAPON (Armorer)	0
+146	0x00D48614	644	1	2000	Riviere Town	リヴィエの町	利维艾镇	WEAPON_C_DEF_2 (Armorer)	1
+147	0x00D48628	712	1	2000	Riviere Town	リヴィエの町	利维艾镇	WEAPON_C_DEF_2 (Armorer)	1
+148	0x00D4863C	790	3	1000	Riviere Town	リヴィエの町	利维艾镇	WEAPON_C_DEF_2 (Armorer)	1
+149	0x00D48650	793	3	1000	Riviere Town	リヴィエの町	利维艾镇	WEAPON_C_DEF_2 (Armorer)	1
+150	0x00D46B84	516	1	3000	Treyes Village	トレーズの村	特列斯村	C7_WEAPON_0 (Armorer)	0
+151	0x00D46B98	594	1	5000	Treyes Village	トレーズの村	特列斯村	C7_WEAPON_0 (Armorer)	0
+152	0x00D48664	796	2	1500	Treyes Village	トレーズの村	特列斯村	WEAPON_C_ACC_1 (Armorer)	1
+153	0x00D48678	799	2	1500	Treyes Village	トレーズの村	特列斯村	WEAPON_C_ACC_1 (Armorer)	1
+154	0x00D4868C	818	2	1500	Treyes Village	トレーズの村	特列斯村	WEAPON_C_ACC_1 (Armorer)	1
+155	0x00D486A0	811	2	1500	Treyes Village	トレーズの村	特列斯村	WEAPON_C_ACC_1 (Armorer)	1
+156	0x00D486B4	813	2	1500	Treyes Village	トレーズの村	特列斯村	WEAPON_C_ACC_1 (Armorer)	1
+157	0x00D486C8	815	2	1500	Treyes Village	トレーズの村	特列斯村	WEAPON_C_ACC_1 (Armorer)	1
+158	0x00D46BFC	687	1	8000	Lis de Prairie Village	リードプレリの村	里德普雷利村	C8_WEAPON_0 (Armorer)	0
+159	0x00D46C10	852	1	5000	Lis de Prairie Village	リードプレリの村	里德普雷利村	C8_WEAPON_0 (Armorer)	0
+160	0x00D485C4	643	2	1500	Lis de Prairie Village	リードプレリの村	里德普雷利村	WEAPON_C_DEF_1 (Armorer)	1
+161	0x00D485D8	711	2	1500	Lis de Prairie Village	リードプレリの村	里德普雷利村	WEAPON_C_DEF_1 (Armorer)	1
+162	0x00D485EC	790	3	1000	Lis de Prairie Village	リードプレリの村	里德普雷利村	WEAPON_C_DEF_1 (Armorer)	1
+163	0x00D48600	793	3	1000	Lis de Prairie Village	リードプレリの村	里德普雷利村	WEAPON_C_DEF_1 (Armorer)	1
+164	0x00D46C9C	852	1	5000	La Criselle Town	ラクリーゼルの町	拉克利泽镇	C9_WEAPON_0 (Armorer)	0
+165	0x00D46CB0	454	1	3000	La Criselle Town	ラクリーゼルの町	拉克利泽镇	C9_WEAPON_0 (Armorer)	0
+166	0x00D48664	796	2	1500	La Criselle Town	ラクリーゼルの町	拉克利泽镇	WEAPON_C_ACC_1 (Armorer)	1
+167	0x00D48678	799	2	1500	La Criselle Town	ラクリーゼルの町	拉克利泽镇	WEAPON_C_ACC_1 (Armorer)	1
+168	0x00D4868C	818	2	1500	La Criselle Town	ラクリーゼルの町	拉克利泽镇	WEAPON_C_ACC_1 (Armorer)	1
+169	0x00D486A0	811	2	1500	La Criselle Town	ラクリーゼルの町	拉克利泽镇	WEAPON_C_ACC_1 (Armorer)	1
+170	0x00D486B4	813	2	1500	La Criselle Town	ラクリーゼルの町	拉克利泽镇	WEAPON_C_ACC_1 (Armorer)	1
+171	0x00D486C8	815	2	1500	La Criselle Town	ラクリーゼルの町	拉克利泽镇	WEAPON_C_ACC_1 (Armorer)	1
+172	0x00D46CC4	920	1	12000	Tiche Donné Town	ティシュドネの町	提修德内镇	C9_WEAPON_1 (Armorer)	0
+173	0x00D46CD8	694	1	5000	Tiche Donné Town	ティシュドネの町	提修德内镇	C9_WEAPON_1 (Armorer)	0
+174	0x00D486DC	852	1	5000	Tiche Donné Town	ティシュドネの町	提修德内镇	WEAPON_C_ACC_2 (Armorer)	1
+175	0x00D486F0	876	1	2000	Tiche Donné Town	ティシュドネの町	提修德内镇	WEAPON_C_ACC_2 (Armorer)	1
+176	0x00D48704	877	1	2000	Tiche Donné Town	ティシュドネの町	提修德内镇	WEAPON_C_ACC_2 (Armorer)	1
+177	0x00D46B34	449	1	3000	Coquillage Town	コンキアージの町	康吉亚奇镇	C10_WEAPON_0 (Armorer)	0
+178	0x00D46B48	802	1	5000	Coquillage Town	コンキアージの町	康吉亚奇镇	C10_WEAPON_0 (Armorer)	0
+179	0x00D485C4	643	2	1500	Coquillage Town	コンキアージの町	康吉亚奇镇	WEAPON_C_DEF_1 (Armorer)	1
+180	0x00D485D8	711	2	1500	Coquillage Town	コンキアージの町	康吉亚奇镇	WEAPON_C_DEF_1 (Armorer)	1
+181	0x00D485EC	790	3	1000	Coquillage Town	コンキアージの町	康吉亚奇镇	WEAPON_C_DEF_1 (Armorer)	1
+182	0x00D48600	793	3	1000	Coquillage Town	コンキアージの町	康吉亚奇镇	WEAPON_C_DEF_1 (Armorer)	1
+183	0x00D46D78	315	1	3000	Elzecouvre Town	エルゼクーバの町	歇尔泽科瓦镇	TK_C10_WEAPON (Armorer)	0
+184	0x00D46D8C	879	1	3000	Elzecouvre Town	エルゼクーバの町	歇尔泽科瓦镇	TK_C10_WEAPON (Armorer)	0
+185	0x00D485C4	643	2	1500	Elzecouvre Town	エルゼクーバの町	歇尔泽科瓦镇	WEAPON_C_DEF_1 (Armorer)	1
+186	0x00D485D8	711	2	1500	Elzecouvre Town	エルゼクーバの町	歇尔泽科瓦镇	WEAPON_C_DEF_1 (Armorer)	1
+187	0x00D485EC	790	3	1000	Elzecouvre Town	エルゼクーバの町	歇尔泽科瓦镇	WEAPON_C_DEF_1 (Armorer)	1
+188	0x00D48600	793	3	1000	Elzecouvre Town	エルゼクーバの町	歇尔泽科瓦镇	WEAPON_C_DEF_1 (Armorer)	1
+189	0x00D46DF0	713	1	2000	Saint le Riche Town	サントルリッシュの町	桑德里奇镇	C12_WEAPON_0 (Armorer)	0
+190	0x00D46E04	594	1	5000	Saint le Riche Town	サントルリッシュの町	桑德里奇镇	C12_WEAPON_0 (Armorer)	0
+191	0x00D48664	796	2	1500	Saint le Riche Town	サントルリッシュの町	桑德里奇镇	WEAPON_C_ACC_1 (Armorer)	1
+192	0x00D48678	799	2	1500	Saint le Riche Town	サントルリッシュの町	桑德里奇镇	WEAPON_C_ACC_1 (Armorer)	1
+193	0x00D4868C	818	2	1500	Saint le Riche Town	サントルリッシュの町	桑德里奇镇	WEAPON_C_ACC_1 (Armorer)	1
+194	0x00D486A0	811	2	1500	Saint le Riche Town	サントルリッシュの町	桑德里奇镇	WEAPON_C_ACC_1 (Armorer)	1
+195	0x00D486B4	813	2	1500	Saint le Riche Town	サントルリッシュの町	桑德里奇镇	WEAPON_C_ACC_1 (Armorer)	1
+196	0x00D486C8	815	2	1500	Saint le Riche Town	サントルリッシュの町	桑德里奇镇	WEAPON_C_ACC_1 (Armorer)	1
+197	0x00D46E40	516	1	3000	Chouvre Town	シュヴの町	修卜镇	C13_WEAPON_0 (Armorer)	0
+198	0x00D46E54	389	1	15000	Chouvre Town	シュヴの町	修卜镇	C13_WEAPON_0 (Armorer)	0
+199	0x00D48664	796	2	1500	Chouvre Town	シュヴの町	修卜镇	WEAPON_C_ACC_1 (Armorer)	1
+200	0x00D48678	799	2	1500	Chouvre Town	シュヴの町	修卜镇	WEAPON_C_ACC_1 (Armorer)	1
+201	0x00D4868C	818	2	1500	Chouvre Town	シュヴの町	修卜镇	WEAPON_C_ACC_1 (Armorer)	1
+202	0x00D486A0	811	2	1500	Chouvre Town	シュヴの町	修卜镇	WEAPON_C_ACC_1 (Armorer)	1
+203	0x00D486B4	813	2	1500	Chouvre Town	シュヴの町	修卜镇	WEAPON_C_ACC_1 (Armorer)	1
+204	0x00D486C8	815	2	1500	Chouvre Town	シュヴの町	修卜镇	WEAPON_C_ACC_1 (Armorer)	1
+205	0x00D46E68	943	1	10000	Oevuille Town	ウェブイルの町	韦布伊尔镇	C13_WEAPON_1 (Armorer)	0
+206	0x00D46E7C	944	1	30000	Oevuille Town	ウェブイルの町	韦布伊尔镇	C13_WEAPON_1 (Armorer)	0
+207	0x00D48614	644	1	2000	Oevuille Town	ウェブイルの町	韦布伊尔镇	WEAPON_C_DEF_2 (Armorer)	1
+208	0x00D48628	712	1	2000	Oevuille Town	ウェブイルの町	韦布伊尔镇	WEAPON_C_DEF_2 (Armorer)	1
+209	0x00D4863C	790	3	1000	Oevuille Town	ウェブイルの町	韦布伊尔镇	WEAPON_C_DEF_2 (Armorer)	1
+210	0x00D48650	793	3	1000	Oevuille Town	ウェブイルの町	韦布伊尔镇	WEAPON_C_DEF_2 (Armorer)	1

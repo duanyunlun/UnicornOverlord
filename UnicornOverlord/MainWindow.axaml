@@ -435,17 +435,19 @@
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsFortEditor}" Spacing="8">
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Text="雇佣槽位（1-248）"/><NumericUpDown Value="{Binding RecordId}" Minimum="1" Maximum="248"/></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="可招募职业"/><ComboBox ItemsSource="{Binding ClassChoices}" SelectedItem="{Binding SelectedFortClass, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Text="地图地点"/><ComboBox ItemsSource="{Binding FortLocations}" SelectedItem="{Binding SelectedFortLocation, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="招募位置"/><ComboBox ItemsSource="{Binding FortRecordsAtLocation}" SelectedItem="{Binding SelectedFortRecord, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="可招募职业"/><ComboBox ItemsSource="{Binding ClassChoices}" SelectedItem="{Binding SelectedFortClass, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                     </Grid>
-                    <TextBlock Classes="caption" Text="槽位按游戏表的五大地区连续编号；选择槽位时载入原版职业。仅修改职业，不覆盖亚洲版额外字段。" TextWrapping="Wrap"/>
+                    <TextBlock Classes="caption" Text="按游戏中的据点名称选择招募位置；选择后载入该位置的原版职业。仅修改职业，不覆盖亚洲版额外字段。" TextWrapping="Wrap"/>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsMineEditor}" Spacing="12">
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Text="掉落槽位（0-62）"/><NumericUpDown Value="{Binding RecordId}" Minimum="0" Maximum="62"/></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="掉落物品"/><ComboBox ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding SelectedMineItem, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Text="地图地点"/><ComboBox ItemsSource="{Binding MineLocations}" SelectedItem="{Binding SelectedMineLocation, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="原版掉落"/><ComboBox ItemsSource="{Binding MineRecordsAtLocation}" SelectedItem="{Binding SelectedMineRecord, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="修改为"/><ComboBox ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding SelectedMineItem, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Text="掉落权重"/><NumericUpDown Value="{Binding ValueB}" Minimum="0" Maximum="1000000"/></StackPanel>
@@ -456,15 +458,16 @@
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsShopEditor}" Spacing="12">
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Text="已标定商店槽位（0-1）"/><NumericUpDown Value="{Binding RecordId}" Minimum="0" Maximum="1"/></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="商品"/><ComboBox ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding SelectedShopItem, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Text="地图地点"/><ComboBox ItemsSource="{Binding ShopLocations}" SelectedItem="{Binding SelectedShopLocation, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="原版商品"/><ComboBox ItemsSource="{Binding ShopRecordsAtLocation}" SelectedItem="{Binding SelectedShopRecord, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="修改为"/><ComboBox ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding SelectedShopItem, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Text="库存（-1 为无限）"/><NumericUpDown Value="{Binding ValueB}" Minimum="-1" Maximum="9999"/></StackPanel>
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="金币买价"/><NumericUpDown Value="{Binding ValueC}" Minimum="0" Maximum="65535"/></StackPanel>
                     </Grid>
-                    <TextBlock Classes="caption" Text="普通金币商店按物品共享买价，卖价自动设为买价的 10%；兑换所与共享库存结构不同，本页不会混用。" TextWrapping="Wrap"/>
+                    <TextBlock Classes="caption" Text="先选地图地点，再选该武具店的商品；带“共享库存”的条目会同步影响引用同一库存的城镇。金币买价按物品全局共享，卖价自动设为买价的 10%。" TextWrapping="Wrap"/>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsSixMemberUnits}" Spacing="5">

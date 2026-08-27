@@ -12,8 +12,6 @@ internal static class ModPatchGenerator
 	private const uint FortStride = 0x10;
 	private const uint MineBase = 0x00D523F8;
 	private const uint MineStride = 0x18;
-	private const uint ShopBase = 0x00D46A58;
-	private const uint ShopStride = 0x14;
 	private const uint ItemPriceBase = 0x02716188;
 	private const uint ItemStride = 0xB8;
 	private const uint ClassGrowthBase = 0x00D2DFCC;
@@ -192,8 +190,9 @@ internal static class ModPatchGenerator
 
 	private static List<PatchWrite> GenerateShop(ModModule module)
 	{
-		uint slot = CheckedUInt(module.RecordId, 0, 1, "已标定商店槽位");
-		uint address = ShopBase + slot * ShopStride;
+		if (!ModCatalog.ShopRecords.TryGetValue(module.RecordId, out ModShopRecordInfo? record))
+			throw new InvalidDataException($"商店记录 {module.RecordId} 未校准。");
+		uint address = record.Address;
 		uint itemId = CheckedUInt(module.ValueA, 0, 970, "物品 ID");
 		uint priceAddress = ItemPriceBase + itemId * ItemStride;
 		ushort price = CheckedUShort(module.ValueC, 0, UInt16.MaxValue, "金币买价");

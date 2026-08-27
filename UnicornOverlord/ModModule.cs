@@ -58,6 +58,12 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public IReadOnlyList<ModChoice> SkillChoices => ModCatalog.SkillChoices;
 	public IReadOnlyList<ModChoice> ClassChoices => ModCatalog.ClassChoices;
 	public IReadOnlyList<ModChoice> ItemChoices => ModCatalog.ItemChoices;
+	public IReadOnlyList<ModLocationChoice> FortLocations => ModCatalog.FortLocations;
+	public IReadOnlyList<ModLocationChoice> MineLocations => ModCatalog.MineLocations;
+	public IReadOnlyList<ModLocationChoice> ShopLocations => ModCatalog.ShopLocations;
+	public IReadOnlyList<ModRecordChoice> FortRecordsAtLocation => FilterRecords(ModCatalog.FortRecordChoices, SelectedFortLocation);
+	public IReadOnlyList<ModRecordChoice> MineRecordsAtLocation => FilterRecords(ModCatalog.MineRecordChoices, SelectedMineLocation);
+	public IReadOnlyList<ModRecordChoice> ShopRecordsAtLocation => FilterRecords(ModCatalog.ShopRecordChoices, SelectedShopLocation);
 	public IReadOnlyList<ModChoice> TargetShapes { get; } =
 	[
 		new() { Value = 0, EnglishName = "Original/none", ChineseName = "原始/无目标" },
@@ -73,6 +79,12 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public ICommand RerollCommand { get; }
 	public ModChoice? SelectedSkill { get => ModCatalog.FindSkill(RecordId); set { if (value != null) RecordId = value.Value; } }
 	public ModChoice? SelectedClass { get => ModCatalog.FindClass(RecordId); set { if (value != null) RecordId = value.Value; } }
+	public ModLocationChoice? SelectedFortLocation { get => FindLocation(ModCatalog.FortLocations, ModCatalog.FindFortRecord(RecordId)); set => SelectFirstRecord(value, ModCatalog.FortRecordChoices); }
+	public ModLocationChoice? SelectedMineLocation { get => FindLocation(ModCatalog.MineLocations, ModCatalog.FindMineRecord(RecordId)); set => SelectFirstRecord(value, ModCatalog.MineRecordChoices); }
+	public ModLocationChoice? SelectedShopLocation { get => FindLocation(ModCatalog.ShopLocations, ModCatalog.FindShopRecord(RecordId)); set => SelectFirstRecord(value, ModCatalog.ShopRecordChoices); }
+	public ModRecordChoice? SelectedFortRecord { get => ModCatalog.FindFortRecord(RecordId); set { if (value != null) RecordId = value.Value; } }
+	public ModRecordChoice? SelectedMineRecord { get => ModCatalog.FindMineRecord(RecordId); set { if (value != null) RecordId = value.Value; } }
+	public ModRecordChoice? SelectedShopRecord { get => ModCatalog.FindShopRecord(RecordId); set { if (value != null) RecordId = value.Value; } }
 	public ModChoice? SelectedFortClass { get => ModCatalog.FindClass(ValueA); set { if (value != null) ValueA = value.Value; } }
 	public ModChoice? SelectedMineItem { get => ModCatalog.FindItem(ValueA); set { if (value != null) ValueA = value.Value; } }
 	public ModChoice? SelectedShopItem { get => ModCatalog.FindItem(ValueA); set { if (value != null) ValueA = value.Value; } }
@@ -95,7 +107,8 @@ internal sealed class ModModule : INotifyPropertyChanged
 			if (mRecordId == value) return;
 			mRecordId = value;
 			LoadRecordDefaults();
-			Notify(nameof(RecordId), nameof(SelectedSkill), nameof(SelectedClass), nameof(AbilityTypeText), nameof(PreviewModeDescription));
+			Notify(nameof(RecordId), nameof(SelectedSkill), nameof(SelectedClass), nameof(SelectedFortLocation), nameof(SelectedMineLocation), nameof(SelectedShopLocation),
+				nameof(FortRecordsAtLocation), nameof(MineRecordsAtLocation), nameof(ShopRecordsAtLocation), nameof(SelectedFortRecord), nameof(SelectedMineRecord), nameof(SelectedShopRecord), nameof(AbilityTypeText), nameof(PreviewModeDescription));
 		}
 	}
 	public int ValueA { get => mValueA; set { SetField(ref mValueA, value, nameof(ValueA)); Notify(nameof(SelectedFortClass), nameof(SelectedMineItem), nameof(SelectedShopItem)); } }
@@ -133,7 +146,8 @@ internal sealed class ModModule : INotifyPropertyChanged
 
 	public void RefreshLocalizedChoices()
 	{
-		Notify(nameof(SkillChoices), nameof(ClassChoices), nameof(ItemChoices), nameof(SelectedSkill), nameof(SelectedClass),
+		Notify(nameof(SkillChoices), nameof(ClassChoices), nameof(ItemChoices), nameof(FortLocations), nameof(MineLocations), nameof(ShopLocations), nameof(FortRecordsAtLocation), nameof(MineRecordsAtLocation), nameof(ShopRecordsAtLocation),
+			nameof(SelectedSkill), nameof(SelectedClass), nameof(SelectedFortLocation), nameof(SelectedMineLocation), nameof(SelectedShopLocation), nameof(SelectedFortRecord), nameof(SelectedMineRecord), nameof(SelectedShopRecord),
 			nameof(SelectedFortClass), nameof(SelectedMineItem), nameof(SelectedShopItem), nameof(TargetShapes), nameof(SelectedTargetShape));
 		foreach (ModSkillSlot slot in ActiveSkills.Concat(PassiveSkills))
 		{
@@ -173,11 +187,23 @@ internal sealed class ModModule : INotifyPropertyChanged
 		{
 			ValueA = mine.ValueA; ValueB = mine.ValueB; ValueC = mine.ValueC; ValueD = mine.ValueE;
 		}
-		if (IsShopEditor && ModCatalog.ShopRecords.TryGetValue(RecordId, out ModRecordInfo? shop))
+		if (IsShopEditor && ModCatalog.ShopRecords.TryGetValue(RecordId, out ModShopRecordInfo? shop))
 		{
-			ValueA = shop.ValueA; ValueB = shop.ValueB; ValueC = shop.ValueC;
+			ValueA = shop.ItemId; ValueB = shop.Stock; ValueC = shop.Price;
 		}
 	}
+
+	private static ModLocationChoice? FindLocation(IReadOnlyList<ModLocationChoice> locations, ModRecordChoice? record) =>
+		record == null ? null : locations.FirstOrDefault(location => location.Key == record.LocationKey);
+
+	private void SelectFirstRecord(ModLocationChoice? location, IReadOnlyList<ModRecordChoice> records)
+	{
+		ModRecordChoice? first = location == null ? null : records.FirstOrDefault(record => record.LocationKey == location.Key);
+		if (first != null) RecordId = first.Value;
+	}
+
+	private static IReadOnlyList<ModRecordChoice> FilterRecords(IReadOnlyList<ModRecordChoice> records, ModLocationChoice? location) =>
+		location == null ? [] : records.Where(record => record.LocationKey == location.Key).ToArray();
 
 	private static ObservableCollection<ModSkillSlot> CreateSkillSlots(bool passive) =>
 		[.. Enumerable.Range(0, 4).Select(index => new ModSkillSlot { Index = index, IsPassive = passive, Level = 1 })];

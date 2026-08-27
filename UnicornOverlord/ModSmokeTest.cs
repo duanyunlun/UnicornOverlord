@@ -24,8 +24,17 @@ internal static class ModSmokeTest
 		ModCatalog.RefreshLocalizedNames();
 		Require(ModCatalog.FindSkill(372)?.Name == "Abyssal Miasma", "技能名称没有跟随编辑器语言切换为英文。");
 		Require(ModCatalog.FindClass(1)?.Name == "Lord", "职业名称没有跟随编辑器语言切换为英文。");
+		Require(ModCatalog.FortRecordChoices.Count == 248 && ModCatalog.FindFortRecord(1)?.DisplayName.StartsWith("Fort Soligie", StringComparison.Ordinal) == true, "据点名称映射不完整。");
+		Require(ModCatalog.MineRecordChoices.Count == 63 && ModCatalog.FindMineRecord(0)?.DisplayName.StartsWith("Cornia Quarry", StringComparison.Ordinal) == true, "采掘场名称映射不完整。");
+		Require(ModCatalog.ShopLocations.Count == 25 && ModCatalog.ShopRecordChoices.Count == 211, "科尔尼亚武具店地点或商品映射不完整。");
+		Require(ModCatalog.FindShopRecord(0)?.DisplayName.StartsWith("Palevia Town · Armorer", StringComparison.Ordinal) == true, "商店名称映射不正确。");
+		Require(ModCatalog.FortRecordChoices.Select(choice => choice.Value).SequenceEqual(Enumerable.Range(1, 248)), "据点名称映射存在重复或缺失记录。");
+		Require(ModCatalog.MineRecordChoices.Select(choice => choice.Value).SequenceEqual(Enumerable.Range(0, 63)), "采矿名称映射存在重复或缺失记录。");
+		Require(ModCatalog.ShopRecordChoices.Select(choice => choice.Value).SequenceEqual(Enumerable.Range(0, 211)), "商店名称映射存在重复或缺失记录。");
 		ApplicationSettings.Language = originalLanguage;
 		ModCatalog.RefreshLocalizedNames();
+		Require(ModCatalog.FindFortRecord(1)?.DisplayName.StartsWith("索力吉堡垒", StringComparison.Ordinal) == true, "据点名称没有跟随编辑器语言切换为中文。");
+		Require(ModCatalog.FindShopRecord(0)?.DisplayName.StartsWith("帕雷比亚镇 · 武具店", StringComparison.Ordinal) == true, "商店名称没有跟随编辑器语言切换为中文。");
 
 		ModModule ability = modules.Single(module => module.Key == "ability_editor");
 		String abilityPatch = ModPatchGenerator.Generate(ability, ModTarget.Asia);
@@ -42,9 +51,24 @@ internal static class ModSmokeTest
 		classEditor.RecordId = 1;
 
 		ModModule mine = modules.Single(module => module.Key == "mine_editor");
+		Require(mine.MineLocations.Count == 5 && mine.MineRecordsAtLocation.Count == 11, "采矿地点级联没有载入科尔尼亚采掘场。");
+		mine.SelectedMineLocation = mine.MineLocations[1];
+		Require(mine.RecordId == 11 && mine.MineRecordsAtLocation.Count == 11, "切换采矿地点时没有筛选对应掉落记录。");
 		mine.RecordId = 2;
 		Require(mine.ValueA == 5 && mine.ValueB == 3 && mine.ValueC == 150 && mine.ValueD == 1, "切换采矿槽位时没有载入原版记录。");
 		mine.RecordId = 0;
+
+		ModModule fort = modules.Single(module => module.Key == "fort_editor");
+		Require(fort.FortLocations.Count == 63 && fort.FortRecordsAtLocation.Count == 3, "据点地点级联没有载入索力吉堡垒。");
+		fort.SelectedFortLocation = fort.FortLocations[1];
+		Require(fort.RecordId == 4 && fort.FortRecordsAtLocation.Count == 3, "切换据点时没有筛选对应招募位置。");
+
+		ModModule shop = modules.Single(module => module.Key == "shop_editor");
+		Require(shop.ShopRecordsAtLocation.Count == 7, "帕雷比亚镇武具店应显示 2 个专属商品和 5 个共享商品。");
+		shop.SelectedShopLocation = ModCatalog.ShopLocations.Single(location => location.EnglishName.StartsWith("Ouvrir Harbor", StringComparison.Ordinal));
+		Require(shop.ShopRecordsAtLocation.Count == 7 && shop.ValueA == 386, "切换商店地点时没有载入该地点首个原版商品。");
+		String shopPatch = ModPatchGenerator.Generate(shop, ModTarget.Asia);
+		Require(shopPatch.Contains("00D46B10", StringComparison.Ordinal), "乌夫里尔武具店商品地址不正确。");
 
 		ModModule randomizer = modules.Single(module => module.Key == "character_randomizer");
 		String tiered = ModPatchGenerator.Generate(randomizer, ModTarget.Asia);

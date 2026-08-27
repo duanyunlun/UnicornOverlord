@@ -412,8 +412,8 @@
                       <TextBlock Grid.Column="1" Classes="option-title" Text="AP"/>
                       <TextBlock Grid.Column="2" Classes="option-title" Text="PP"/>
                       <local:ModSearchPicker Grid.Row="1" ItemsSource="{Binding ClassChoices}" SelectedItem="{Binding SelectedClass, Mode=TwoWay}"/>
-                      <NumericUpDown Grid.Row="1" Grid.Column="1" Height="40" Value="{Binding ValueA}" Minimum="1" Maximum="4"/>
-                      <NumericUpDown Grid.Row="1" Grid.Column="2" Height="40" Value="{Binding ValueB}" Minimum="1" Maximum="4"/>
+                      <NumericUpDown Grid.Row="1" Grid.Column="1" Height="40" VerticalContentAlignment="Center" Value="{Binding ValueA}" Minimum="1" Maximum="4"/>
+                      <NumericUpDown Grid.Row="1" Grid.Column="2" Height="40" VerticalContentAlignment="Center" Value="{Binding ValueB}" Minimum="1" Maximum="4"/>
                     </Grid>
                     <TextBlock FontWeight="SemiBold" Text="每级成长率（100 为基准）"/>
                     <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">

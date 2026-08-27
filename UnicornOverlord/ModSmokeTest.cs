@@ -68,6 +68,16 @@ internal static class ModSmokeTest
 
 		ModModule mine = modules.Single(module => module.Key == "mine_editor");
 		Require(mine.MineLocations.Count == 5 && mine.MineRecordsAtLocation.Count == 11, "采矿地点级联没有载入科尔尼亚采掘场。");
+		foreach (ModLocationChoice location in mine.MineLocations)
+		{
+			mine.SelectedMineLocation = location;
+			Require(mine.SelectedMineLocation == location && mine.SelectedMineRecord != null && mine.MineRecordsAtLocation.Count > 0,
+				$"切换到 {location.DisplayName} 时地点或原版掉落为空。");
+			ModRecordChoice last = mine.MineRecordsAtLocation[^1];
+			mine.SelectedMineRecord = last;
+			Require(mine.SelectedMineLocation == location && mine.SelectedMineRecord == last,
+				$"切换 {location.DisplayName} 的原版掉落后地点选择丢失。");
+		}
 		mine.SelectedMineLocation = mine.MineLocations[1];
 		Require(mine.RecordId == 11 && mine.MineRecordsAtLocation.Count == 11, "切换采矿地点时没有筛选对应掉落记录。");
 		mine.RecordId = 2;

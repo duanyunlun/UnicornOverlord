@@ -360,19 +360,19 @@
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsAbilityEditor}" Spacing="10">
-                    <Grid ColumnDefinitions="160,*,*" ColumnSpacing="10">
+                    <Grid ColumnDefinitions="*,*,*,*,*,*" ColumnSpacing="10">
                       <StackPanel Spacing="5">
                         <TextBlock Classes="option-title" Text="技能筛选"/>
-                        <ComboBox ItemsSource="{Binding AbilityFilters}" SelectedIndex="{Binding AbilityFilterIndex, Mode=TwoWay}" />
+                        <ComboBox Height="40" ItemsSource="{Binding AbilityFilters}" SelectedIndex="{Binding AbilityFilterIndex, Mode=TwoWay}" />
                       </StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5">
+                      <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Spacing="5">
                         <TextBlock Classes="option-title" Text="技能"/>
                         <local:ModSearchPicker ItemsSource="{Binding FilteredSkillChoices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}"/>
                       </StackPanel>
-                      <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Bottom" Margin="0,0,0,8">
-                        <TextBlock Classes="option-title" Text="固有类型" VerticalAlignment="Center"/>
-                        <TextBlock Text="主动技能（AP）" Foreground="#D97706" FontWeight="SemiBold" VerticalAlignment="Center" IsVisible="{Binding IsActiveAbility}"/>
-                        <TextBlock Text="被动技能（PP）" Foreground="#0891B2" FontWeight="SemiBold" VerticalAlignment="Center" IsVisible="{Binding IsPassiveAbility}"/>
+                      <StackPanel Grid.Column="3" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="10" VerticalAlignment="Bottom" Margin="0,0,0,8">
+                        <TextBlock Classes="option-title" FontSize="16" Text="固有类型" VerticalAlignment="Center"/>
+                        <TextBlock FontSize="16" Text="主动技能（AP）" Foreground="#D97706" FontWeight="SemiBold" VerticalAlignment="Center" IsVisible="{Binding IsActiveAbility}"/>
+                        <TextBlock FontSize="16" Text="被动技能（PP）" Foreground="#0891B2" FontWeight="SemiBold" VerticalAlignment="Center" IsVisible="{Binding IsPassiveAbility}"/>
                       </StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*,*,*,*,*" ColumnSpacing="10">

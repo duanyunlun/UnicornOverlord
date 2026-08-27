@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 
 namespace UnicornOverlord;
 
@@ -71,11 +72,19 @@ public partial class ModSearchPicker : UserControl
 		if (mChoices == null || mSearchBox == null) return;
 		String query = mSearchBox.Text?.Trim() ?? String.Empty;
 		object[] visibleItems = query.Length == 0 ? mItems : mItems.Where(item => Matches(query, item)).ToArray();
+		mChoices.IsDropDownOpen = false;
 		mUpdating = true;
 		mChoices.ItemsSource = visibleItems;
 		mChoices.SelectedItem = visibleItems.Contains(SelectedItem) ? SelectedItem : null;
 		mUpdating = false;
-		if (openDropDown && query.Length > 0) mChoices.IsDropDownOpen = true;
+		if (openDropDown && query.Length > 0)
+		{
+			Dispatcher.UIThread.Post(() =>
+			{
+				if (String.Equals(mSearchBox.Text?.Trim(), query, StringComparison.Ordinal) && ReferenceEquals(mChoices.ItemsSource, visibleItems))
+					mChoices.IsDropDownOpen = true;
+			}, DispatcherPriority.Background);
+		}
 	}
 
 	private static String GetDisplayText(object? value) => value switch

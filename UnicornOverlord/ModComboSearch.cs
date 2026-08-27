@@ -1,7 +1,6 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using Avalonia.Controls;
-using Avalonia.Input;
 
 namespace UnicornOverlord;
 
@@ -25,12 +24,6 @@ internal static class ModComboSearch
 		comboBox.MinHeight = 32;
 		comboBox.SelectionChanged += (_, _) => SyncSelectedText(comboBox, state);
 		comboBox.LostFocus += (_, _) => CommitSearchText(comboBox, state);
-		comboBox.KeyDown += (_, args) =>
-		{
-			if (args.Key != Key.Enter) return;
-			CommitSearchText(comboBox, state);
-			args.Handled = true;
-		};
 		comboBox.PropertyChanged += (_, args) =>
 		{
 			if (args.Property == ComboBox.TextProperty && !state.UpdatingText) SelectUniqueMatch(comboBox);

@@ -31,7 +31,9 @@ public partial class ModSearchPicker : UserControl
 		mChoices.SelectionChanged += (_, _) =>
 		{
 			if (mUpdating) return;
+			mUpdating = true;
 			SelectedItem = mChoices.SelectedItem;
+			mUpdating = false;
 		};
 	}
 

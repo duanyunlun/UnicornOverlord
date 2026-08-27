@@ -4,6 +4,11 @@ using System.Windows.Input;
 
 namespace UnicornOverlord;
 
+internal sealed record ModCategory(String Name, IReadOnlyList<ModModule> Modules)
+{
+	public bool IsTextEditor => Modules.Count == 1 && Modules[0].IsTextEditor;
+}
+
 internal sealed class ModModule : INotifyPropertyChanged
 {
 	private bool mIsSelected;
@@ -41,8 +46,6 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public String? TemplateFile { get; init; }
 	public String? Warning { get; init; }
 	public String? CalibrationState { get; init; }
-	public String? NavigationCategoryHeader { get; init; }
-	public bool HasNavigationCategoryHeader => !String.IsNullOrEmpty(NavigationCategoryHeader);
 	public String StateText => CalibrationState ?? (IsAvailable ? "已接入" : "待解析");
 	public bool IsAbilityEditor => Key == "ability_editor";
 	public bool IsBattlePreview => Key == "battle_preview";

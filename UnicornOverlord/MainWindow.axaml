@@ -367,11 +367,17 @@
                       </StackPanel>
                       <StackPanel Grid.Column="1" Spacing="5">
                         <TextBlock Classes="option-title" Text="技能"/>
-                        <local:ModSearchBox ItemsSource="{Binding FilteredSkillChoices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}" MaxDropDownHeight="360">
-                          <local:ModSearchBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}" /></DataTemplate></local:ModSearchBox.ItemTemplate>
-                        </local:ModSearchBox>
+                        <ComboBox Loaded="OnModSearchLoaded" ItemsSource="{Binding FilteredSkillChoices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}" MaxDropDownHeight="360">
+                          <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}" /></DataTemplate></ComboBox.ItemTemplate>
+                        </ComboBox>
                       </StackPanel>
-                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="固有类型"/><TextBox Text="{Binding AbilityTypeText}" IsReadOnly="True"/><TextBlock Classes="caption" Text="主动/被动由技能记录决定，不能改成另一种类型。" TextWrapping="Wrap"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5">
+                        <TextBlock Classes="option-title" Text="固有类型"/>
+                        <Border Background="#F3F4F6" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4" Padding="10,8" MinHeight="32">
+                          <TextBlock Text="{Binding AbilityTypeText}" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Classes="caption" Text="主动/被动由技能记录决定，不能改成另一种类型。" TextWrapping="Wrap"/>
+                      </StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*,*,*,*,*" ColumnSpacing="10">
                       <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="AP / PP 消耗"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="10"/></StackPanel>
@@ -400,7 +406,7 @@
 
                   <StackPanel IsVisible="{Binding IsClassEditor}" Spacing="12">
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="职业"/><local:ModSearchBox ItemsSource="{Binding ClassChoices}" SelectedItem="{Binding SelectedClass, Mode=TwoWay}" MaxDropDownHeight="360"><local:ModSearchBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></local:ModSearchBox.ItemTemplate></local:ModSearchBox></StackPanel>
+                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="职业"/><ComboBox Loaded="OnModSearchLoaded" ItemsSource="{Binding ClassChoices}" SelectedItem="{Binding SelectedClass, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="AP"/><NumericUpDown Value="{Binding ValueA}" Minimum="1" Maximum="4"/></StackPanel>
                       <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="PP"/><NumericUpDown Value="{Binding ValueB}" Minimum="1" Maximum="4"/></StackPanel>
                     </Grid>
@@ -421,13 +427,13 @@
                       <StackPanel Spacing="6">
                         <TextBlock FontWeight="SemiBold" Text="主动技能"/>
                         <ItemsControl ItemsSource="{Binding ActiveSkills}">
-                          <ItemsControl.ItemTemplate><DataTemplate><Grid ColumnDefinitions="70,*,82" ColumnSpacing="6" Margin="0,0,0,6"><TextBlock Classes="option-title" Text="{Binding SlotName}" VerticalAlignment="Center"/><local:ModSearchBox Grid.Column="1" ItemsSource="{Binding Choices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}" MaxDropDownHeight="300"><local:ModSearchBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></local:ModSearchBox.ItemTemplate></local:ModSearchBox><NumericUpDown Grid.Column="2" Value="{Binding Level}" Minimum="1" Maximum="99" IsEnabled="{Binding CanEditLevel}" ToolTip.Tip="习得等级；第一项固定 1 级"/></Grid></DataTemplate></ItemsControl.ItemTemplate>
+                          <ItemsControl.ItemTemplate><DataTemplate><Grid ColumnDefinitions="70,*,82" ColumnSpacing="6" Margin="0,0,0,6"><TextBlock Classes="option-title" Text="{Binding SlotName}" VerticalAlignment="Center"/><ComboBox Loaded="OnModSearchLoaded" Grid.Column="1" ItemsSource="{Binding Choices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}" MaxDropDownHeight="300"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox><NumericUpDown Grid.Column="2" Value="{Binding Level}" Minimum="1" Maximum="99" IsEnabled="{Binding CanEditLevel}" ToolTip.Tip="习得等级；第一项固定 1 级"/></Grid></DataTemplate></ItemsControl.ItemTemplate>
                         </ItemsControl>
                       </StackPanel>
                       <StackPanel Grid.Column="1" Spacing="6">
                         <TextBlock FontWeight="SemiBold" Text="被动技能"/>
                         <ItemsControl ItemsSource="{Binding PassiveSkills}">
-                          <ItemsControl.ItemTemplate><DataTemplate><Grid ColumnDefinitions="70,*,82" ColumnSpacing="6" Margin="0,0,0,6"><TextBlock Classes="option-title" Text="{Binding SlotName}" VerticalAlignment="Center"/><local:ModSearchBox Grid.Column="1" ItemsSource="{Binding Choices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}" MaxDropDownHeight="300"><local:ModSearchBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></local:ModSearchBox.ItemTemplate></local:ModSearchBox><NumericUpDown Grid.Column="2" Value="{Binding Level}" Minimum="1" Maximum="99" IsEnabled="{Binding CanEditLevel}" ToolTip.Tip="习得等级；第一项固定 1 级"/></Grid></DataTemplate></ItemsControl.ItemTemplate>
+                          <ItemsControl.ItemTemplate><DataTemplate><Grid ColumnDefinitions="70,*,82" ColumnSpacing="6" Margin="0,0,0,6"><TextBlock Classes="option-title" Text="{Binding SlotName}" VerticalAlignment="Center"/><ComboBox Loaded="OnModSearchLoaded" Grid.Column="1" ItemsSource="{Binding Choices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}" MaxDropDownHeight="300"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox><NumericUpDown Grid.Column="2" Value="{Binding Level}" Minimum="1" Maximum="99" IsEnabled="{Binding CanEditLevel}" ToolTip.Tip="习得等级；第一项固定 1 级"/></Grid></DataTemplate></ItemsControl.ItemTemplate>
                         </ItemsControl>
                       </StackPanel>
                     </Grid>
@@ -436,9 +442,9 @@
 
                   <StackPanel IsVisible="{Binding IsFortEditor}" Spacing="8">
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="地图地点"/><local:ModSearchBox ItemsSource="{Binding FortLocations}" SelectedItem="{Binding SelectedFortLocation, Mode=TwoWay}" MaxDropDownHeight="420"><local:ModSearchBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></local:ModSearchBox.ItemTemplate></local:ModSearchBox></StackPanel>
+                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="地图地点"/><ComboBox Loaded="OnModSearchLoaded" ItemsSource="{Binding FortLocations}" SelectedItem="{Binding SelectedFortLocation, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="招募位置"/><ComboBox ItemsSource="{Binding FortRecordsAtLocation}" SelectedItem="{Binding SelectedFortRecord, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
-                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="可招募职业"/><local:ModSearchBox ItemsSource="{Binding ClassChoices}" SelectedItem="{Binding SelectedFortClass, Mode=TwoWay}" MaxDropDownHeight="360"><local:ModSearchBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></local:ModSearchBox.ItemTemplate></local:ModSearchBox></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="可招募职业"/><ComboBox Loaded="OnModSearchLoaded" ItemsSource="{Binding ClassChoices}" SelectedItem="{Binding SelectedFortClass, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                     </Grid>
                     <TextBlock Classes="caption" Text="按游戏中的据点名称选择招募位置；选择后载入该位置的原版职业。仅修改职业，不覆盖亚洲版额外字段。" TextWrapping="Wrap"/>
                   </StackPanel>
@@ -446,8 +452,8 @@
                   <StackPanel IsVisible="{Binding IsMineEditor}" Spacing="12">
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="地图地点"/><ComboBox ItemsSource="{Binding MineLocations}" SelectedItem="{Binding SelectedMineLocation, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="原版掉落"/><local:ModSearchBox ItemsSource="{Binding MineRecordsAtLocation}" SelectedItem="{Binding SelectedMineRecord, Mode=TwoWay}" MaxDropDownHeight="420"><local:ModSearchBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DetailDisplayName}"/></DataTemplate></local:ModSearchBox.ItemTemplate></local:ModSearchBox></StackPanel>
-                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="修改为"/><local:ModSearchBox ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding SelectedMineItem, Mode=TwoWay}" MaxDropDownHeight="360"><local:ModSearchBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></local:ModSearchBox.ItemTemplate></local:ModSearchBox></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="原版掉落"/><ComboBox Loaded="OnModSearchLoaded" ItemsSource="{Binding MineRecordsAtLocation}" SelectedItem="{Binding SelectedMineRecord, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="修改为"/><ComboBox Loaded="OnModSearchLoaded" ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding SelectedMineItem, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="掉落权重"/><NumericUpDown Value="{Binding ValueB}" Minimum="0" Maximum="1000000"/></StackPanel>
@@ -459,9 +465,9 @@
 
                   <StackPanel IsVisible="{Binding IsShopEditor}" Spacing="12">
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="地图地点"/><local:ModSearchBox ItemsSource="{Binding ShopLocations}" SelectedItem="{Binding SelectedShopLocation, Mode=TwoWay}" MaxDropDownHeight="420"><local:ModSearchBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></local:ModSearchBox.ItemTemplate></local:ModSearchBox></StackPanel>
+                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="地图地点"/><ComboBox Loaded="OnModSearchLoaded" ItemsSource="{Binding ShopLocations}" SelectedItem="{Binding SelectedShopLocation, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="原版商品"/><ComboBox ItemsSource="{Binding ShopRecordsAtLocation}" SelectedItem="{Binding SelectedShopRecord, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
-                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="修改为"/><local:ModSearchBox ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding SelectedShopItem, Mode=TwoWay}" MaxDropDownHeight="360"><local:ModSearchBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></local:ModSearchBox.ItemTemplate></local:ModSearchBox></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="修改为"/><ComboBox Loaded="OnModSearchLoaded" ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding SelectedShopItem, Mode=TwoWay}" MaxDropDownHeight="360"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="库存（-1 为无限）"/><NumericUpDown Value="{Binding ValueB}" Minimum="-1" Maximum="9999"/></StackPanel>
@@ -477,9 +483,9 @@
 
                   <StackPanel IsVisible="{Binding IsTypeMatchups}" Spacing="10">
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="骑兵对步兵"/><local:ModSearchBox ItemsSource="{Binding MatchupValues}" SelectedItem="{Binding ValueD}"/></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="弓兵对飞行"/><local:ModSearchBox ItemsSource="{Binding MatchupValues}" SelectedItem="{Binding ValueE}"/></StackPanel>
-                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="飞龙/狮鹫对骑兵"/><local:ModSearchBox ItemsSource="{Binding MatchupValues}" SelectedItem="{Binding ValueF}"/></StackPanel>
+                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="骑兵对步兵"/><ComboBox Loaded="OnModSearchLoaded" ItemsSource="{Binding MatchupValues}" SelectedItem="{Binding ValueD}"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="弓兵对飞行"/><ComboBox Loaded="OnModSearchLoaded" ItemsSource="{Binding MatchupValues}" SelectedItem="{Binding ValueE}"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="飞龙/狮鹫对骑兵"/><ComboBox Loaded="OnModSearchLoaded" ItemsSource="{Binding MatchupValues}" SelectedItem="{Binding ValueF}"/></StackPanel>
                     </Grid>
                     <TextBlock Classes="caption" Text="三项倍率作用于对应兵种的每一次攻击，与技能自身的类型加成相乘。例如骑兵对步兵设为 1 表示取消固有双倍克制。" TextWrapping="Wrap"/>
                   </StackPanel>

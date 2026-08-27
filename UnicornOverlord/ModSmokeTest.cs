@@ -40,17 +40,19 @@ internal static class ModSmokeTest
 		String abilityPatch = ModPatchGenerator.Generate(ability, ModTarget.Asia);
 		Require(ability.AbilityTypeText == "被动技能（PP）", "技能 372 应从游戏数据识别为被动技能。");
 		Require(abilityPatch.Contains("027A38F4", StringComparison.Ordinal), "被动技能消耗必须写入 PP 字段。");
-		Require(ModSearchBox.Matches("幽世瘴气", ability.SelectedSkill), "长下拉框必须能按当前语言的完整名称匹配技能。");
-		Require(ModSearchBox.Matches("372", ability.SelectedSkill), "长下拉框必须能按纯 ID 匹配技能。");
-		Require(!ModSearchBox.Matches("3720", ability.SelectedSkill), "长下拉框不能把无关 ID 匹配为技能。");
+		Require(ModComboSearch.Matches("幽世瘴气", ability.SelectedSkill), "长下拉框必须能按当前语言的完整名称匹配技能。");
+		Require(ModComboSearch.Matches("372", ability.SelectedSkill), "长下拉框必须能按纯 ID 匹配技能。");
+		Require(!ModComboSearch.Matches("3720", ability.SelectedSkill), "长下拉框不能把无关 ID 匹配为技能。");
 		ability.AbilityFilterIndex = 1;
 		Require(ability.FilteredSkillChoices.Count == ModCatalog.ActiveSkillChoicesWithoutEmpty.Count &&
 			ability.FilteredSkillChoices.All(choice => ModCatalog.ActiveSkillChoicesWithoutEmpty.Contains(choice)), "主动技能筛选结果不完整。");
 		Require(!ModCatalog.Skills.First(skill => skill.Choice.Value == ability.RecordId).IsPassive, "切换到主动技能筛选后没有选择有效的主动技能。");
+		Require(ability.AbilityTypeText == "主动技能（AP）", "主动技能筛选后固有类型没有同步。");
 		ability.AbilityFilterIndex = 2;
 		Require(ability.FilteredSkillChoices.Count == ModCatalog.PassiveSkillChoicesWithoutEmpty.Count &&
 			ability.FilteredSkillChoices.All(choice => ModCatalog.PassiveSkillChoicesWithoutEmpty.Contains(choice)), "被动技能筛选结果不完整。");
 		Require(ModCatalog.Skills.First(skill => skill.Choice.Value == ability.RecordId).IsPassive, "切换到被动技能筛选后没有选择有效的被动技能。");
+		Require(ability.AbilityTypeText == "被动技能（PP）", "被动技能筛选后固有类型没有同步。");
 		ability.AbilityFilterIndex = 0;
 		ability.RecordId = 372;
 

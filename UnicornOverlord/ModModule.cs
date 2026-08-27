@@ -104,7 +104,7 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public ModChoice? SelectedMineItem { get => ModCatalog.FindItem(ValueA); set { if (value != null) ValueA = value.Value; } }
 	public ModChoice? SelectedShopItem { get => ModCatalog.FindItem(ValueA); set { if (value != null) ValueA = value.Value; } }
 	public ModChoice? SelectedTargetShape { get => TargetShapes.FirstOrDefault(choice => choice.Value == ValueC); set { if (value != null) ValueC = value.Value; } }
-	public String AbilityTypeText => ModCatalog.Skills.FirstOrDefault(skill => skill.Choice.Value == RecordId)?.TypeText ?? "未知";
+	public String AbilityTypeText => mValueN == 1 ? "被动技能（PP）" : "主动技能（AP）";
 	public String PreviewModeDescription => RecordId == 1
 		? "后台模拟 5 次战斗并显示平均结果，只给出胜负趋势，不再泄露确定结果。"
 		: "完全隐藏战斗预览条；编队与战术判断不再得到结果提示。";

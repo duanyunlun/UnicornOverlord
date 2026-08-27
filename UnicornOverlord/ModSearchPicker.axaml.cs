@@ -95,12 +95,10 @@ public partial class ModSearchPicker : UserControl
 
 	private static IEnumerable<String> GetSearchTerms(object item) => item switch
 	{
-		ModChoice choice => [choice.Value.ToString(CultureInfo.InvariantCulture), choice.Name, choice.DisplayName, choice.EnglishName, choice.ChineseName],
+		ModChoice choice => [choice.Name, choice.EnglishName, choice.ChineseName],
 		ModLocationChoice location => [location.DisplayName, location.EnglishName, location.JapaneseName, location.ChineseName],
 		ModRecordChoice record =>
 		[
-			record.Value.ToString(CultureInfo.InvariantCulture),
-			record.Detail.Value.ToString(CultureInfo.InvariantCulture),
 			record.DetailDisplayName,
 			record.DisplayName,
 			record.Detail.Name,

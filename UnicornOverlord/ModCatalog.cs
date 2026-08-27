@@ -12,7 +12,7 @@ internal sealed class ModChoice : INotifyPropertyChanged
 	public required String ChineseName { get; init; }
 	public NameValueInfo? Source { get; init; }
 	public String Name => Source?.Name ?? (ApplicationSettings.Language == 0 && !String.IsNullOrWhiteSpace(EnglishName) ? EnglishName : ChineseName);
-	public String DisplayName => $"{Name} (ID {Value})";
+	public String DisplayName => Name;
 	public void RefreshName()
 	{
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));

@@ -409,8 +409,8 @@
                   <StackPanel IsVisible="{Binding IsClassEditor}" Spacing="12">
                     <Grid ColumnDefinitions="Auto,70,70,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="职业"/><local:ModSearchPicker ItemsSource="{Binding ClassChoices}" SelectedItem="{Binding SelectedClass, Mode=TwoWay}"/></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="AP"/><NumericUpDown Height="40" Value="{Binding ValueA}" Minimum="1" Maximum="10"/></StackPanel>
-                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="PP"/><NumericUpDown Height="40" Value="{Binding ValueB}" Minimum="1" Maximum="10"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="AP"/><NumericUpDown Height="40" Value="{Binding ValueA}" Minimum="1" Maximum="4"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="PP"/><NumericUpDown Height="40" Value="{Binding ValueB}" Minimum="1" Maximum="4"/></StackPanel>
                     </Grid>
                     <TextBlock FontWeight="SemiBold" Text="每级成长率（100 为基准）"/>
                     <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">

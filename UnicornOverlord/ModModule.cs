@@ -51,7 +51,9 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public bool IsShopEditor => Key == "shop_editor";
 	public bool IsSixMemberUnits => Key == "six_member_units";
 	public bool IsTypeMatchups => Key == "type_matchups";
-	public bool ShowStandardEnableToggle => !IsSixMemberUnits;
+	public bool IsTextEditor => Key == "text_editor";
+	public bool ShowSelectionCheckBox => !IsTextEditor;
+	public bool ShowStandardEnableToggle => !IsSixMemberUnits && !IsTextEditor;
 	public bool HasNoOptions => Key == "battle_timer_freeze";
 	public IReadOnlyList<String> PreviewModes { get; } = ["完全隐藏", "不完美预览"];
 	public IReadOnlyList<double> MatchupValues { get; } = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];

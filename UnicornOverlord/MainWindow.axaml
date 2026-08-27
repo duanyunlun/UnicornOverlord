@@ -321,19 +321,16 @@
 		</Border>
 	  </TabItem>
 
-      <TabItem Classes="workspace workspace-mod" Header="MOD 制作">
-		<Border Background="#F0F6F4" Padding="10,6,10,0">
-		  <TabControl SelectedIndex="{Binding ModWorkspaceIndex, Mode=TwoWay}">
-      <TabItem Classes="section" Header="玩法 MOD">
-        <Border Classes="panel" Margin="0,8,0,0">
-          <Grid>
-            <Grid ColumnDefinitions="320,*">
+	      <TabItem Classes="workspace workspace-mod" Header="MOD 制作">
+			<Border Background="#F0F6F4" Padding="10,6,10,0">
+	        <Border Classes="panel" Margin="0,8,0,0">
+	          <Grid ColumnDefinitions="320,*">
               <ListBox ItemsSource="{Binding ModModules}" SelectedItem="{Binding SelectedMod, Mode=TwoWay}"
                        BorderThickness="0,0,1,0" BorderBrush="{StaticResource BorderBrush}">
                 <ListBox.ItemTemplate>
                   <DataTemplate>
-                    <Grid ColumnDefinitions="Auto,58,*" ColumnSpacing="10" MinHeight="62">
-                      <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalAlignment="Center" />
+	                    <Grid ColumnDefinitions="Auto,58,*" ColumnSpacing="10" MinHeight="62">
+	                      <CheckBox IsVisible="{Binding ShowSelectionCheckBox}" IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalAlignment="Center" />
                       <TextBlock Grid.Column="1" Text="{Binding Category}" Foreground="{StaticResource AccentBrush}"
                                  FontWeight="SemiBold" VerticalAlignment="Center" />
                       <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center">
@@ -345,7 +342,7 @@
                 </ListBox.ItemTemplate>
               </ListBox>
 
-              <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Padding="0,0,12,0">
+	              <ScrollViewer Grid.Column="1" IsVisible="{Binding IsGameplayModWorkspace}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Padding="0,0,12,0">
                 <StackPanel Margin="24,18" Spacing="16" DataContext="{Binding SelectedMod}">
                   <StackPanel Spacing="4">
                     <TextBlock Classes="section-title" Text="{Binding Name}" />
@@ -481,15 +478,7 @@
                   <TextBlock IsVisible="{Binding HasNoOptions}" Classes="caption" Text="此模块本身只有启用或停用，没有额外参数。"/>
                 </StackPanel>
               </ScrollViewer>
-            </Grid>
-
-          </Grid>
-        </Border>
-      </TabItem>
-
-	  <TabItem Classes="section" Header="文本 MOD">
-		<Border Classes="panel" Margin="0,8,0,0" DataContext="{Binding TextEditor}">
-		  <Grid RowDefinitions="Auto,Auto,*">
+			  <Grid Grid.Column="1" IsVisible="{Binding $parent[Window].DataContext.IsTextModWorkspace}" DataContext="{Binding TextEditor}" RowDefinitions="Auto,Auto,*">
 			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" Margin="18,14">
 			  <StackPanel Spacing="3">
 				<TextBlock Classes="section-title" Text="文本编辑器" />
@@ -565,12 +554,11 @@
 			  </ScrollViewer>
 			</Grid>
 
-		  </Grid>
-		</Border>
-	  </TabItem>
-		  </TabControl>
-		</Border>
-	  </TabItem>
+			  </Grid>
+	        </Grid>
+			</Border>
+			</Border>
+		  </TabItem>
 	</TabControl>
 
     <Border Grid.Row="2" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="16,8">

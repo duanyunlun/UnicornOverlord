@@ -33,7 +33,6 @@ internal class ViewModel : INotifyPropertyChanged
 	private String mFileLocation = "当前没有活动文件";
 	private String mStatusMessage;
 	private int mWorkspaceIndex;
-	private int mModWorkspaceIndex;
 	private int mLanguageIndex;
 	private int mSelectedCharacterIndex = -1;
 	private int mItemCountTarget = 99;
@@ -70,16 +69,29 @@ internal class ViewModel : INotifyPropertyChanged
 	public IReadOnlyList<String> Languages { get; } = ["英文", "日文", "简体中文"];
 	public String InventorySummary => $"物品 {Items.Count} 条，装备 {Equipments.Count} 条，共 {Items.Count + Equipments.Count} / {InventoryCapacity} 条库存记录";
 	public String ModTargetSummary => $"{SelectedModTarget.DisplayName} · Title ID {SelectedModTarget.TitleId} · Build ID {SelectedModTarget.BuildId}";
-	public int SelectedModCount => ModModules.Count(module => module.IsSelected);
+	public int SelectedModCount => ModModules.Count(module => !module.IsTextEditor && module.IsSelected);
 	public bool CanExportMods => SelectedModCount > 0;
 	public String ModSelectionSummary => CanExportMods ? $"已选择 {SelectedModCount} 个可用模块" : "请选择至少一个已接入模块";
 	public String ContextStatusMessage => WorkspaceIndex switch
 	{
 		0 => IsSaveLoaded ? $"当前存档：{CurrentFileName}" : "存档编辑 · 尚未打开存档",
-		_ when ModWorkspaceIndex == 0 => $"{ModSelectionSummary} · 仅生成模拟器 pchtxt",
-		_ => $"{TextEditor.SourceSummary} · {TextEditor.ChangeSummary}",
+		_ when IsTextEditorSelected => $"{TextEditor.SourceSummary} · {TextEditor.ChangeSummary}",
+		_ => $"{ModSelectionSummary} · 仅生成模拟器 pchtxt",
 	};
-	public ModModule? SelectedMod { get => mSelectedMod; set => SetField(ref mSelectedMod, value, nameof(SelectedMod)); }
+	public ModModule? SelectedMod
+	{
+		get => mSelectedMod;
+		set
+		{
+			if (mSelectedMod == value) return;
+			SetField(ref mSelectedMod, value, nameof(SelectedMod));
+			OnPropertyChanged(nameof(IsTextEditorSelected));
+			OnPropertyChanged(nameof(IsGameplayModWorkspace));
+			OnPropertyChanged(nameof(IsTextModWorkspace));
+			OnPropertyChanged(nameof(ActiveModTarget));
+			OnPropertyChanged(nameof(ContextStatusMessage));
+		}
+	}
 	public ModTarget SelectedModTarget
 	{
 		get => mSelectedModTarget;
@@ -93,11 +105,11 @@ internal class ViewModel : INotifyPropertyChanged
 	}
 	public ModTarget ActiveModTarget
 	{
-		get => ModWorkspaceIndex == 0 ? SelectedModTarget : TextEditor.SelectedTarget;
+		get => IsTextEditorSelected ? TextEditor.SelectedTarget : SelectedModTarget;
 		set
 		{
-			if (ModWorkspaceIndex == 0) SelectedModTarget = value;
-			else TextEditor.SelectedTarget = value;
+			if (IsTextEditorSelected) TextEditor.SelectedTarget = value;
+			else SelectedModTarget = value;
 			OnPropertyChanged(nameof(ActiveModTarget));
 		}
 	}
@@ -148,23 +160,9 @@ internal class ViewModel : INotifyPropertyChanged
 	}
 	public bool IsSaveWorkspace => WorkspaceIndex == 0;
 	public bool IsModWorkspace => WorkspaceIndex == 1;
-	public bool IsGameplayModWorkspace => IsModWorkspace && ModWorkspaceIndex == 0;
-	public bool IsTextModWorkspace => IsModWorkspace && ModWorkspaceIndex == 1;
-
-	public int ModWorkspaceIndex
-	{
-		get => mModWorkspaceIndex;
-		set
-		{
-			int normalized = Math.Clamp(value, 0, 1);
-			if (mModWorkspaceIndex == normalized) return;
-			SetField(ref mModWorkspaceIndex, normalized, nameof(ModWorkspaceIndex));
-			OnPropertyChanged(nameof(IsGameplayModWorkspace));
-			OnPropertyChanged(nameof(IsTextModWorkspace));
-			OnPropertyChanged(nameof(ActiveModTarget));
-			OnPropertyChanged(nameof(ContextStatusMessage));
-		}
-	}
+	public bool IsTextEditorSelected => SelectedMod?.IsTextEditor == true;
+	public bool IsGameplayModWorkspace => IsModWorkspace && !IsTextEditorSelected;
+	public bool IsTextModWorkspace => IsModWorkspace && IsTextEditorSelected;
 
 	public int LanguageIndex
 	{
@@ -236,6 +234,7 @@ internal class ViewModel : INotifyPropertyChanged
 			new() { Key = "shop_editor", Category = "商店", Name = "商店库存编辑器", Description = "按科尔尼亚的具体地图地点选择武具店和原版商品，修改商品、库存与金币价格；共享库存会明确标识。", IsAvailable = true, CalibrationState = "25 个武具店 / 211 个地点条目已校准", RecordId = 0, Warning = "当前接入科尔尼亚普通武具店；兑换所价格结构不同，不会错误套用金币价格。" },
 			new() { Key = "six_member_units", Category = "编队", Name = "六人编队", Description = "允许 S 级声望下将部队扩充至六人，并可设置荣誉费用。", IsAvailable = true, CalibrationState = "亚洲版已重定位", TemplateFile = "six_member_units.pchtxt", ValueA = 500, Warning = "卸载前必须先撤下所有部队的第六名成员。" },
 			new() { Key = "type_matchups", Category = "战斗", Name = "类型克制", Description = "设置游戏内三种固有兵种克制倍率。它会作用于对应单位的所有攻击，并与技能自身的“对某类型威力加成”叠加；不写入存档，可随时启停。", IsAvailable = true, CalibrationState = "三项已校准", ValueD = 2, ValueE = 2, ValueF = 2 },
+			new() { Key = "text_editor", Category = "文本", Name = "文本编辑器", Description = "基于所选语言 CPK 的原始 FMS 按索引修改文本，不改动源归档。", IsAvailable = true, CalibrationState = "CPK 文本表编辑" },
 		];
 	}
 
@@ -388,7 +387,7 @@ internal class ViewModel : INotifyPropertyChanged
 
 	private async void ExportModPackage(object? parameter)
 	{
-		ModModule[] selectedModules = ModModules.Where(module => module.IsSelected && module.IsAvailable).ToArray();
+		ModModule[] selectedModules = ModModules.Where(module => !module.IsTextEditor && module.IsSelected && module.IsAvailable).ToArray();
 		if (selectedModules.Length == 0)
 		{
 			StatusMessage = "请至少选择一个已接入的 MOD 模块。";

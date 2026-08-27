@@ -41,6 +41,8 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public String? TemplateFile { get; init; }
 	public String? Warning { get; init; }
 	public String? CalibrationState { get; init; }
+	public String? NavigationCategoryHeader { get; init; }
+	public bool HasNavigationCategoryHeader => !String.IsNullOrEmpty(NavigationCategoryHeader);
 	public String StateText => CalibrationState ?? (IsAvailable ? "已接入" : "待解析");
 	public bool IsAbilityEditor => Key == "ability_editor";
 	public bool IsBattlePreview => Key == "battle_preview";
@@ -52,7 +54,6 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public bool IsSixMemberUnits => Key == "six_member_units";
 	public bool IsTypeMatchups => Key == "type_matchups";
 	public bool IsTextEditor => Key == "text_editor";
-	public bool ShowSelectionCheckBox => !IsTextEditor;
 	public bool ShowStandardEnableToggle => !IsSixMemberUnits && !IsTextEditor;
 	public bool HasNoOptions => Key == "battle_timer_freeze";
 	public IReadOnlyList<String> PreviewModes { get; } = ["完全隐藏", "不完美预览"];

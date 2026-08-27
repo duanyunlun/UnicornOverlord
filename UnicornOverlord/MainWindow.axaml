@@ -383,7 +383,7 @@
                       <StackPanel Grid.Column="4" Spacing="5"><TextBlock Classes="option-title" Text="魔法威力"/><NumericUpDown Value="{Binding ValueE}" Minimum="0" Maximum="9999" Increment="1"/></StackPanel>
                       <StackPanel Grid.Column="5" Spacing="5"><TextBlock Classes="option-title" Text="首个效果参数"/><NumericUpDown Value="{Binding ValueF}" Minimum="-9999" Maximum="9999" Increment="1"/></StackPanel>
                     </Grid>
-                    <StackPanel Spacing="4">
+                    <StackPanel Spacing="4" Margin="0,20,0,0">
                       <TextBlock Classes="option-title" Text="技能说明"/>
                       <TextBlock Classes="caption" FontSize="16" LineHeight="24" Text="{Binding AbilityDescription}" TextWrapping="Wrap"/>
                     </StackPanel>

@@ -365,7 +365,7 @@
                         <TextBlock Classes="option-title" Text="技能筛选"/>
                         <ComboBox ItemsSource="{Binding AbilityFilters}" SelectedIndex="{Binding AbilityFilterIndex, Mode=TwoWay}" />
                       </StackPanel>
-                      <StackPanel Spacing="5">
+                      <StackPanel Grid.Column="1" Spacing="5">
                         <TextBlock Classes="option-title" Text="技能"/>
                         <ComboBox ItemsSource="{Binding FilteredSkillChoices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}" MaxDropDownHeight="360">
                           <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}" /></DataTemplate></ComboBox.ItemTemplate>

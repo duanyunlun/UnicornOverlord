@@ -344,8 +344,8 @@
 	                <ItemsControl Margin="24,18" ItemsSource="{Binding SelectedModCategory.Modules}">
 	                  <ItemsControl.ItemTemplate>
 	                    <DataTemplate>
-	                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,22" Margin="0,0,0,22">
-	                <StackPanel Spacing="16">
+	                <StackPanel>
+	                <StackPanel Spacing="10">
                   <StackPanel Spacing="4">
                     <StackPanel Orientation="Horizontal" Spacing="14">
                       <TextBlock Classes="section-title" Text="{Binding Name}" VerticalAlignment="Center" />
@@ -481,7 +481,8 @@
 
                   <TextBlock IsVisible="{Binding HasNoOptions}" Classes="caption" Text="此模块本身只有启用或停用，没有额外参数。"/>
 	                </StackPanel>
-	                </Border>
+	                <Border IsVisible="{Binding ShowContentSeparator}" Height="1" Background="{StaticResource BorderBrush}" Margin="0,18" />
+	                </StackPanel>
 	                    </DataTemplate>
 	                  </ItemsControl.ItemTemplate>
 	                </ItemsControl>

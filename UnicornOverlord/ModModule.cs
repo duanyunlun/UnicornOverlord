@@ -101,6 +101,28 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public ModLocationChoice? SelectedShopLocation { get => FindLocation(ModCatalog.ShopLocations, ModCatalog.FindShopRecord(RecordId)); set => SelectFirstRecord(value, ModCatalog.ShopRecordChoices); }
 	public ModRecordChoice? SelectedFortRecord { get => ModCatalog.FindFortRecord(RecordId); set => SelectRecord(value); }
 	public ModRecordChoice? SelectedMineRecord { get => ModCatalog.FindMineRecord(RecordId); set => SelectRecord(value); }
+	public int SelectedMineLocationIndex
+	{
+		get
+		{
+			ModLocationChoice? location = SelectedMineLocation;
+			return location == null ? -1 : IndexOf(ModCatalog.MineLocations, item => item.Key == location.Key);
+		}
+		set
+		{
+			if (value >= 0 && value < ModCatalog.MineLocations.Count)
+				SelectFirstRecord(ModCatalog.MineLocations[value], ModCatalog.MineRecordChoices);
+		}
+	}
+	public int SelectedMineRecordIndex
+	{
+		get => IndexOf(MineRecordsAtLocation, item => item.Value == RecordId);
+		set
+		{
+			IReadOnlyList<ModRecordChoice> records = MineRecordsAtLocation;
+			if (value >= 0 && value < records.Count) SelectRecord(records[value]);
+		}
+	}
 	public ModRecordChoice? SelectedShopRecord { get => ModCatalog.FindShopRecord(RecordId); set => SelectRecord(value); }
 	public ModChoice? SelectedFortClass { get => ModCatalog.FindClass(ValueA); set { if (value != null) ValueA = value.Value; } }
 	public ModChoice? SelectedMineItem { get => ModCatalog.FindItem(ValueA); set { if (value != null) ValueA = value.Value; } }
@@ -142,9 +164,9 @@ internal sealed class ModModule : INotifyPropertyChanged
 			LoadRecordDefaults();
 			Notify(nameof(RecordId), nameof(SelectedSkill), nameof(SelectedClass), nameof(AbilityTypeText), nameof(IsActiveAbility), nameof(IsPassiveAbility), nameof(AbilityDescription), nameof(PreviewModeDescription));
 			if (!mChangingLocation && !mChangingRecord)
-				Notify(nameof(SelectedFortLocation), nameof(SelectedMineLocation), nameof(SelectedShopLocation));
-			if (!mChangingRecord)
-				Notify(nameof(FortRecordsAtLocation), nameof(MineRecordsAtLocation), nameof(ShopRecordsAtLocation), nameof(SelectedFortRecord), nameof(SelectedMineRecord), nameof(SelectedShopRecord));
+				Notify(nameof(SelectedFortLocation), nameof(SelectedMineLocation), nameof(SelectedMineLocationIndex), nameof(SelectedShopLocation));
+			if (!mChangingLocation && !mChangingRecord)
+				Notify(nameof(FortRecordsAtLocation), nameof(MineRecordsAtLocation), nameof(ShopRecordsAtLocation), nameof(SelectedFortRecord), nameof(SelectedMineRecord), nameof(SelectedMineRecordIndex), nameof(SelectedShopRecord));
 		}
 	}
 	public int ValueA { get => mValueA; set { SetField(ref mValueA, value, nameof(ValueA)); Notify(nameof(SelectedFortClass), nameof(SelectedMineItem), nameof(SelectedShopItem)); } }
@@ -239,6 +261,20 @@ internal sealed class ModModule : INotifyPropertyChanged
 		mChangingLocation = true;
 		try { RecordId = first.Value; }
 		finally { mChangingLocation = false; }
+		if (IsMineEditor)
+		{
+			Notify(nameof(SelectedMineLocation), nameof(SelectedMineLocationIndex));
+			Notify(nameof(MineRecordsAtLocation));
+			Notify(nameof(SelectedMineRecord), nameof(SelectedMineRecordIndex));
+		}
+		else if (IsFortEditor)
+		{
+			Notify(nameof(SelectedFortLocation), nameof(FortRecordsAtLocation), nameof(SelectedFortRecord));
+		}
+		else if (IsShopEditor)
+		{
+			Notify(nameof(SelectedShopLocation), nameof(ShopRecordsAtLocation), nameof(SelectedShopRecord));
+		}
 	}
 
 	private void SelectRecord(ModRecordChoice? record)
@@ -247,10 +283,20 @@ internal sealed class ModModule : INotifyPropertyChanged
 		mChangingRecord = true;
 		try { RecordId = record.Value; }
 		finally { mChangingRecord = false; }
+		if (IsMineEditor) Notify(nameof(SelectedMineRecord), nameof(SelectedMineRecordIndex));
+		else if (IsFortEditor) Notify(nameof(SelectedFortRecord));
+		else if (IsShopEditor) Notify(nameof(SelectedShopRecord));
 	}
 
 	private static IReadOnlyList<ModRecordChoice> FilterRecords(IReadOnlyList<ModRecordChoice> records, ModLocationChoice? location) =>
 		location == null ? [] : records.Where(record => record.LocationKey == location.Key).ToArray();
+
+	private static int IndexOf<T>(IReadOnlyList<T> items, Func<T, bool> predicate)
+	{
+		for (int index = 0; index < items.Count; index++)
+			if (predicate(items[index])) return index;
+		return -1;
+	}
 
 	private static ObservableCollection<ModSkillSlot> CreateSkillSlots(bool passive) =>
 		[.. Enumerable.Range(0, 4).Select(index => new ModSkillSlot { Index = index, IsPassive = passive, Level = 1 })];

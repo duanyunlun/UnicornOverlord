@@ -1,21 +1,69 @@
 using System.Globalization;
 using Avalonia.Controls;
+using Avalonia.Input;
 
 namespace UnicornOverlord;
 
-public sealed class ModSearchBox : AutoCompleteBox
+public sealed class ModSearchBox : ComboBox
 {
+	private bool mUpdatingText;
+
 	public ModSearchBox()
 	{
-		MinimumPrefixLength = 0;
-		MinimumPopulateDelay = TimeSpan.Zero;
-		IsTextCompletionEnabled = false;
-		ClearSelectionOnLostFocus = false;
-		ItemFilter = Matches;
+		IsEditable = true;
+		IsTextSearchEnabled = false;
+		PlaceholderText = "输入名称或 ID";
 		MinHeight = 32;
+		SelectionChanged += (_, _) => SyncSelectedText();
+		Loaded += (_, _) => SyncSelectedText();
+		LostFocus += (_, _) => CommitSearchText();
+		KeyDown += OnSearchKeyDown;
+		PropertyChanged += (_, args) =>
+		{
+			if (args.Property == TextProperty && !mUpdatingText) SelectUniqueMatch();
+		};
 	}
 
-	protected override String FormatValue(object? value) => value switch
+	private void OnSearchKeyDown(object? sender, KeyEventArgs args)
+	{
+		if (args.Key != Key.Enter) return;
+		CommitSearchText();
+		args.Handled = true;
+	}
+
+	private void SelectUniqueMatch()
+	{
+		if (String.IsNullOrWhiteSpace(Text)) return;
+		object[] matches = GetItems().Where(item => Matches(Text, item)).Take(2).ToArray();
+		if (matches.Length == 1) SelectedItem = matches[0];
+	}
+
+	private void CommitSearchText()
+	{
+		String query = Text?.Trim() ?? String.Empty;
+		if (query.Length == 0)
+		{
+			SyncSelectedText();
+			return;
+		}
+
+		object? match = GetItems().FirstOrDefault(item => GetSearchTerms(item).Any(term => String.Equals(term, query, StringComparison.CurrentCultureIgnoreCase)))
+			?? GetItems().FirstOrDefault(item => Matches(query, item));
+		if (match != null) SelectedItem = match;
+		SyncSelectedText();
+	}
+
+	private IEnumerable<object> GetItems() => ItemsSource?.Cast<object>() ?? [];
+
+	private void SyncSelectedText()
+	{
+		if (SelectedItem == null) return;
+		mUpdatingText = true;
+		Text = GetDisplayText(SelectedItem);
+		mUpdatingText = false;
+	}
+
+	private static String GetDisplayText(object? value) => value switch
 	{
 		ModChoice choice => choice.DisplayName,
 		ModLocationChoice location => location.DisplayName,

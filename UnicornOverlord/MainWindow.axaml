@@ -385,7 +385,7 @@
                     </Grid>
                     <StackPanel Spacing="4">
                       <TextBlock Classes="option-title" Text="技能说明"/>
-                      <TextBlock Classes="caption" Text="{Binding AbilityDescription}" TextWrapping="Wrap"/>
+                      <TextBlock Classes="caption" FontSize="16" LineHeight="24" Text="{Binding AbilityDescription}" TextWrapping="Wrap"/>
                     </StackPanel>
                   </StackPanel>
 

@@ -360,24 +360,15 @@
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsAbilityEditor}" Spacing="10">
-                    <Grid>
-                      <Grid ColumnDefinitions="160,*,*" ColumnSpacing="10">
-                        <StackPanel Spacing="5">
-                          <TextBlock Classes="option-title" Text="技能筛选"/>
-                          <ComboBox Height="40" ItemsSource="{Binding AbilityFilters}" SelectedIndex="{Binding AbilityFilterIndex, Mode=TwoWay}" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Spacing="5">
-                          <TextBlock Classes="option-title" Text="技能"/>
-                          <local:ModSearchPicker ItemsSource="{Binding FilteredSkillChoices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}"/>
-                        </StackPanel>
-                      </Grid>
-                      <Grid ColumnDefinitions="*,*,*,*,*,*" ColumnSpacing="10" IsHitTestVisible="False">
-                        <StackPanel Grid.Column="3" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="10" VerticalAlignment="Bottom" Margin="0,0,0,8">
-                          <TextBlock Classes="option-title" FontSize="16" Text="固有类型" VerticalAlignment="Center"/>
-                          <TextBlock FontSize="16" Text="主动技能（AP）" Foreground="#D97706" FontWeight="SemiBold" VerticalAlignment="Center" IsVisible="{Binding IsActiveAbility}"/>
-                          <TextBlock FontSize="16" Text="被动技能（PP）" Foreground="#0891B2" FontWeight="SemiBold" VerticalAlignment="Center" IsVisible="{Binding IsPassiveAbility}"/>
-                        </StackPanel>
-                      </Grid>
+                    <Grid ColumnDefinitions="160,*,*" ColumnSpacing="10">
+                      <StackPanel Spacing="5">
+                        <TextBlock Classes="option-title" Text="技能筛选"/>
+                        <ComboBox Height="40" ItemsSource="{Binding AbilityFilters}" SelectedIndex="{Binding AbilityFilterIndex, Mode=TwoWay}" />
+                      </StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5">
+                        <TextBlock Classes="option-title" Text="技能"/>
+                        <local:ModSearchPicker ItemsSource="{Binding FilteredSkillChoices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}"/>
+                      </StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*,*,*,*,*" ColumnSpacing="10">
                       <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="AP / PP 消耗"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="10"/></StackPanel>
@@ -387,9 +378,16 @@
                       <StackPanel Grid.Column="4" Spacing="5"><TextBlock Classes="option-title" Text="魔法威力"/><NumericUpDown Value="{Binding ValueE}" Minimum="0" Maximum="9999" Increment="1"/></StackPanel>
                       <StackPanel Grid.Column="5" Spacing="5"><TextBlock Classes="option-title" Text="首个效果参数"/><NumericUpDown Value="{Binding ValueF}" Minimum="-9999" Maximum="9999" Increment="1"/></StackPanel>
                     </Grid>
-                    <StackPanel Spacing="4" Margin="0,20,0,0">
-                      <TextBlock Classes="option-title" Text="技能说明"/>
-                      <TextBlock Classes="caption" FontSize="16" LineHeight="24" Text="{Binding AbilityDescription}" TextWrapping="Wrap"/>
+                    <StackPanel Spacing="14" Margin="0,20,0,0">
+                      <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Classes="option-title" FontSize="16" Text="固有类型" VerticalAlignment="Center"/>
+                        <TextBlock FontSize="16" Text="主动技能（AP）" Foreground="#D97706" FontWeight="SemiBold" VerticalAlignment="Center" IsVisible="{Binding IsActiveAbility}"/>
+                        <TextBlock FontSize="16" Text="被动技能（PP）" Foreground="#0891B2" FontWeight="SemiBold" VerticalAlignment="Center" IsVisible="{Binding IsPassiveAbility}"/>
+                      </StackPanel>
+                      <StackPanel Spacing="4">
+                        <TextBlock Classes="option-title" Text="技能说明"/>
+                        <TextBlock Classes="caption" FontSize="16" LineHeight="24" Text="{Binding AbilityDescription}" TextWrapping="Wrap"/>
+                      </StackPanel>
                     </StackPanel>
                   </StackPanel>
 

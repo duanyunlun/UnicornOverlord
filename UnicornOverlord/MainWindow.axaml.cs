@@ -24,7 +24,16 @@ public partial class MainWindow : Window
 		Dispatcher.UIThread.Post(() =>
 		{
 			if (ReferenceEquals(choices.DataContext, module) && choices.SelectedIndex == selectedIndex)
+			{
 				module.SelectedMineLocationIndex = selectedIndex;
+				Dispatcher.UIThread.Post(module.RefreshMineRecordSelection, DispatcherPriority.Background);
+			}
 		}, DispatcherPriority.Background);
+	}
+
+	private void MineRecord_SelectionChanged(object? sender, SelectionChangedEventArgs args)
+	{
+		if (sender is ComboBox { SelectedIndex: >= 0, DataContext: ModModule module } choices)
+			module.SelectedMineRecordIndex = choices.SelectedIndex;
 	}
 }

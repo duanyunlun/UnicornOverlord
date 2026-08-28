@@ -457,7 +457,7 @@
                   <StackPanel IsVisible="{Binding IsMineEditor}" Spacing="12">
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="地图地点"/><ComboBox ItemsSource="{Binding MineLocations}" SelectedIndex="{Binding SelectedMineLocationIndex, Mode=OneWay}" SelectionChanged="MineLocation_SelectionChanged" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="原版掉落"/><ComboBox ItemsSource="{Binding MineRecordsAtLocation}" SelectedIndex="{Binding SelectedMineRecordIndex, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="原版掉落"/><ComboBox ItemsSource="{Binding MineRecordsAtLocation}" SelectedIndex="{Binding SelectedMineRecordIndex, Mode=OneWay}" SelectionChanged="MineRecord_SelectionChanged" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                       <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="修改为"/><local:ModSearchPicker ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding SelectedMineItem, Mode=TwoWay}"/></StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">

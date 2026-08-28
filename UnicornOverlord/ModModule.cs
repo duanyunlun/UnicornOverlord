@@ -298,6 +298,8 @@ internal sealed class ModModule : INotifyPropertyChanged
 		return -1;
 	}
 
+	internal void RefreshMineRecordSelection() => Notify(nameof(SelectedMineRecord), nameof(SelectedMineRecordIndex));
+
 	private static ObservableCollection<ModSkillSlot> CreateSkillSlots(bool passive) =>
 		[.. Enumerable.Range(0, 4).Select(index => new ModSkillSlot { Index = index, IsPassive = passive, Level = 1 })];
 

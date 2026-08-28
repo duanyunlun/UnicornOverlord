@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace UnicornOverlord;
@@ -11,36 +10,10 @@ internal sealed record ModCategory(String Name, IReadOnlyList<ModModule> Modules
 
 internal sealed class ModModule : INotifyPropertyChanged
 {
-	private bool mIsSelected;
-	private int mRecordId = -1;
-	private int mValueA;
-	private int mValueB;
-	private int mValueC;
-	private double mValueD;
-	private double mValueE;
-	private double mValueF;
-	private double mValueG;
-	private double mValueH;
-	private double mValueI;
-	private double mValueJ;
-	private double mValueK;
-	private double mValueL;
-	private double mValueM;
-	private int mValueN;
-	private bool mMixPromotionTiers;
-	private int mAbilityFilterIndex;
-	private bool mChangingLocation;
-	private bool mChangingRecord;
+	public ModModule() => RerollCommand = new ActionCommand(_ => ValueA = Random.Shared.Next(1, Int32.MaxValue));
 
 	public event PropertyChangedEventHandler? PropertyChanged;
-
-	public ModModule()
-	{
-		RerollCommand = new ActionCommand(_ => ValueA = Random.Shared.Next(1, Int32.MaxValue));
-		ActiveSkills = CreateSkillSlots(false);
-		PassiveSkills = CreateSkillSlots(true);
-	}
-
+	public required ModProjectState Project { get; init; }
 	public required String Key { get; init; }
 	public required String Category { get; init; }
 	public required String Name { get; init; }
@@ -77,8 +50,8 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public IReadOnlyList<ModChoice> ItemChoices => ModCatalog.ItemChoices;
 	public IReadOnlyList<ModLocationChoice> FortLocations => ModCatalog.FortLocations;
 	public IReadOnlyList<ModLocationChoice> ShopLocations => ModCatalog.ShopLocations;
-	public IReadOnlyList<ModRecordChoice> FortRecordsAtLocation => FilterRecords(ModCatalog.FortRecordChoices, SelectedFortLocation);
-	public IReadOnlyList<ModRecordChoice> ShopRecordsAtLocation => FilterRecords(ModCatalog.ShopRecordChoices, SelectedShopLocation);
+	public IReadOnlyList<ModRecordChoice> FortRecordsAtLocation => Project.Fort.RecordsAtLocation.Select(record => record.Choice).ToArray();
+	public IReadOnlyList<ModRecordChoice> ShopRecordsAtLocation => Project.Shop.RecordsAtLocation.Select(record => record.Choice).ToArray();
 	public IReadOnlyList<ModChoice> TargetShapes { get; } =
 	[
 		new() { Value = 0, EnglishName = "Original/none", ChineseName = "原始/无目标" },
@@ -89,184 +62,140 @@ internal sealed class ModModule : INotifyPropertyChanged
 		new() { Value = 6, EnglishName = "Row", ChineseName = "一排" },
 		new() { Value = 7, EnglishName = "Front-back", ChineseName = "前后纵列" },
 	];
-	public ObservableCollection<ModSkillSlot> ActiveSkills { get; }
-	public ObservableCollection<ModSkillSlot> PassiveSkills { get; }
-	public MineEditorState? Mine { get; init; }
+	public IReadOnlyList<ModSkillSlot> ActiveSkills => Project.Classes.SelectedRecord.ActiveSkills;
+	public IReadOnlyList<ModSkillSlot> PassiveSkills => Project.Classes.SelectedRecord.PassiveSkills;
+	public MineEditorState Mine => Project.Mine;
 	public ICommand RerollCommand { get; }
-	public ModChoice? SelectedSkill { get => ModCatalog.FindSkill(RecordId); set { if (value != null) RecordId = value.Value; } }
-	public ModChoice? SelectedClass { get => ModCatalog.FindClass(RecordId); set { if (value != null) RecordId = value.Value; } }
-	public ModLocationChoice? SelectedFortLocation { get => FindLocation(ModCatalog.FortLocations, ModCatalog.FindFortRecord(RecordId)); set => SelectFirstRecord(value, ModCatalog.FortRecordChoices); }
-	public ModLocationChoice? SelectedShopLocation { get => FindLocation(ModCatalog.ShopLocations, ModCatalog.FindShopRecord(RecordId)); set => SelectFirstRecord(value, ModCatalog.ShopRecordChoices); }
-	public ModRecordChoice? SelectedFortRecord { get => ModCatalog.FindFortRecord(RecordId); set => SelectRecord(value); }
-	public ModRecordChoice? SelectedShopRecord { get => ModCatalog.FindShopRecord(RecordId); set => SelectRecord(value); }
-	public ModChoice? SelectedFortClass { get => ModCatalog.FindClass(ValueA); set { if (value != null) ValueA = value.Value; } }
-	public ModChoice? SelectedShopItem { get => ModCatalog.FindItem(ValueA); set { if (value != null) ValueA = value.Value; } }
-	public ModChoice? SelectedTargetShape { get => TargetShapes.FirstOrDefault(choice => choice.Value == ValueC); set { if (value != null) ValueC = value.Value; } }
-	public String AbilityTypeText => mValueN == 1 ? "被动技能（PP）" : "主动技能（AP）";
-	public bool IsActiveAbility => mValueN == 0;
-	public bool IsPassiveAbility => mValueN == 1;
-	public String AbilityDescription => ModCatalog.Skills.FirstOrDefault(skill => skill.Choice.Value == RecordId)?.Description ?? String.Empty;
-	public String PreviewModeDescription => RecordId == 1
-		? "后台模拟 5 次战斗并显示平均结果，只给出胜负趋势，不再泄露确定结果。"
-		: "完全隐藏战斗预览条；编队与战术判断不再得到结果提示。";
-	public bool MixPromotionTiers
+
+	public bool IsSelected
 	{
-		get => mMixPromotionTiers;
-		set => SetField(ref mMixPromotionTiers, value, nameof(MixPromotionTiers));
+		get => Options.IsEnabled;
+		set
+		{
+			if (!IsAvailable || Options.IsEnabled == value) return;
+			Options.IsEnabled = value;
+			Notify(nameof(IsSelected));
+		}
 	}
+
 	public int AbilityFilterIndex
 	{
-		get => mAbilityFilterIndex;
+		get => Project.Ability.FilterIndex;
 		set
 		{
 			int normalized = Math.Clamp(value, 0, AbilityFilters.Count - 1);
-			if (mAbilityFilterIndex == normalized) return;
-			mAbilityFilterIndex = normalized;
-			Notify(nameof(AbilityFilterIndex), nameof(FilteredSkillChoices));
+			if (Project.Ability.FilterIndex == normalized) return;
+			Project.Ability.FilterIndex = normalized;
 			if (IsAbilityEditor && !FilteredSkillChoices.Any(choice => choice.Value == RecordId) && FilteredSkillChoices.FirstOrDefault() is ModChoice first)
-				RecordId = first.Value;
+				Project.Ability.Select(first.Value);
+			NotifyEditor();
 		}
 	}
 
 	public int RecordId
 	{
-		get => mRecordId;
+		get => Key switch
+		{
+			"ability_editor" => Project.Ability.SelectedRecord.RecordId,
+			"class_editor" => Project.Classes.SelectedRecord.RecordId,
+			"fort_editor" => Project.Fort.SelectedRecord.RecordId,
+			"shop_editor" => Project.Shop.SelectedRecord.RecordId,
+			_ => IsBattlePreview ? Project.BattlePreview.Mode : -1,
+		};
 		set
 		{
-			if (mRecordId == value) return;
-			mRecordId = value;
-			LoadRecordDefaults();
-			Notify(nameof(RecordId), nameof(SelectedSkill), nameof(SelectedClass), nameof(AbilityTypeText), nameof(IsActiveAbility), nameof(IsPassiveAbility), nameof(AbilityDescription), nameof(PreviewModeDescription));
-			if (!mChangingLocation && !mChangingRecord)
-				Notify(nameof(SelectedFortLocation), nameof(SelectedShopLocation));
-			if (!mChangingLocation && !mChangingRecord)
-				Notify(nameof(FortRecordsAtLocation), nameof(ShopRecordsAtLocation), nameof(SelectedFortRecord), nameof(SelectedShopRecord));
-		}
-	}
-	public int ValueA { get => mValueA; set { SetField(ref mValueA, value, nameof(ValueA)); Notify(nameof(SelectedFortClass), nameof(SelectedShopItem)); } }
-	public int ValueB { get => mValueB; set => SetField(ref mValueB, value, nameof(ValueB)); }
-	public int ValueC { get => mValueC; set { SetField(ref mValueC, value, nameof(ValueC)); Notify(nameof(SelectedTargetShape)); } }
-	public double ValueD { get => mValueD; set => SetField(ref mValueD, value, nameof(ValueD)); }
-	public double ValueE { get => mValueE; set => SetField(ref mValueE, value, nameof(ValueE)); }
-	public double ValueF { get => mValueF; set => SetField(ref mValueF, value, nameof(ValueF)); }
-	public double ValueG { get => mValueG; set => SetField(ref mValueG, value, nameof(ValueG)); }
-	public double ValueH { get => mValueH; set => SetField(ref mValueH, value, nameof(ValueH)); }
-	public double ValueI { get => mValueI; set => SetField(ref mValueI, value, nameof(ValueI)); }
-	public double ValueJ { get => mValueJ; set => SetField(ref mValueJ, value, nameof(ValueJ)); }
-	public double ValueK { get => mValueK; set => SetField(ref mValueK, value, nameof(ValueK)); }
-	public double ValueL { get => mValueL; set => SetField(ref mValueL, value, nameof(ValueL)); }
-	public double ValueM { get => mValueM; set => SetField(ref mValueM, value, nameof(ValueM)); }
-	public int ValueN { get => mValueN; set => SetField(ref mValueN, value, nameof(ValueN)); }
-
-	public bool IsSelected
-	{
-		get => mIsSelected;
-		set
-		{
-			if (!IsAvailable || mIsSelected == value) return;
-			mIsSelected = value;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSelected)));
+			if (RecordId == value) return;
+			switch (Key)
+			{
+				case "ability_editor": Project.Ability.Select(value); break;
+				case "class_editor": Project.Classes.Select(value); break;
+				case "fort_editor": Project.Fort.SelectRecord(ModCatalog.FindFortRecord(value)); break;
+				case "shop_editor": Project.Shop.SelectRecord(ModCatalog.FindShopRecord(value)); break;
+				default: if (IsBattlePreview) Project.BattlePreview.Mode = value; break;
+			}
+			NotifyEditor();
 		}
 	}
 
-	private void SetField<T>(ref T field, T value, String propertyName)
+	public int ValueA
 	{
-		if (EqualityComparer<T>.Default.Equals(field, value)) return;
-		field = value;
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		get => Key switch { "ability_editor" => Project.Ability.SelectedRecord.Cost, "class_editor" => Project.Classes.SelectedRecord.Ap, "fort_editor" => Project.Fort.SelectedRecord.ClassId, "shop_editor" => Project.Shop.SelectedRecord.ItemId, "character_randomizer" => Project.CharacterRandomizer.Seed, "six_member_units" => Project.SixMemberUnits.HonorCost, _ => 0 };
+		set { switch (Key) { case "ability_editor": Project.Ability.SelectedRecord.Cost = value; break; case "class_editor": Project.Classes.SelectedRecord.Ap = value; break; case "fort_editor": Project.Fort.SelectedRecord.ClassId = value; break; case "shop_editor": Project.Shop.SelectedRecord.ItemId = value; break; case "character_randomizer": Project.CharacterRandomizer.Seed = value; break; case "six_member_units": Project.SixMemberUnits.HonorCost = value; break; } Notify(nameof(ValueA), nameof(SelectedFortClass), nameof(SelectedShopItem)); }
 	}
+	public int ValueB
+	{
+		get => Key switch { "ability_editor" => Project.Ability.SelectedRecord.Accuracy, "class_editor" => Project.Classes.SelectedRecord.Pp, "shop_editor" => Project.Shop.SelectedRecord.Stock, _ => 0 };
+		set { switch (Key) { case "ability_editor": Project.Ability.SelectedRecord.Accuracy = value; break; case "class_editor": Project.Classes.SelectedRecord.Pp = value; break; case "shop_editor": Project.Shop.SelectedRecord.Stock = value; break; } Notify(nameof(ValueB)); }
+	}
+	public int ValueC
+	{
+		get => Key switch { "ability_editor" => Project.Ability.SelectedRecord.TargetShape, "shop_editor" => Project.Shop.SelectedRecord.Price, _ => 0 };
+		set { switch (Key) { case "ability_editor": Project.Ability.SelectedRecord.TargetShape = value; break; case "shop_editor": Project.Shop.SelectedRecord.Price = value; break; } Notify(nameof(ValueC), nameof(SelectedTargetShape)); }
+	}
+	public double ValueD { get => ReadDouble(0); set => WriteDouble(0, value, nameof(ValueD)); }
+	public double ValueE { get => ReadDouble(1); set => WriteDouble(1, value, nameof(ValueE)); }
+	public double ValueF { get => ReadDouble(2); set => WriteDouble(2, value, nameof(ValueF)); }
+	public double ValueG { get => ReadDouble(3); set => WriteDouble(3, value, nameof(ValueG)); }
+	public double ValueH { get => ReadDouble(4); set => WriteDouble(4, value, nameof(ValueH)); }
+	public double ValueI { get => ReadDouble(5); set => WriteDouble(5, value, nameof(ValueI)); }
+	public double ValueJ { get => ReadDouble(6); set => WriteDouble(6, value, nameof(ValueJ)); }
+	public double ValueK { get => ReadDouble(7); set => WriteDouble(7, value, nameof(ValueK)); }
+	public double ValueL { get => ReadDouble(8); set => WriteDouble(8, value, nameof(ValueL)); }
+	public double ValueM { get => ReadDouble(9); set => WriteDouble(9, value, nameof(ValueM)); }
+	public int ValueN { get => IsAbilityEditor && Project.Ability.SelectedRecord.Original.IsPassive ? 1 : 0; set => Notify(nameof(ValueN)); }
+	public bool MixPromotionTiers { get => Project.CharacterRandomizer.MixPromotionTiers; set { Project.CharacterRandomizer.MixPromotionTiers = value; Notify(nameof(MixPromotionTiers)); } }
+
+	public ModChoice? SelectedSkill { get => Project.Ability.SelectedRecord.Original.Choice; set { if (value != null) RecordId = value.Value; } }
+	public ModChoice? SelectedClass { get => ModCatalog.FindClass(Project.Classes.SelectedRecord.RecordId); set { if (value != null) RecordId = value.Value; } }
+	public ModLocationChoice SelectedFortLocation { get => Project.Fort.SelectedLocation; set { Project.Fort.SelectLocation(value); NotifyEditor(); } }
+	public ModLocationChoice SelectedShopLocation { get => Project.Shop.SelectedLocation; set { Project.Shop.SelectLocation(value); NotifyEditor(); } }
+	public ModRecordChoice SelectedFortRecord { get => Project.Fort.SelectedRecord.Choice; set { Project.Fort.SelectRecord(value); NotifyEditor(); } }
+	public ModRecordChoice SelectedShopRecord { get => Project.Shop.SelectedRecord.Choice; set { Project.Shop.SelectRecord(value); NotifyEditor(); } }
+	public ModChoice? SelectedFortClass { get => ModCatalog.FindClass(Project.Fort.SelectedRecord.ClassId); set { if (value != null) ValueA = value.Value; } }
+	public ModChoice? SelectedShopItem { get => ModCatalog.FindItem(Project.Shop.SelectedRecord.ItemId); set { if (value != null) ValueA = value.Value; } }
+	public ModChoice? SelectedTargetShape { get => TargetShapes.FirstOrDefault(choice => choice.Value == ValueC); set { if (value != null) ValueC = value.Value; } }
+	public String AbilityTypeText => Project.Ability.SelectedRecord.Original.TypeText;
+	public bool IsActiveAbility => !Project.Ability.SelectedRecord.Original.IsPassive;
+	public bool IsPassiveAbility => Project.Ability.SelectedRecord.Original.IsPassive;
+	public String AbilityDescription => Project.Ability.SelectedRecord.Original.Description;
+	public String PreviewModeDescription => RecordId == 1
+		? "后台模拟 5 次战斗并显示平均结果，只给出胜负趋势，不再泄露确定结果。"
+		: "完全隐藏战斗预览条；编队与战术判断不再得到结果提示。";
 
 	public void RefreshLocalizedChoices()
 	{
-		Notify(nameof(SkillChoices), nameof(FilteredSkillChoices), nameof(ClassChoices), nameof(ItemChoices), nameof(FortLocations), nameof(ShopLocations), nameof(FortRecordsAtLocation), nameof(ShopRecordsAtLocation),
-			nameof(SelectedSkill), nameof(SelectedClass), nameof(SelectedFortLocation), nameof(SelectedShopLocation), nameof(SelectedFortRecord), nameof(SelectedShopRecord),
-			nameof(SelectedFortClass), nameof(SelectedShopItem), nameof(TargetShapes), nameof(SelectedTargetShape), nameof(AbilityDescription));
-		Mine?.RefreshLocalizedChoices();
-		foreach (ModSkillSlot slot in ActiveSkills.Concat(PassiveSkills))
-		{
-			ModChoice? choice = slot.SelectedSkill;
-			slot.SelectedSkill = null;
-			slot.SelectedSkill = choice;
-		}
+		Project.Mine.RefreshLocalizedChoices();
+		NotifyEditor();
 	}
 
-	private void LoadRecordDefaults()
+	private ModOptionState Options => Project.Options(Key);
+	private double ReadDouble(int index)
+	{
+		if (IsAbilityEditor) return index switch { 0 => Project.Ability.SelectedRecord.PhysicalPotency, 1 => Project.Ability.SelectedRecord.MagicalPotency, 2 => Project.Ability.SelectedRecord.EffectValue, _ => 0 };
+		if (IsClassEditor) return Project.Classes.SelectedRecord.Growths[index];
+		if (IsTypeMatchups) return index switch { 0 => Project.TypeMatchups.CavalryVsInfantry, 1 => Project.TypeMatchups.ArcherVsFlying, 2 => Project.TypeMatchups.FlyingVsCavalry, _ => 0 };
+		return 0;
+	}
+
+	private void WriteDouble(int index, double value, String propertyName)
 	{
 		if (IsAbilityEditor)
 		{
-			ModSkillInfo? skill = ModCatalog.Skills.FirstOrDefault(item => item.Choice.Value == RecordId);
-			if (skill == null) return;
-			mValueN = skill.IsPassive ? 1 : 0;
-			ValueA = skill.Cost;
-			ValueB = skill.Accuracy;
-			ValueC = skill.TargetShape;
-			ValueD = skill.PhysicalPotency;
-			ValueE = skill.MagicalPotency;
-			ValueF = skill.EffectValue;
-			return;
+			switch (index) { case 0: Project.Ability.SelectedRecord.PhysicalPotency = value; break; case 1: Project.Ability.SelectedRecord.MagicalPotency = value; break; case 2: Project.Ability.SelectedRecord.EffectValue = value; break; }
 		}
-		if (IsClassEditor && ModCatalog.Classes.TryGetValue(RecordId, out ModClassInfo? classInfo))
+		else if (IsClassEditor) Project.Classes.SelectedRecord.Growths[index] = value;
+		else if (IsTypeMatchups)
 		{
-			ValueA = classInfo.Ap;
-			ValueB = classInfo.Pp;
-			ValueD = classInfo.Growths[0]; ValueE = classInfo.Growths[1]; ValueF = classInfo.Growths[2]; ValueG = classInfo.Growths[3]; ValueH = classInfo.Growths[4];
-			ValueI = classInfo.Growths[5]; ValueJ = classInfo.Growths[6]; ValueK = classInfo.Growths[7]; ValueL = classInfo.Growths[8]; ValueM = classInfo.Growths[9];
-			ApplySkillDefaults(ActiveSkills, classInfo.ActiveSkills, classInfo.ActiveLevels);
-			ApplySkillDefaults(PassiveSkills, classInfo.PassiveSkills, classInfo.PassiveLevels);
-			return;
+			switch (index) { case 0: Project.TypeMatchups.CavalryVsInfantry = value; break; case 1: Project.TypeMatchups.ArcherVsFlying = value; break; case 2: Project.TypeMatchups.FlyingVsCavalry = value; break; }
 		}
-		if (IsFortEditor && ModCatalog.FortRecords.TryGetValue(RecordId, out ModRecordInfo? fort)) ValueA = fort.ValueA;
-		if (IsShopEditor && ModCatalog.ShopRecords.TryGetValue(RecordId, out ModShopRecordInfo? shop))
-		{
-			ValueA = shop.ItemId; ValueB = shop.Stock; ValueC = shop.Price;
-		}
+		Notify(propertyName);
 	}
 
-	private static ModLocationChoice? FindLocation(IReadOnlyList<ModLocationChoice> locations, ModRecordChoice? record) =>
-		record == null ? null : locations.FirstOrDefault(location => location.Key == record.LocationKey);
-
-	private void SelectFirstRecord(ModLocationChoice? location, IReadOnlyList<ModRecordChoice> records)
-	{
-		ModRecordChoice? first = location == null ? null : records.FirstOrDefault(record => record.LocationKey == location.Key);
-		if (first == null) return;
-		mChangingLocation = true;
-		try { RecordId = first.Value; }
-		finally { mChangingLocation = false; }
-		if (IsFortEditor)
-		{
-			Notify(nameof(SelectedFortLocation), nameof(FortRecordsAtLocation), nameof(SelectedFortRecord));
-		}
-		else if (IsShopEditor)
-		{
-			Notify(nameof(SelectedShopLocation), nameof(ShopRecordsAtLocation), nameof(SelectedShopRecord));
-		}
-	}
-
-	private void SelectRecord(ModRecordChoice? record)
-	{
-		if (record == null) return;
-		mChangingRecord = true;
-		try { RecordId = record.Value; }
-		finally { mChangingRecord = false; }
-		if (IsFortEditor) Notify(nameof(SelectedFortRecord));
-		else if (IsShopEditor) Notify(nameof(SelectedShopRecord));
-	}
-
-	private static IReadOnlyList<ModRecordChoice> FilterRecords(IReadOnlyList<ModRecordChoice> records, ModLocationChoice? location) =>
-		location == null ? [] : records.Where(record => record.LocationKey == location.Key).ToArray();
-
-	private static ObservableCollection<ModSkillSlot> CreateSkillSlots(bool passive) =>
-		[.. Enumerable.Range(0, 4).Select(index => new ModSkillSlot { Index = index, IsPassive = passive, Level = 1 })];
-
-	private static void ApplySkillDefaults(IReadOnlyList<ModSkillSlot> slots, IReadOnlyList<int> skills, IReadOnlyList<int> levels)
-	{
-		for (int index = 0; index < slots.Count; index++)
-		{
-			slots[index].SelectedSkill = (slots[index].IsPassive ? ModCatalog.PassiveSkillChoices : ModCatalog.ActiveSkillChoices)
-				.FirstOrDefault(choice => choice.Value == skills[index]);
-			slots[index].Level = Math.Max(1, levels[index]);
-		}
-	}
+	private void NotifyEditor() => Notify(nameof(RecordId), nameof(AbilityFilterIndex), nameof(FilteredSkillChoices), nameof(SelectedSkill), nameof(SelectedClass),
+		nameof(SelectedFortLocation), nameof(SelectedShopLocation), nameof(FortRecordsAtLocation), nameof(ShopRecordsAtLocation), nameof(SelectedFortRecord), nameof(SelectedShopRecord),
+		nameof(SelectedFortClass), nameof(SelectedShopItem), nameof(SelectedTargetShape), nameof(AbilityTypeText), nameof(IsActiveAbility), nameof(IsPassiveAbility), nameof(AbilityDescription),
+		nameof(PreviewModeDescription), nameof(ValueA), nameof(ValueB), nameof(ValueC), nameof(ValueD), nameof(ValueE), nameof(ValueF), nameof(ValueG), nameof(ValueH), nameof(ValueI),
+		nameof(ValueJ), nameof(ValueK), nameof(ValueL), nameof(ValueM), nameof(ValueN), nameof(ActiveSkills), nameof(PassiveSkills));
 
 	private void Notify(params String[] propertyNames)
 	{

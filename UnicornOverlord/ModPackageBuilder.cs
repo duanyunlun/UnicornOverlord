@@ -8,6 +8,9 @@ internal static class ModPackageBuilder
 	public static void Create(String filename, IReadOnlyCollection<ModModule> modules, ModTarget target)
 	{
 		if (modules.Count == 0) throw new InvalidOperationException("请至少选择一个已接入的 MOD。");
+		ModProjectState project = modules.First().Project;
+		if (modules.Any(module => !ReferenceEquals(module.Project, project)))
+			throw new InvalidOperationException("所选 MOD 模块不属于同一个项目状态。");
 		var patches = modules.Select(module =>
 		{
 			if (!module.IsAvailable)
@@ -28,6 +31,7 @@ internal static class ModPackageBuilder
 
 		WriteText(archive, "README_CN.txt", CreateReadme(modules, target) + "\n");
 		WriteText(archive, "manifest.txt", CreateManifest(modules, target));
+		WriteText(archive, "mod-project.json", project.ToJson(modules, target) + "\n");
 	}
 
 	private static void ValidateConflicts(IEnumerable<(ModModule Module, String Content)> patches)

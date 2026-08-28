@@ -6,7 +6,7 @@ namespace UnicornOverlord;
 internal static class TextModPackageBuilder
 {
 	public static void Create(String filename, String toolPath, String sourceCpk, TextModLanguage language,
-		ModTarget target, IReadOnlyCollection<TextTable> tables)
+		ModTarget target, IReadOnlyCollection<TextTable> tables, String? projectJson = null)
 	{
 		TextTable[] changedTables = tables.Where(table => table.Document.ChangedCount > 0).ToArray();
 		if (changedTables.Length == 0) throw new InvalidOperationException("请先修改至少一个文本条目。");
@@ -47,6 +47,7 @@ internal static class TextModPackageBuilder
 				压缩包内 emulator 目录可复制到模拟器配置目录。启用前请确认 Title ID 与游戏版本一致。
 				本工具只重建所选 CPK 的副本，不修改源 CPK、游戏文件或存档。
 				""" + "\n");
+			if (!String.IsNullOrEmpty(projectJson)) WriteText(archive, "mod-project.json", projectJson + "\n");
 		}
 		finally
 		{

@@ -15,11 +15,9 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 
 	private readonly Window mOwner;
 	private readonly Action<String> mSetStatus;
-	private String mToolPath = String.Empty;
-	private String mSourceCpkPath = String.Empty;
+	private readonly ModProjectState mProject;
+	private readonly TextModProjectState mState;
 	private String mSearchText = String.Empty;
-	private TextModLanguage mSelectedLanguage = TextModLanguage.All[0];
-	private ModTarget mSelectedTarget = ModTarget.Asia;
 	private TextTable? mSelectedTable;
 	private TextEntry? mSelectedEntry;
 	private String mValidationMessage = "尚未载入文本归档。";
@@ -31,21 +29,21 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 	public ICommand ExportCommand { get; }
 	public IReadOnlyList<TextModLanguage> Languages { get; } = TextModLanguage.All;
 	public IReadOnlyList<ModTarget> Targets { get; } = ModTarget.All;
-	public ObservableCollection<TextTable> Tables { get; } = [];
+	public ObservableCollection<TextTable> Tables => mState.Tables;
 	public ObservableCollection<TextEntry> SearchResults { get; } = [];
 
-	public String ToolPath { get => mToolPath; private set => SetField(ref mToolPath, value, nameof(ToolPath)); }
-	public String SourceCpkPath { get => mSourceCpkPath; private set => SetField(ref mSourceCpkPath, value, nameof(SourceCpkPath)); }
+	public String ToolPath { get => mState.ToolPath; private set { if (mState.ToolPath == value) return; mState.ToolPath = value; OnPropertyChanged(nameof(ToolPath)); } }
+	public String SourceCpkPath { get => mState.SourceCpkPath; private set { if (mState.SourceCpkPath == value) return; mState.SourceCpkPath = value; OnPropertyChanged(nameof(SourceCpkPath)); } }
 	public String SourceSummary => String.IsNullOrEmpty(SourceCpkPath) ? "尚未载入 CPK" : $"{Path.GetFileName(SourceCpkPath)} · {Tables.Count} 张文本表";
 	public String ToolSummary => String.IsNullOrEmpty(ToolPath) ? "尚未选择 cricodecs" : ToolPath;
 	public String SearchText { get => mSearchText; set => SetField(ref mSearchText, value ?? String.Empty, nameof(SearchText)); }
 	public TextModLanguage SelectedLanguage
 	{
-		get => mSelectedLanguage;
+		get => mState.SelectedLanguage;
 		set
 		{
-			if (value == null || mSelectedLanguage == value) return;
-			mSelectedLanguage = value;
+			if (value == null || mState.SelectedLanguage == value) return;
+			mState.SelectedLanguage = value;
 			OnPropertyChanged(nameof(SelectedLanguage));
 			OnPropertyChanged(nameof(ExpectedCpkText));
 		}
@@ -53,8 +51,14 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 	public String ExpectedCpkText => $"应选择 {SelectedLanguage.CpkFileName}";
 	public ModTarget SelectedTarget
 	{
-		get => mSelectedTarget;
-		set => SetField(ref mSelectedTarget, value ?? ModTarget.Asia, nameof(SelectedTarget));
+		get => mState.SelectedTarget;
+		set
+		{
+			ModTarget target = value ?? ModTarget.Asia;
+			if (mState.SelectedTarget == target) return;
+			mState.SelectedTarget = target;
+			OnPropertyChanged(nameof(SelectedTarget));
+		}
 	}
 	public TextTable? SelectedTable
 	{
@@ -83,10 +87,12 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 	public int ChangedCount => Tables.Sum(table => table.Document.ChangedCount);
 	public String ChangeSummary => $"共修改 {ChangedCount} 项";
 
-	public TextEditorViewModel(Window owner, Action<String> setStatus)
+	public TextEditorViewModel(Window owner, Action<String> setStatus, ModProjectState project)
 	{
 		mOwner = owner;
 		mSetStatus = setStatus;
+		mProject = project;
+		mState = project.Text;
 		ChooseToolCommand = new ActionCommand(ChooseTool);
 		OpenCpkCommand = new ActionCommand(OpenCpk);
 		SearchCommand = new ActionCommand(_ => RefreshResults());
@@ -194,7 +200,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 		if (String.IsNullOrEmpty(path)) return;
 		try
 		{
-			TextModPackageBuilder.Create(path, ToolPath, SourceCpkPath, SelectedLanguage, target, Tables);
+			TextModPackageBuilder.Create(path, ToolPath, SourceCpkPath, SelectedLanguage, target, Tables, mProject.ToTextJson(target));
 			mSetStatus($"文本 MOD 导出成功：{ChangedCount} 项修改，目标 {target.DisplayName}。");
 		}
 		catch (Exception exception)

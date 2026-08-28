@@ -113,44 +113,49 @@ internal static class ModPatchGenerator
 
 	private static List<PatchWrite> GenerateAbility(ModModule module)
 	{
-		uint id = CheckedUInt(module.RecordId, 28, 468, "技能 ID");
-		uint address = SkillBase + id * SkillStride;
-		ModSkillInfo skill = ModCatalog.Skills.FirstOrDefault(item => item.Choice.Value == checked((int)id))
-			?? throw new InvalidOperationException($"技能 ID {id} 不在已校准列表中。");
-		return
-		[
-			new(address + (skill.IsPassive ? 0x0Cu : 0x0Au), UInt16Bytes(CheckedUShort(module.ValueA, 0, 10, "AP/PP 消耗")), skill.IsPassive ? "PP 消耗" : "AP 消耗"),
-			new(address + 0x18, FloatBytes(module.ValueD), "物理威力"),
-			new(address + 0x1C, FloatBytes(module.ValueE), "魔法威力"),
-			new(address + 0x22, UInt16Bytes(CheckedUShort(module.ValueB, 0, 999, "命中")), "命中"),
-			new(address + 0x28, [CheckedByte(module.ValueC, 0, 255, "目标范围")], "目标范围"),
-			new(address + 0x3C, FloatBytes(module.ValueF), "效果强度"),
-		];
+		AbilityRecordEdit[] edits = module.Project.Ability.ModifiedRecords.OrderBy(record => record.RecordId).ToArray();
+		if (edits.Length == 0) throw new InvalidOperationException("技能编辑器尚未修改任何技能。");
+		var writes = new List<PatchWrite>(edits.Length * 6);
+		foreach (AbilityRecordEdit edit in edits)
+		{
+			uint id = CheckedUInt(edit.RecordId, 28, 468, "技能 ID");
+			uint address = SkillBase + id * SkillStride;
+			writes.Add(new(address + (edit.Original.IsPassive ? 0x0Cu : 0x0Au), UInt16Bytes(CheckedUShort(edit.Cost, 0, 10, "AP/PP 消耗")), edit.Original.IsPassive ? $"技能 {id} 的 PP 消耗" : $"技能 {id} 的 AP 消耗"));
+			writes.Add(new(address + 0x18, FloatBytes(edit.PhysicalPotency), $"技能 {id} 的物理威力"));
+			writes.Add(new(address + 0x1C, FloatBytes(edit.MagicalPotency), $"技能 {id} 的魔法威力"));
+			writes.Add(new(address + 0x22, UInt16Bytes(CheckedUShort(edit.Accuracy, 0, 999, "命中")), $"技能 {id} 的命中"));
+			writes.Add(new(address + 0x28, [CheckedByte(edit.TargetShape, 0, 255, "目标范围")], $"技能 {id} 的目标范围"));
+			writes.Add(new(address + 0x3C, FloatBytes(edit.EffectValue), $"技能 {id} 的效果强度"));
+		}
+		return writes;
 	}
 
 	private static List<PatchWrite> GenerateClass(ModModule module)
 	{
-		uint id = CheckedUInt(module.RecordId, 1, 73, "职业 ID");
-		uint growth = ClassGrowthBase + id * ClassGrowthStride;
-		double[] values = [module.ValueD, module.ValueE, module.ValueF, module.ValueG, module.ValueH,
-			module.ValueI, module.ValueJ, module.ValueK, module.ValueL, module.ValueM];
-		String[] names = ["生命", "物攻", "物防", "魔攻", "魔防", "命中", "闪避", "暴击", "格挡", "速度"];
+		ClassRecordEdit[] edits = module.Project.Classes.ModifiedRecords.OrderBy(record => record.RecordId).ToArray();
+		if (edits.Length == 0) throw new InvalidOperationException("职业编辑器尚未修改任何职业。");
 		var writes = new List<PatchWrite>();
-		for (int index = 0; index < values.Length; index++)
+		String[] names = ["生命", "物攻", "物防", "魔攻", "魔防", "命中", "闪避", "暴击", "格挡", "速度"];
+		foreach (ClassRecordEdit edit in edits)
 		{
-			if (values[index] < 0 || values[index] > 1000) throw new InvalidOperationException($"{names[index]}成长必须在 0 到 1000 之间。");
-			writes.Add(new PatchWrite(growth + (uint)(index * 4), FloatBytes(values[index]), $"{names[index]}成长"));
+			uint id = CheckedUInt(edit.RecordId, 1, 73, "职业 ID");
+			uint growth = ClassGrowthBase + id * ClassGrowthStride;
+			for (int index = 0; index < edit.Growths.Length; index++)
+			{
+				if (edit.Growths[index] < 0 || edit.Growths[index] > 1000) throw new InvalidOperationException($"职业 {id} 的{names[index]}成长必须在 0 到 1000 之间。");
+				writes.Add(new PatchWrite(growth + (uint)(index * 4), FloatBytes(edit.Growths[index]), $"职业 {id} 的{names[index]}成长"));
+			}
+			uint skills = ClassSkillBase + (id - 1) * ClassSkillStride;
+			int ap = CheckedInt(edit.Ap, 1, 4, "AP");
+			int pp = CheckedInt(edit.Pp, 1, 4, "PP");
+			for (int index = 0; index < 4; index++)
+			{
+				writes.Add(new PatchWrite(skills + 0x20u + (uint)(index * 4), UInt32Bytes(index < ap ? 1u : 0u), $"职业 {id} 的 AP 点数"));
+				writes.Add(new PatchWrite(skills + 0x50u + (uint)(index * 4), UInt32Bytes(index < pp ? 1u : 0u), $"职业 {id} 的 PP 点数"));
+			}
+			AppendClassSkillWrites(writes, skills, edit.ActiveSkills, 0x04, $"职业 {id} 的主动");
+			AppendClassSkillWrites(writes, skills, edit.PassiveSkills, 0x34, $"职业 {id} 的被动");
 		}
-		uint skills = ClassSkillBase + (id - 1) * ClassSkillStride;
-		int ap = CheckedInt(module.ValueA, 1, 4, "AP");
-		int pp = CheckedInt(module.ValueB, 1, 4, "PP");
-		for (int index = 0; index < 4; index++)
-		{
-			writes.Add(new PatchWrite(skills + 0x20u + (uint)(index * 4), UInt32Bytes(index < ap ? 1u : 0u), "AP 点数"));
-			writes.Add(new PatchWrite(skills + 0x50u + (uint)(index * 4), UInt32Bytes(index < pp ? 1u : 0u), "PP 点数"));
-		}
-		AppendClassSkillWrites(writes, skills, module.ActiveSkills, 0x04, "主动");
-		AppendClassSkillWrites(writes, skills, module.PassiveSkills, 0x34, "被动");
 		return writes;
 	}
 
@@ -171,13 +176,18 @@ internal static class ModPatchGenerator
 
 	private static List<PatchWrite> GenerateFort(ModModule module)
 	{
-		uint slot = CheckedUInt(module.RecordId, 1, 248, "据点槽位");
-		return [new(FortBase + slot * FortStride, UInt32Bytes(CheckedUInt(module.ValueA, 0, 73, "职业 ID")), $"据点槽位 {slot} 的职业")];
+		FortRecordEdit[] edits = module.Project.Fort.ModifiedRecords.OrderBy(record => record.RecordId).ToArray();
+		if (edits.Length == 0) throw new InvalidOperationException("据点编辑器尚未修改任何招募位置。");
+		return edits.Select(edit =>
+		{
+			uint slot = CheckedUInt(edit.RecordId, 1, 248, "据点槽位");
+			return new PatchWrite(FortBase + slot * FortStride, UInt32Bytes(CheckedUInt(edit.ClassId, 0, 73, "职业 ID")), $"据点槽位 {slot} 的职业");
+		}).ToList();
 	}
 
 	private static List<PatchWrite> GenerateMine(ModModule module)
 	{
-		MineEditorState state = module.Mine ?? throw new InvalidOperationException("采矿编辑状态未初始化。");
+		MineEditorState state = module.Project.Mine;
 		MineRecordEdit[] edits = state.ModifiedRecords.OrderBy(record => record.RecordId).ToArray();
 		if (edits.Length == 0) throw new InvalidOperationException("采矿编辑器尚未修改任何掉落记录。");
 		var writes = new List<PatchWrite>(edits.Length * 4);
@@ -195,19 +205,20 @@ internal static class ModPatchGenerator
 
 	private static List<PatchWrite> GenerateShop(ModModule module)
 	{
-		if (!ModCatalog.ShopRecords.TryGetValue(module.RecordId, out ModShopRecordInfo? record))
-			throw new InvalidDataException($"商店记录 {module.RecordId} 未校准。");
-		uint address = record.Address;
-		uint itemId = CheckedUInt(module.ValueA, 0, 970, "物品 ID");
-		uint priceAddress = ItemPriceBase + itemId * ItemStride;
-		ushort price = CheckedUShort(module.ValueC, 0, UInt16.MaxValue, "金币买价");
-		return
-		[
-			new(address + 4, UInt32Bytes(itemId), "商品"),
-			new(address + 12, Int32Bytes(CheckedInt(module.ValueB, -1, 9999, "库存")), "库存，-1 为无限"),
-			new(priceAddress, UInt16Bytes(price), "全局金币买价"),
-			new(priceAddress + 4, UInt16Bytes((ushort)(price / 10)), "全局金币卖价"),
-		];
+		ShopRecordEdit[] edits = module.Project.Shop.ModifiedRecords.OrderBy(record => record.RecordId).ToArray();
+		if (edits.Length == 0) throw new InvalidOperationException("商店编辑器尚未修改任何商品。");
+		var writes = new List<PatchWrite>(edits.Length * 4);
+		foreach (ShopRecordEdit edit in edits)
+		{
+			uint itemId = CheckedUInt(edit.ItemId, 0, 970, "物品 ID");
+			uint priceAddress = ItemPriceBase + itemId * ItemStride;
+			ushort price = CheckedUShort(edit.Price, 0, UInt16.MaxValue, "金币买价");
+			writes.Add(new(edit.Original.Address + 4, UInt32Bytes(itemId), $"商店记录 {edit.RecordId} 的商品"));
+			writes.Add(new(edit.Original.Address + 12, Int32Bytes(CheckedInt(edit.Stock, -1, 9999, "库存")), $"商店记录 {edit.RecordId} 的库存"));
+			writes.Add(new(priceAddress, UInt16Bytes(price), $"物品 {itemId} 的全局金币买价"));
+			writes.Add(new(priceAddress + 4, UInt16Bytes((ushort)(price / 10)), $"物品 {itemId} 的全局金币卖价"));
+		}
+		return writes;
 	}
 
 	private static List<PatchWrite> GenerateTypeMatchups(ModModule module)

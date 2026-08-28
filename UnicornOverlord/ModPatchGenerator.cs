@@ -177,15 +177,20 @@ internal static class ModPatchGenerator
 
 	private static List<PatchWrite> GenerateMine(ModModule module)
 	{
-		uint slot = CheckedUInt(module.RecordId, 0, 62, "采矿槽位");
-		uint address = MineBase + slot * MineStride;
-		return
-		[
-			new(address, UInt32Bytes(CheckedUInt(module.ValueA, 0, 970, "物品 ID")), "掉落物品"),
-			new(address + 4, UInt32Bytes(CheckedUInt(module.ValueB, 0, 1000000, "权重")), "掉落权重"),
-			new(address + 8, UInt32Bytes(CheckedUInt(module.ValueC, 0, 1000000, "挖掘目标")), "挖掘目标"),
-			new(address + 16, UInt32Bytes(CheckedUInt((int)module.ValueD, 1, 999999, "单局上限")), "单局掉落上限"),
-		];
+		MineEditorState state = module.Mine ?? throw new InvalidOperationException("采矿编辑状态未初始化。");
+		MineRecordEdit[] edits = state.ModifiedRecords.OrderBy(record => record.RecordId).ToArray();
+		if (edits.Length == 0) throw new InvalidOperationException("采矿编辑器尚未修改任何掉落记录。");
+		var writes = new List<PatchWrite>(edits.Length * 4);
+		foreach (MineRecordEdit edit in edits)
+		{
+			uint slot = CheckedUInt(edit.RecordId, 0, 62, "采矿槽位");
+			uint address = MineBase + slot * MineStride;
+			writes.Add(new(address, UInt32Bytes(CheckedUInt(edit.ItemId, 0, 970, "物品 ID")), $"采矿槽位 {slot} 的掉落物品"));
+			writes.Add(new(address + 4, UInt32Bytes(CheckedUInt(edit.Weight, 0, 1000000, "权重")), $"采矿槽位 {slot} 的掉落权重"));
+			writes.Add(new(address + 8, UInt32Bytes(CheckedUInt(edit.DigTarget, 0, 1000000, "挖掘目标")), $"采矿槽位 {slot} 的挖掘目标"));
+			writes.Add(new(address + 16, UInt32Bytes(CheckedUInt(edit.RoundLimit, 1, 999999, "单局上限")), $"采矿槽位 {slot} 的单局掉落上限"));
+		}
+		return writes;
 	}
 
 	private static List<PatchWrite> GenerateShop(ModModule module)

@@ -67,25 +67,35 @@ internal static class ModSmokeTest
 		classEditor.RecordId = 1;
 
 		ModModule mine = modules.Single(module => module.Key == "mine_editor");
-		Require(mine.MineLocations.Count == 5 && mine.MineRecordsAtLocation.Count == 11, "采矿地点级联没有载入科尔尼亚采掘场。");
-		for (int locationIndex = 0; locationIndex < mine.MineLocations.Count; locationIndex++)
+		MineEditorState mining = mine.Mine ?? throw new InvalidDataException("采矿编辑状态没有初始化。");
+		Require(mining.Locations.Count == 5 && mining.SelectedLocation?.Records.Count == 11, "采矿地点级联没有载入科尔尼亚采掘场。");
+		for (int locationIndex = 0; locationIndex < mining.Locations.Count; locationIndex++)
 		{
-			ModLocationChoice location = mine.MineLocations[locationIndex];
-			mine.SelectedMineLocationIndex = locationIndex;
-			Require(mine.SelectedMineLocation == location && mine.SelectedMineRecord != null && mine.MineRecordsAtLocation.Count > 0,
+			MineLocationState location = mining.Locations[locationIndex];
+			mining.SelectedLocation = location;
+			Require(ReferenceEquals(mining.SelectedLocation, location) && mining.SelectedRecord != null && location.Records.Count > 0,
 				$"切换到 {location.DisplayName} 时地点或原版掉落为空。");
-			ModRecordChoice last = mine.MineRecordsAtLocation[^1];
-			mine.SelectedMineRecordIndex = mine.MineRecordsAtLocation.Count - 1;
-			Require(mine.SelectedMineLocation == location && mine.SelectedMineRecord == last,
+			MineRecordEdit last = location.Records[^1];
+			mining.SelectedRecord = last;
+			Require(ReferenceEquals(mining.SelectedLocation, location) && ReferenceEquals(mining.SelectedRecord, last),
 				$"切换 {location.DisplayName} 的原版掉落后地点选择丢失。");
-			Require(mine.SelectedMineLocationIndex == locationIndex && mine.SelectedMineRecordIndex == mine.MineRecordsAtLocation.Count - 1,
-				$"切换 {location.DisplayName} 后下拉索引没有保持同步。");
 		}
-		mine.SelectedMineLocation = mine.MineLocations[1];
-		Require(mine.RecordId == 11 && mine.MineRecordsAtLocation.Count == 11, "切换采矿地点时没有筛选对应掉落记录。");
-		mine.RecordId = 2;
-		Require(mine.ValueA == 5 && mine.ValueB == 3 && mine.ValueC == 150 && mine.ValueD == 1, "切换采矿槽位时没有载入原版记录。");
-		mine.RecordId = 0;
+		mining.SelectedLocation = mining.Locations[0];
+		mining.PropertyChanged += (_, args) =>
+		{
+			if (args.PropertyName == nameof(MineEditorState.SelectedLocation)) mining.SelectedRecord = null;
+		};
+		mining.SelectedLocation = mining.Locations[1];
+		Require(mining.SelectedRecord?.RecordId == 11 && mining.SelectedLocation.Records.Count == 11, "控件回写空选择后没有恢复地点首条掉落记录。");
+		mining.SelectedLocation = mining.Locations[0];
+		mining.SelectedRecord = mining.SelectedLocation.Records.Single(record => record.RecordId == 2);
+		Require(mining.SelectedItem?.Value == 5 && mining.Weight == 3 && mining.DigTarget == 150 && mining.RoundLimit == 1, "切换采矿记录时没有载入原版配置。");
+		mining.Weight = 4;
+		mining.SelectedLocation = mining.Locations[1];
+		mining.Weight = 51;
+		Require(mining.ModifiedCount == 2, "采矿编辑状态没有累积多个地点的修改。");
+		String minePatch = ModPatchGenerator.Generate(mine, ModTarget.Asia);
+		Require(minePatch.Contains("00D5242C", StringComparison.Ordinal) && minePatch.Contains("00D52500", StringComparison.Ordinal), "采矿补丁没有同时写入多个已修改槽位。");
 
 		ModModule fort = modules.Single(module => module.Key == "fort_editor");
 		Require(fort.FortLocations.Count == 63 && fort.FortRecordsAtLocation.Count == 3, "据点地点级联没有载入索力吉堡垒。");

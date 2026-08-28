@@ -76,10 +76,8 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public IReadOnlyList<ModChoice> ClassChoices => ModCatalog.ClassChoices;
 	public IReadOnlyList<ModChoice> ItemChoices => ModCatalog.ItemChoices;
 	public IReadOnlyList<ModLocationChoice> FortLocations => ModCatalog.FortLocations;
-	public IReadOnlyList<ModLocationChoice> MineLocations => ModCatalog.MineLocations;
 	public IReadOnlyList<ModLocationChoice> ShopLocations => ModCatalog.ShopLocations;
 	public IReadOnlyList<ModRecordChoice> FortRecordsAtLocation => FilterRecords(ModCatalog.FortRecordChoices, SelectedFortLocation);
-	public IReadOnlyList<ModRecordChoice> MineRecordsAtLocation => FilterRecords(ModCatalog.MineRecordChoices, SelectedMineLocation);
 	public IReadOnlyList<ModRecordChoice> ShopRecordsAtLocation => FilterRecords(ModCatalog.ShopRecordChoices, SelectedShopLocation);
 	public IReadOnlyList<ModChoice> TargetShapes { get; } =
 	[
@@ -93,39 +91,15 @@ internal sealed class ModModule : INotifyPropertyChanged
 	];
 	public ObservableCollection<ModSkillSlot> ActiveSkills { get; }
 	public ObservableCollection<ModSkillSlot> PassiveSkills { get; }
+	public MineEditorState? Mine { get; init; }
 	public ICommand RerollCommand { get; }
 	public ModChoice? SelectedSkill { get => ModCatalog.FindSkill(RecordId); set { if (value != null) RecordId = value.Value; } }
 	public ModChoice? SelectedClass { get => ModCatalog.FindClass(RecordId); set { if (value != null) RecordId = value.Value; } }
 	public ModLocationChoice? SelectedFortLocation { get => FindLocation(ModCatalog.FortLocations, ModCatalog.FindFortRecord(RecordId)); set => SelectFirstRecord(value, ModCatalog.FortRecordChoices); }
-	public ModLocationChoice? SelectedMineLocation { get => FindLocation(ModCatalog.MineLocations, ModCatalog.FindMineRecord(RecordId)); set => SelectFirstRecord(value, ModCatalog.MineRecordChoices); }
 	public ModLocationChoice? SelectedShopLocation { get => FindLocation(ModCatalog.ShopLocations, ModCatalog.FindShopRecord(RecordId)); set => SelectFirstRecord(value, ModCatalog.ShopRecordChoices); }
 	public ModRecordChoice? SelectedFortRecord { get => ModCatalog.FindFortRecord(RecordId); set => SelectRecord(value); }
-	public ModRecordChoice? SelectedMineRecord { get => ModCatalog.FindMineRecord(RecordId); set => SelectRecord(value); }
-	public int SelectedMineLocationIndex
-	{
-		get
-		{
-			ModLocationChoice? location = SelectedMineLocation;
-			return location == null ? -1 : IndexOf(ModCatalog.MineLocations, item => item.Key == location.Key);
-		}
-		set
-		{
-			if (value >= 0 && value < ModCatalog.MineLocations.Count)
-				SelectFirstRecord(ModCatalog.MineLocations[value], ModCatalog.MineRecordChoices);
-		}
-	}
-	public int SelectedMineRecordIndex
-	{
-		get => IndexOf(MineRecordsAtLocation, item => item.Value == RecordId);
-		set
-		{
-			IReadOnlyList<ModRecordChoice> records = MineRecordsAtLocation;
-			if (value >= 0 && value < records.Count) SelectRecord(records[value]);
-		}
-	}
 	public ModRecordChoice? SelectedShopRecord { get => ModCatalog.FindShopRecord(RecordId); set => SelectRecord(value); }
 	public ModChoice? SelectedFortClass { get => ModCatalog.FindClass(ValueA); set { if (value != null) ValueA = value.Value; } }
-	public ModChoice? SelectedMineItem { get => ModCatalog.FindItem(ValueA); set { if (value != null) ValueA = value.Value; } }
 	public ModChoice? SelectedShopItem { get => ModCatalog.FindItem(ValueA); set { if (value != null) ValueA = value.Value; } }
 	public ModChoice? SelectedTargetShape { get => TargetShapes.FirstOrDefault(choice => choice.Value == ValueC); set { if (value != null) ValueC = value.Value; } }
 	public String AbilityTypeText => mValueN == 1 ? "被动技能（PP）" : "主动技能（AP）";
@@ -164,12 +138,12 @@ internal sealed class ModModule : INotifyPropertyChanged
 			LoadRecordDefaults();
 			Notify(nameof(RecordId), nameof(SelectedSkill), nameof(SelectedClass), nameof(AbilityTypeText), nameof(IsActiveAbility), nameof(IsPassiveAbility), nameof(AbilityDescription), nameof(PreviewModeDescription));
 			if (!mChangingLocation && !mChangingRecord)
-				Notify(nameof(SelectedFortLocation), nameof(SelectedMineLocation), nameof(SelectedMineLocationIndex), nameof(SelectedShopLocation));
+				Notify(nameof(SelectedFortLocation), nameof(SelectedShopLocation));
 			if (!mChangingLocation && !mChangingRecord)
-				Notify(nameof(FortRecordsAtLocation), nameof(MineRecordsAtLocation), nameof(ShopRecordsAtLocation), nameof(SelectedFortRecord), nameof(SelectedMineRecord), nameof(SelectedMineRecordIndex), nameof(SelectedShopRecord));
+				Notify(nameof(FortRecordsAtLocation), nameof(ShopRecordsAtLocation), nameof(SelectedFortRecord), nameof(SelectedShopRecord));
 		}
 	}
-	public int ValueA { get => mValueA; set { SetField(ref mValueA, value, nameof(ValueA)); Notify(nameof(SelectedFortClass), nameof(SelectedMineItem), nameof(SelectedShopItem)); } }
+	public int ValueA { get => mValueA; set { SetField(ref mValueA, value, nameof(ValueA)); Notify(nameof(SelectedFortClass), nameof(SelectedShopItem)); } }
 	public int ValueB { get => mValueB; set => SetField(ref mValueB, value, nameof(ValueB)); }
 	public int ValueC { get => mValueC; set { SetField(ref mValueC, value, nameof(ValueC)); Notify(nameof(SelectedTargetShape)); } }
 	public double ValueD { get => mValueD; set => SetField(ref mValueD, value, nameof(ValueD)); }
@@ -204,9 +178,10 @@ internal sealed class ModModule : INotifyPropertyChanged
 
 	public void RefreshLocalizedChoices()
 	{
-		Notify(nameof(SkillChoices), nameof(FilteredSkillChoices), nameof(ClassChoices), nameof(ItemChoices), nameof(FortLocations), nameof(MineLocations), nameof(ShopLocations), nameof(FortRecordsAtLocation), nameof(MineRecordsAtLocation), nameof(ShopRecordsAtLocation),
-			nameof(SelectedSkill), nameof(SelectedClass), nameof(SelectedFortLocation), nameof(SelectedMineLocation), nameof(SelectedShopLocation), nameof(SelectedFortRecord), nameof(SelectedMineRecord), nameof(SelectedShopRecord),
-			nameof(SelectedFortClass), nameof(SelectedMineItem), nameof(SelectedShopItem), nameof(TargetShapes), nameof(SelectedTargetShape), nameof(AbilityDescription));
+		Notify(nameof(SkillChoices), nameof(FilteredSkillChoices), nameof(ClassChoices), nameof(ItemChoices), nameof(FortLocations), nameof(ShopLocations), nameof(FortRecordsAtLocation), nameof(ShopRecordsAtLocation),
+			nameof(SelectedSkill), nameof(SelectedClass), nameof(SelectedFortLocation), nameof(SelectedShopLocation), nameof(SelectedFortRecord), nameof(SelectedShopRecord),
+			nameof(SelectedFortClass), nameof(SelectedShopItem), nameof(TargetShapes), nameof(SelectedTargetShape), nameof(AbilityDescription));
+		Mine?.RefreshLocalizedChoices();
 		foreach (ModSkillSlot slot in ActiveSkills.Concat(PassiveSkills))
 		{
 			ModChoice? choice = slot.SelectedSkill;
@@ -241,10 +216,6 @@ internal sealed class ModModule : INotifyPropertyChanged
 			return;
 		}
 		if (IsFortEditor && ModCatalog.FortRecords.TryGetValue(RecordId, out ModRecordInfo? fort)) ValueA = fort.ValueA;
-		if (IsMineEditor && ModCatalog.MineRecords.TryGetValue(RecordId, out ModRecordInfo? mine))
-		{
-			ValueA = mine.ValueA; ValueB = mine.ValueB; ValueC = mine.ValueC; ValueD = mine.ValueE;
-		}
 		if (IsShopEditor && ModCatalog.ShopRecords.TryGetValue(RecordId, out ModShopRecordInfo? shop))
 		{
 			ValueA = shop.ItemId; ValueB = shop.Stock; ValueC = shop.Price;
@@ -261,13 +232,7 @@ internal sealed class ModModule : INotifyPropertyChanged
 		mChangingLocation = true;
 		try { RecordId = first.Value; }
 		finally { mChangingLocation = false; }
-		if (IsMineEditor)
-		{
-			Notify(nameof(SelectedMineLocation), nameof(SelectedMineLocationIndex));
-			Notify(nameof(MineRecordsAtLocation));
-			Notify(nameof(SelectedMineRecord), nameof(SelectedMineRecordIndex));
-		}
-		else if (IsFortEditor)
+		if (IsFortEditor)
 		{
 			Notify(nameof(SelectedFortLocation), nameof(FortRecordsAtLocation), nameof(SelectedFortRecord));
 		}
@@ -283,22 +248,12 @@ internal sealed class ModModule : INotifyPropertyChanged
 		mChangingRecord = true;
 		try { RecordId = record.Value; }
 		finally { mChangingRecord = false; }
-		if (IsMineEditor) Notify(nameof(SelectedMineRecord), nameof(SelectedMineRecordIndex));
-		else if (IsFortEditor) Notify(nameof(SelectedFortRecord));
+		if (IsFortEditor) Notify(nameof(SelectedFortRecord));
 		else if (IsShopEditor) Notify(nameof(SelectedShopRecord));
 	}
 
 	private static IReadOnlyList<ModRecordChoice> FilterRecords(IReadOnlyList<ModRecordChoice> records, ModLocationChoice? location) =>
 		location == null ? [] : records.Where(record => record.LocationKey == location.Key).ToArray();
-
-	private static int IndexOf<T>(IReadOnlyList<T> items, Func<T, bool> predicate)
-	{
-		for (int index = 0; index < items.Count; index++)
-			if (predicate(items[index])) return index;
-		return -1;
-	}
-
-	internal void RefreshMineRecordSelection() => Notify(nameof(SelectedMineRecord), nameof(SelectedMineRecordIndex));
 
 	private static ObservableCollection<ModSkillSlot> CreateSkillSlots(bool passive) =>
 		[.. Enumerable.Range(0, 4).Select(index => new ModSkillSlot { Index = index, IsPassive = passive, Level = 1 })];

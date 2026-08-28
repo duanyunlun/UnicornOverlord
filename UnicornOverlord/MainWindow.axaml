@@ -456,14 +456,14 @@
 
                   <StackPanel IsVisible="{Binding IsMineEditor}" Spacing="12">
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="地图地点"/><ComboBox ItemsSource="{Binding MineLocations}" SelectedIndex="{Binding SelectedMineLocationIndex, Mode=OneWay}" SelectionChanged="MineLocation_SelectionChanged" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="原版掉落"/><ComboBox ItemsSource="{Binding MineRecordsAtLocation}" SelectedIndex="{Binding SelectedMineRecordIndex, Mode=OneWay}" SelectionChanged="MineRecord_SelectionChanged" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
-                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="修改为"/><local:ModSearchPicker ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding SelectedMineItem, Mode=TwoWay}"/></StackPanel>
+                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="地图地点"/><ComboBox ItemsSource="{Binding Mine.Locations}" SelectedItem="{Binding Mine.SelectedLocation, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="原版掉落"/><ComboBox ItemsSource="{Binding Mine.SelectedLocation.Records}" SelectedItem="{Binding Mine.SelectedRecord, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="修改为"/><local:ModSearchPicker ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding Mine.SelectedItem, Mode=TwoWay}"/></StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="掉落权重"/><NumericUpDown Value="{Binding ValueB}" Minimum="0" Maximum="1000000"/></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="挖掘目标"/><NumericUpDown Value="{Binding ValueC}" Minimum="0" Maximum="1000000"/></StackPanel>
-                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="单局上限"/><NumericUpDown Value="{Binding ValueD}" Minimum="1" Maximum="999999"/></StackPanel>
+                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="掉落权重"/><NumericUpDown Value="{Binding Mine.Weight}" Minimum="0" Maximum="1000000"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="挖掘目标"/><NumericUpDown Value="{Binding Mine.DigTarget}" Minimum="0" Maximum="1000000"/></StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="单局上限"/><NumericUpDown Value="{Binding Mine.RoundLimit}" Minimum="1" Maximum="999999"/></StackPanel>
                     </Grid>
                     <TextBlock Classes="caption" Text="掉落权重是同地区各槽之间的相对概率；挖掘目标越高越难在限时内挖出；单局上限限制一次采矿最多取得数量。" TextWrapping="Wrap"/>
                   </StackPanel>

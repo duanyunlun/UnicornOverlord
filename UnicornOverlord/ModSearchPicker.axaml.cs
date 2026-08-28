@@ -97,6 +97,7 @@ public partial class ModSearchPicker : UserControl
 	{
 		ModChoice choice => choice.DisplayName,
 		ModLocationChoice location => location.DisplayName,
+		FortLocationState location => location.DisplayName,
 		ModRecordChoice record => record.DetailDisplayName,
 		double number => number.ToString(CultureInfo.CurrentCulture),
 		_ => value?.ToString() ?? String.Empty,
@@ -114,6 +115,7 @@ public partial class ModSearchPicker : UserControl
 	{
 		ModChoice choice => [choice.Name, choice.EnglishName, choice.ChineseName],
 		ModLocationChoice location => [location.DisplayName, location.EnglishName, location.JapaneseName, location.ChineseName],
+		FortLocationState location => [location.DisplayName, location.Choice.EnglishName, location.Choice.JapaneseName, location.Choice.ChineseName],
 		ModRecordChoice record =>
 		[
 			record.DetailDisplayName,

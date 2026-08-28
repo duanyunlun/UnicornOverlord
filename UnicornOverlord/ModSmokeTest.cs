@@ -109,8 +109,24 @@ internal static class ModSmokeTest
 		Require(minePatch.Contains("00D5242C", StringComparison.Ordinal) && minePatch.Contains("00D52500", StringComparison.Ordinal), "采矿补丁没有同时写入多个已修改槽位。");
 
 			ModModule fort = modules.Single(module => module.Key == "fort_editor");
+			FortEditorState fortState = fort.Fort;
 			Require(fort.FortLocations.Count == 63 && fort.FortRecordsAtLocation.Count == 3, "据点地点级联没有载入索力吉堡垒。");
 			Require(ReferenceEquals(fort.FortRecordsAtLocation, fort.FortRecordsAtLocation), "同一据点的招募位置列表必须保持稳定实例，避免界面交替清空选择。");
+			foreach (FortLocationState location in fortState.Locations)
+			{
+				fortState.SelectedLocation = location;
+				Require(ReferenceEquals(fortState.SelectedRecord, location.Records[0]), $"切换到 {location.DisplayName} 时没有载入第一条原版招募。");
+				fortState.SelectedRecord = location.Records[^1];
+				Require(ReferenceEquals(fortState.SelectedRecord, location.Records[^1]), $"切换 {location.DisplayName} 的原版招募后选择丢失。");
+			}
+			fortState.SelectedLocation = fortState.Locations[0];
+			fortState.PropertyChanged += (_, args) =>
+			{
+				if (args.PropertyName == nameof(FortEditorState.SelectedLocation)) fortState.SelectedRecord = null!;
+			};
+			fortState.SelectedLocation = fortState.Locations[1];
+			Require(ReferenceEquals(fortState.SelectedRecord, fortState.SelectedLocation.Records[0]), "控件回写空选择后没有恢复据点首条原版招募。");
+			fortState.SelectedLocation = fortState.Locations[0];
 			FortRecordEdit firstLocationRecord = fort.SelectedFortRecordEntry;
 			fort.ValueA = fort.ValueA == 1 ? 2 : 1;
 			int fort1Class = fort.ValueA;
@@ -126,8 +142,24 @@ internal static class ModSmokeTest
 			Require(fortPatch.Contains("00D4D68C", StringComparison.Ordinal) && fortPatch.Contains("00D4D6BC", StringComparison.Ordinal), "据点补丁没有累计两个招募位置的修改。");
 
 			ModModule shop = modules.Single(module => module.Key == "shop_editor");
+			ShopEditorState shopState = shop.Shop;
 			Require(shop.ShopRecordsAtLocation.Count == 7, "帕雷比亚镇武具店应显示 2 个专属商品和 5 个共享商品。");
 			Require(ReferenceEquals(shop.ShopRecordsAtLocation, shop.ShopRecordsAtLocation), "同一商店地点的商品列表必须保持稳定实例，避免界面重复清空选择。");
+			foreach (ShopLocationState location in shopState.Locations)
+			{
+				shopState.SelectedLocation = location;
+				Require(ReferenceEquals(shopState.SelectedRecord, location.Records[0]), $"切换到 {location.DisplayName} 时没有载入第一件原版商品。");
+				shopState.SelectedRecord = location.Records[^1];
+				Require(ReferenceEquals(shopState.SelectedRecord, location.Records[^1]), $"切换 {location.DisplayName} 的原版商品后选择丢失。");
+			}
+			shopState.SelectedLocation = shopState.Locations[0];
+			shopState.PropertyChanged += (_, args) =>
+			{
+				if (args.PropertyName == nameof(ShopEditorState.SelectedLocation)) shopState.SelectedRecord = null!;
+			};
+			shopState.SelectedLocation = shopState.Locations[1];
+			Require(ReferenceEquals(shopState.SelectedRecord, shopState.SelectedLocation.Records[0]), "控件回写空选择后没有恢复商店首件原版商品。");
+			shopState.SelectedLocation = shopState.Locations[0];
 			Require(shop.SelectedShopRecordIndex == 0, "商店初始商品索引应指向第一条记录。");
 			ShopRecordEdit firstShopRecord = shop.SelectedShopRecordEntry;
 			shop.SelectedShopRecordIndex = -1;

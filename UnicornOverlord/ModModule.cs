@@ -64,7 +64,9 @@ internal sealed class ModModule : INotifyPropertyChanged
 	];
 	public IReadOnlyList<ModSkillSlot> ActiveSkills => Project.Classes.SelectedRecord.ActiveSkills;
 	public IReadOnlyList<ModSkillSlot> PassiveSkills => Project.Classes.SelectedRecord.PassiveSkills;
+	public FortEditorState Fort => Project.Fort;
 	public MineEditorState Mine => Project.Mine;
+	public ShopEditorState Shop => Project.Shop;
 	public ICommand RerollCommand { get; }
 
 	public bool IsSelected
@@ -119,18 +121,18 @@ internal sealed class ModModule : INotifyPropertyChanged
 
 	public int ValueA
 	{
-		get => Key switch { "ability_editor" => Project.Ability.SelectedRecord.Cost, "class_editor" => Project.Classes.SelectedRecord.Ap, "fort_editor" => Project.Fort.SelectedRecord.ClassId, "shop_editor" => Project.Shop.SelectedRecord.ItemId, "character_randomizer" => Project.CharacterRandomizer.Seed, "six_member_units" => Project.SixMemberUnits.HonorCost, _ => 0 };
-		set { switch (Key) { case "ability_editor": Project.Ability.SelectedRecord.Cost = value; break; case "class_editor": Project.Classes.SelectedRecord.Ap = value; break; case "fort_editor": Project.Fort.SelectedRecord.ClassId = value; break; case "shop_editor": Project.Shop.SelectedRecord.ItemId = value; break; case "character_randomizer": Project.CharacterRandomizer.Seed = value; break; case "six_member_units": Project.SixMemberUnits.HonorCost = value; break; } Notify(nameof(ValueA), nameof(SelectedFortClass), nameof(SelectedShopItem)); }
+		get => Key switch { "ability_editor" => Project.Ability.SelectedRecord.Cost, "class_editor" => Project.Classes.SelectedRecord.Ap, "fort_editor" => Project.Fort.ClassId, "shop_editor" => Project.Shop.ItemId, "character_randomizer" => Project.CharacterRandomizer.Seed, "six_member_units" => Project.SixMemberUnits.HonorCost, _ => 0 };
+		set { switch (Key) { case "ability_editor": Project.Ability.SelectedRecord.Cost = value; break; case "class_editor": Project.Classes.SelectedRecord.Ap = value; break; case "fort_editor": Project.Fort.ClassId = value; break; case "shop_editor": Project.Shop.ItemId = value; break; case "character_randomizer": Project.CharacterRandomizer.Seed = value; break; case "six_member_units": Project.SixMemberUnits.HonorCost = value; break; } Notify(nameof(ValueA), nameof(SelectedFortClass), nameof(SelectedShopItem)); }
 	}
 	public int ValueB
 	{
-		get => Key switch { "ability_editor" => Project.Ability.SelectedRecord.Accuracy, "class_editor" => Project.Classes.SelectedRecord.Pp, "shop_editor" => Project.Shop.SelectedRecord.Stock, _ => 0 };
-		set { switch (Key) { case "ability_editor": Project.Ability.SelectedRecord.Accuracy = value; break; case "class_editor": Project.Classes.SelectedRecord.Pp = value; break; case "shop_editor": Project.Shop.SelectedRecord.Stock = value; break; } Notify(nameof(ValueB)); }
+		get => Key switch { "ability_editor" => Project.Ability.SelectedRecord.Accuracy, "class_editor" => Project.Classes.SelectedRecord.Pp, "shop_editor" => Project.Shop.Stock, _ => 0 };
+		set { switch (Key) { case "ability_editor": Project.Ability.SelectedRecord.Accuracy = value; break; case "class_editor": Project.Classes.SelectedRecord.Pp = value; break; case "shop_editor": Project.Shop.Stock = value; break; } Notify(nameof(ValueB)); }
 	}
 	public int ValueC
 	{
-		get => Key switch { "ability_editor" => Project.Ability.SelectedRecord.TargetShape, "shop_editor" => Project.Shop.SelectedRecord.Price, _ => 0 };
-		set { switch (Key) { case "ability_editor": Project.Ability.SelectedRecord.TargetShape = value; break; case "shop_editor": Project.Shop.SelectedRecord.Price = value; break; } Notify(nameof(ValueC), nameof(SelectedTargetShape)); }
+		get => Key switch { "ability_editor" => Project.Ability.SelectedRecord.TargetShape, "shop_editor" => Project.Shop.Price, _ => 0 };
+		set { switch (Key) { case "ability_editor": Project.Ability.SelectedRecord.TargetShape = value; break; case "shop_editor": Project.Shop.Price = value; break; } Notify(nameof(ValueC), nameof(SelectedTargetShape)); }
 	}
 	public double ValueD { get => ReadDouble(0); set => WriteDouble(0, value, nameof(ValueD)); }
 	public double ValueE { get => ReadDouble(1); set => WriteDouble(1, value, nameof(ValueE)); }
@@ -147,10 +149,10 @@ internal sealed class ModModule : INotifyPropertyChanged
 
 	public ModChoice? SelectedSkill { get => Project.Ability.SelectedRecord.Original.Choice; set { if (value != null) RecordId = value.Value; } }
 	public ModChoice? SelectedClass { get => ModCatalog.FindClass(Project.Classes.SelectedRecord.RecordId); set { if (value != null) RecordId = value.Value; } }
-	public ModLocationChoice SelectedFortLocation { get => Project.Fort.SelectedLocation; set { Project.Fort.SelectLocation(value); NotifyEditor(); } }
+	public ModLocationChoice SelectedFortLocation { get => Project.Fort.SelectedLocation.Choice; set { Project.Fort.SelectLocation(value); NotifyEditor(); } }
 	public ModLocationChoice SelectedShopLocation
 	{
-		get => Project.Shop.SelectedLocation;
+		get => Project.Shop.SelectedLocation.Choice;
 		set
 		{
 			Project.Shop.SelectLocation(value);
@@ -186,8 +188,8 @@ internal sealed class ModModule : INotifyPropertyChanged
 			NotifyEditor();
 		}
 	}
-	public ModChoice? SelectedFortClass { get => ModCatalog.FindClass(Project.Fort.SelectedRecord.ClassId); set { if (value != null) ValueA = value.Value; } }
-	public ModChoice? SelectedShopItem { get => ModCatalog.FindItem(Project.Shop.SelectedRecord.ItemId); set { if (value != null) ValueA = value.Value; } }
+	public ModChoice? SelectedFortClass { get => Project.Fort.SelectedClass; set { Project.Fort.SelectedClass = value; Notify(nameof(ValueA), nameof(SelectedFortClass)); } }
+	public ModChoice? SelectedShopItem { get => Project.Shop.SelectedItem; set { Project.Shop.SelectedItem = value; Notify(nameof(ValueA), nameof(SelectedShopItem)); } }
 	public ModChoice? SelectedTargetShape { get => TargetShapes.FirstOrDefault(choice => choice.Value == ValueC); set { if (value != null) ValueC = value.Value; } }
 	public String AbilityTypeText => Project.Ability.SelectedRecord.Original.TypeText;
 	public bool IsActiveAbility => !Project.Ability.SelectedRecord.Original.IsPassive;
@@ -199,7 +201,9 @@ internal sealed class ModModule : INotifyPropertyChanged
 
 	public void RefreshLocalizedChoices()
 	{
+		Project.Fort.RefreshLocalizedChoices();
 		Project.Mine.RefreshLocalizedChoices();
+		Project.Shop.RefreshLocalizedChoices();
 		NotifyEditor();
 	}
 

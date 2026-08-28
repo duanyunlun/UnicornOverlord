@@ -275,6 +275,7 @@ internal sealed class ShopRecordEdit
 internal sealed class ShopEditorState
 {
 	private readonly IReadOnlyDictionary<int, ShopRecordEdit> mRecords;
+	private readonly IReadOnlyDictionary<String, IReadOnlyList<ShopRecordEdit>> mRecordsByLocation;
 	public ShopEditorState()
 	{
 		mRecords = ModCatalog.ShopRecordChoices.ToDictionary(choice => choice.Value, choice =>
@@ -282,12 +283,15 @@ internal sealed class ShopEditorState
 			ModShopRecordInfo original = ModCatalog.ShopRecords[choice.Value];
 			return new ShopRecordEdit { Choice = choice, Original = original, ItemId = original.ItemId, Stock = original.Stock, Price = original.Price };
 		});
+		mRecordsByLocation = ModCatalog.ShopRecordChoices
+			.GroupBy(choice => choice.LocationKey)
+			.ToDictionary(group => group.Key, group => (IReadOnlyList<ShopRecordEdit>)group.Select(choice => mRecords[choice.Value]).ToArray());
 		SelectedLocation = ModCatalog.ShopLocations.First();
 		SelectedRecord = RecordsAtLocation.First();
 	}
 	public ModLocationChoice SelectedLocation { get; private set; }
 	public ShopRecordEdit SelectedRecord { get; private set; }
-	public IReadOnlyList<ShopRecordEdit> RecordsAtLocation => ModCatalog.ShopRecordChoices.Where(choice => choice.LocationKey == SelectedLocation.Key).Select(choice => mRecords[choice.Value]).ToArray();
+	public IReadOnlyList<ShopRecordEdit> RecordsAtLocation => mRecordsByLocation[SelectedLocation.Key];
 	public IEnumerable<ShopRecordEdit> ModifiedRecords => mRecords.Values.Where(record => record.IsModified);
 	public void SelectLocation(ModLocationChoice? location)
 	{

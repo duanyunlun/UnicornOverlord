@@ -52,7 +52,7 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public IReadOnlyList<ModLocationChoice> FortLocations => ModCatalog.FortLocations;
 	public IReadOnlyList<ModLocationChoice> ShopLocations => ModCatalog.ShopLocations;
 	public IReadOnlyList<ModRecordChoice> FortRecordsAtLocation => Project.Fort.RecordsAtLocation.Select(record => record.Choice).ToArray();
-	public IReadOnlyList<ModRecordChoice> ShopRecordsAtLocation => Project.Shop.RecordsAtLocation.Select(record => record.Choice).ToArray();
+	public IReadOnlyList<ShopRecordEdit> ShopRecordsAtLocation => Project.Shop.RecordsAtLocation;
 	public IReadOnlyList<ModChoice> TargetShapes { get; } =
 	[
 		new() { Value = 0, EnglishName = "Original/none", ChineseName = "原始/无目标" },
@@ -156,7 +156,7 @@ internal sealed class ModModule : INotifyPropertyChanged
 		{
 			Project.Shop.SelectLocation(value);
 			NotifyEditor();
-			Dispatcher.UIThread.Post(() => Notify(nameof(SelectedShopRecordIndex)), DispatcherPriority.Background);
+			DispatcherTimer.RunOnce(() => Notify(nameof(SelectedShopRecordIndex), nameof(SelectedShopRecord)), TimeSpan.FromMilliseconds(80));
 		}
 	}
 	public ModRecordChoice SelectedFortRecord { get => Project.Fort.SelectedRecord.Choice; set { Project.Fort.SelectRecord(value); NotifyEditor(); } }

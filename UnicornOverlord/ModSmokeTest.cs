@@ -122,6 +122,7 @@ internal static class ModSmokeTest
 
 			ModModule shop = modules.Single(module => module.Key == "shop_editor");
 			Require(shop.ShopRecordsAtLocation.Count == 7, "帕雷比亚镇武具店应显示 2 个专属商品和 5 个共享商品。");
+			Require(ReferenceEquals(shop.ShopRecordsAtLocation, shop.ShopRecordsAtLocation), "同一商店地点的商品列表必须保持稳定实例，避免界面重复清空选择。");
 			Require(shop.SelectedShopRecordIndex == 0, "商店初始商品索引应指向第一条记录。");
 			shop.SelectedShopRecordIndex = -1;
 			Require(shop.SelectedShopRecordIndex == 0, "界面刷新产生的空索引不应清除商店商品选择。");

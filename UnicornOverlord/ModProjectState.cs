@@ -260,7 +260,8 @@ internal sealed class FortEditorState
 	}
 	public void SelectRecord(ModRecordChoice? choice)
 	{
-		if (choice != null && mRecords.TryGetValue(choice.Value, out FortRecordEdit? record)) SelectedRecord = record;
+		if (choice != null && mRecords.TryGetValue(choice.Value, out FortRecordEdit? record) && RecordsAtLocation.Contains(record))
+			SelectedRecord = record;
 	}
 }
 
@@ -305,6 +306,7 @@ internal sealed class ShopEditorState
 	}
 	public void SelectRecord(ModRecordChoice? choice)
 	{
-		if (choice != null && mRecords.TryGetValue(choice.Value, out ShopRecordEdit? record)) SelectedRecord = record;
+		if (choice != null && mRecords.TryGetValue(choice.Value, out ShopRecordEdit? record) && RecordsAtLocation.Contains(record))
+			SelectedRecord = record;
 	}
 }

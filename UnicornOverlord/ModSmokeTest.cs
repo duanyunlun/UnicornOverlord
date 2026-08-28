@@ -111,11 +111,14 @@ internal static class ModSmokeTest
 			ModModule fort = modules.Single(module => module.Key == "fort_editor");
 			Require(fort.FortLocations.Count == 63 && fort.FortRecordsAtLocation.Count == 3, "据点地点级联没有载入索力吉堡垒。");
 			Require(ReferenceEquals(fort.FortRecordsAtLocation, fort.FortRecordsAtLocation), "同一据点的招募位置列表必须保持稳定实例，避免界面交替清空选择。");
+			FortRecordEdit firstLocationRecord = fort.SelectedFortRecordEntry;
 			fort.ValueA = fort.ValueA == 1 ? 2 : 1;
 			int fort1Class = fort.ValueA;
 			fort.SelectedFortLocation = fort.FortLocations[1];
 			Require(fort.RecordId == 4 && fort.FortRecordsAtLocation.Count == 3, "切换据点时没有筛选对应招募位置。");
 			Require(ReferenceEquals(fort.SelectedFortRecordEntry, fort.FortRecordsAtLocation[0]), "切换据点后应选中稳定列表中的第一条招募记录。");
+			fort.SelectedFortRecordEntry = firstLocationRecord;
+			Require(fort.RecordId == 4, "据点切换后不应接受上一个地点异步回写的过期招募记录。");
 			fort.ValueA = fort.ValueA == 1 ? 2 : 1;
 			fort.SelectedFortLocation = fort.FortLocations[0];
 			Require(fort.ValueA == fort1Class, "切换据点后先前的招募修改没有保留。");
@@ -126,6 +129,7 @@ internal static class ModSmokeTest
 			Require(shop.ShopRecordsAtLocation.Count == 7, "帕雷比亚镇武具店应显示 2 个专属商品和 5 个共享商品。");
 			Require(ReferenceEquals(shop.ShopRecordsAtLocation, shop.ShopRecordsAtLocation), "同一商店地点的商品列表必须保持稳定实例，避免界面重复清空选择。");
 			Require(shop.SelectedShopRecordIndex == 0, "商店初始商品索引应指向第一条记录。");
+			ShopRecordEdit firstShopRecord = shop.SelectedShopRecordEntry;
 			shop.SelectedShopRecordIndex = -1;
 			Require(shop.SelectedShopRecordIndex == 0, "界面刷新产生的空索引不应清除商店商品选择。");
 			shop.ValueB++;
@@ -133,6 +137,8 @@ internal static class ModSmokeTest
 			shop.SelectedShopLocation = ModCatalog.ShopLocations.Single(location => location.EnglishName.StartsWith("Ouvrir Harbor", StringComparison.Ordinal));
 			Require(shop.ShopRecordsAtLocation.Count == 7 && shop.SelectedShopRecordIndex == 0 && shop.ValueA == 386, "切换商店地点时没有载入该地点首个原版商品。");
 			Require(ReferenceEquals(shop.SelectedShopRecordEntry, shop.ShopRecordsAtLocation[0]), "切换商店后应选中真实商品记录，而不是使用灰色占位文字。");
+			shop.SelectedShopRecordEntry = firstShopRecord;
+			Require(ReferenceEquals(shop.SelectedShopRecordEntry, shop.ShopRecordsAtLocation[0]), "商店切换后不应接受上一个地点异步回写的过期商品记录。");
 			int ouvrirRecordId = shop.RecordId;
 			shop.SelectedShopRecordIndex = 1;
 			Require(shop.RecordId != ouvrirRecordId, "商店商品索引没有切换到第二条记录。");

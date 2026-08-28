@@ -13,6 +13,8 @@ public partial class ModSearchPicker : UserControl
 {
 	public static readonly StyledProperty<IEnumerable?> ItemsSourceProperty =
 		AvaloniaProperty.Register<ModSearchPicker, IEnumerable?>(nameof(ItemsSource));
+	public static readonly StyledProperty<double> ControlHeightProperty =
+		AvaloniaProperty.Register<ModSearchPicker, double>(nameof(ControlHeight), 40);
 	public static readonly DirectProperty<ModSearchPicker, object?> SelectedItemProperty =
 		AvaloniaProperty.RegisterDirect<ModSearchPicker, object?>(nameof(SelectedItem), picker => picker.SelectedItem,
 			(picker, value) => picker.SelectedItem = value, defaultBindingMode: BindingMode.TwoWay);
@@ -42,6 +44,12 @@ public partial class ModSearchPicker : UserControl
 	{
 		get => GetValue(ItemsSourceProperty);
 		set => SetValue(ItemsSourceProperty, value);
+	}
+
+	public double ControlHeight
+	{
+		get => GetValue(ControlHeightProperty);
+		set => SetValue(ControlHeightProperty, value);
 	}
 
 	public object? SelectedItem

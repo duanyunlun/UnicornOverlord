@@ -1,9 +1,10 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="UnicornOverlord.ModSearchPicker">
-  <Grid ColumnDefinitions="120,110" ColumnSpacing="6" Height="40" HorizontalAlignment="Left">
-    <ComboBox x:Name="Choices" Height="40" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxDropDownHeight="360"/>
-    <TextBox x:Name="SearchBox" Grid.Column="1" Height="40" VerticalAlignment="Stretch"
+             x:Class="UnicornOverlord.ModSearchPicker"
+             x:Name="Root">
+  <Grid ColumnDefinitions="120,110" ColumnSpacing="6" Height="{Binding ControlHeight, ElementName=Root}" HorizontalAlignment="Left">
+    <ComboBox x:Name="Choices" Height="{Binding ControlHeight, ElementName=Root}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxDropDownHeight="360"/>
+    <TextBox x:Name="SearchBox" Grid.Column="1" Height="{Binding ControlHeight, ElementName=Root}" VerticalAlignment="Stretch"
              VerticalContentAlignment="Center" BorderBrush="#0891B2" BorderThickness="1.5"
              PlaceholderText="搜索名称" TextChanged="OnSearchTextChanged"/>
   </Grid>

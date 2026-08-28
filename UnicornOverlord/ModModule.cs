@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Windows.Input;
+using Avalonia.Threading;
 
 namespace UnicornOverlord;
 
@@ -148,9 +149,35 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public ModChoice? SelectedSkill { get => Project.Ability.SelectedRecord.Original.Choice; set { if (value != null) RecordId = value.Value; } }
 	public ModChoice? SelectedClass { get => ModCatalog.FindClass(Project.Classes.SelectedRecord.RecordId); set { if (value != null) RecordId = value.Value; } }
 	public ModLocationChoice SelectedFortLocation { get => Project.Fort.SelectedLocation; set { Project.Fort.SelectLocation(value); NotifyEditor(); } }
-	public ModLocationChoice SelectedShopLocation { get => Project.Shop.SelectedLocation; set { Project.Shop.SelectLocation(value); NotifyEditor(); } }
+	public ModLocationChoice SelectedShopLocation
+	{
+		get => Project.Shop.SelectedLocation;
+		set
+		{
+			Project.Shop.SelectLocation(value);
+			NotifyEditor();
+			Dispatcher.UIThread.Post(() => Notify(nameof(SelectedShopRecordIndex)), DispatcherPriority.Background);
+		}
+	}
 	public ModRecordChoice SelectedFortRecord { get => Project.Fort.SelectedRecord.Choice; set { Project.Fort.SelectRecord(value); NotifyEditor(); } }
 	public ModRecordChoice SelectedShopRecord { get => Project.Shop.SelectedRecord.Choice; set { Project.Shop.SelectRecord(value); NotifyEditor(); } }
+	public int SelectedShopRecordIndex
+	{
+		get
+		{
+			IReadOnlyList<ShopRecordEdit> records = Project.Shop.RecordsAtLocation;
+			for (int index = 0; index < records.Count; index++)
+				if (ReferenceEquals(records[index], Project.Shop.SelectedRecord)) return index;
+			return records.Count == 0 ? -1 : 0;
+		}
+		set
+		{
+			IReadOnlyList<ShopRecordEdit> records = Project.Shop.RecordsAtLocation;
+			if (value < 0 || value >= records.Count) return;
+			Project.Shop.SelectRecord(records[value].Choice);
+			NotifyEditor();
+		}
+	}
 	public ModChoice? SelectedFortClass { get => ModCatalog.FindClass(Project.Fort.SelectedRecord.ClassId); set { if (value != null) ValueA = value.Value; } }
 	public ModChoice? SelectedShopItem { get => ModCatalog.FindItem(Project.Shop.SelectedRecord.ItemId); set { if (value != null) ValueA = value.Value; } }
 	public ModChoice? SelectedTargetShape { get => TargetShapes.FirstOrDefault(choice => choice.Value == ValueC); set { if (value != null) ValueC = value.Value; } }
@@ -192,7 +219,7 @@ internal sealed class ModModule : INotifyPropertyChanged
 	}
 
 	private void NotifyEditor() => Notify(nameof(RecordId), nameof(AbilityFilterIndex), nameof(FilteredSkillChoices), nameof(SelectedSkill), nameof(SelectedClass),
-		nameof(SelectedFortLocation), nameof(SelectedShopLocation), nameof(FortRecordsAtLocation), nameof(ShopRecordsAtLocation), nameof(SelectedFortRecord), nameof(SelectedShopRecord),
+		nameof(SelectedFortLocation), nameof(SelectedShopLocation), nameof(FortRecordsAtLocation), nameof(ShopRecordsAtLocation), nameof(SelectedFortRecord), nameof(SelectedShopRecord), nameof(SelectedShopRecordIndex),
 		nameof(SelectedFortClass), nameof(SelectedShopItem), nameof(SelectedTargetShape), nameof(AbilityTypeText), nameof(IsActiveAbility), nameof(IsPassiveAbility), nameof(AbilityDescription),
 		nameof(PreviewModeDescription), nameof(ValueA), nameof(ValueB), nameof(ValueC), nameof(ValueD), nameof(ValueE), nameof(ValueF), nameof(ValueG), nameof(ValueH), nameof(ValueI),
 		nameof(ValueJ), nameof(ValueK), nameof(ValueL), nameof(ValueM), nameof(ValueN), nameof(ActiveSkills), nameof(PassiveSkills));

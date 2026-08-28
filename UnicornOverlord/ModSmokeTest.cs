@@ -122,11 +122,17 @@ internal static class ModSmokeTest
 
 			ModModule shop = modules.Single(module => module.Key == "shop_editor");
 			Require(shop.ShopRecordsAtLocation.Count == 7, "帕雷比亚镇武具店应显示 2 个专属商品和 5 个共享商品。");
+			Require(shop.SelectedShopRecordIndex == 0, "商店初始商品索引应指向第一条记录。");
+			shop.SelectedShopRecordIndex = -1;
+			Require(shop.SelectedShopRecordIndex == 0, "界面刷新产生的空索引不应清除商店商品选择。");
 			shop.ValueB++;
 			int shop0Stock = shop.ValueB;
 			shop.SelectedShopLocation = ModCatalog.ShopLocations.Single(location => location.EnglishName.StartsWith("Ouvrir Harbor", StringComparison.Ordinal));
-			Require(shop.ShopRecordsAtLocation.Count == 7 && shop.ValueA == 386, "切换商店地点时没有载入该地点首个原版商品。");
+			Require(shop.ShopRecordsAtLocation.Count == 7 && shop.SelectedShopRecordIndex == 0 && shop.ValueA == 386, "切换商店地点时没有载入该地点首个原版商品。");
 			int ouvrirRecordId = shop.RecordId;
+			shop.SelectedShopRecordIndex = 1;
+			Require(shop.RecordId != ouvrirRecordId, "商店商品索引没有切换到第二条记录。");
+			shop.SelectedShopRecordIndex = 0;
 			shop.ValueB++;
 			shop.SelectedShopLocation = ModCatalog.ShopLocations[0];
 			Require(shop.ValueB == shop0Stock, "切换商店后先前的库存修改没有保留。");

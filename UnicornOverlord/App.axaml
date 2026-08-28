@@ -4,5 +4,15 @@
              RequestedThemeVariant="Light">
   <Application.Styles>
     <FluentTheme />
+    <Style Selector="ComboBox">
+      <Setter Property="Height" Value="32" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="TextBox.search">
+      <Setter Property="Height" Value="32" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="BorderBrush" Value="#0891B2" />
+      <Setter Property="BorderThickness" Value="1.5" />
+    </Style>
   </Application.Styles>
 </Application>

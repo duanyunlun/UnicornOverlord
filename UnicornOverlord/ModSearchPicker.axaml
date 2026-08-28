@@ -4,8 +4,7 @@
              x:Name="Root">
   <Grid ColumnDefinitions="120,110" ColumnSpacing="6" Height="{Binding ControlHeight, ElementName=Root}" HorizontalAlignment="Left">
     <ComboBox x:Name="Choices" Height="{Binding ControlHeight, ElementName=Root}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxDropDownHeight="360"/>
-    <TextBox x:Name="SearchBox" Grid.Column="1" Height="{Binding ControlHeight, ElementName=Root}" VerticalAlignment="Stretch"
-             VerticalContentAlignment="Center" BorderBrush="#0891B2" BorderThickness="1.5"
+    <TextBox x:Name="SearchBox" Grid.Column="1" Classes="search" Height="{Binding ControlHeight, ElementName=Root}" VerticalAlignment="Stretch"
              PlaceholderText="搜索名称" TextChanged="OnSearchTextChanged"/>
   </Grid>
 </UserControl>

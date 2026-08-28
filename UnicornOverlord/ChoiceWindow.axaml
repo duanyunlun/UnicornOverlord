@@ -10,7 +10,7 @@
     <Border Background="White" Padding="18,14" BorderBrush="#D8DBE0" BorderThickness="0,0,0,1">
       <StackPanel Spacing="6">
         <TextBlock Text="筛选" FontWeight="SemiBold" />
-        <TextBox x:Name="TextBoxFilter" PlaceholderText="输入名称或 ID" TextChanged="TextBoxFilter_TextChanged" />
+        <TextBox x:Name="TextBoxFilter" Classes="search" PlaceholderText="输入名称或 ID" TextChanged="TextBoxFilter_TextChanged" />
       </StackPanel>
     </Border>
     <ListBox Grid.Row="1" x:Name="ListBoxItem" Margin="12" SelectionChanged="ListBoxItem_SelectionChanged">

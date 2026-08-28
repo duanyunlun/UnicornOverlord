@@ -446,9 +446,9 @@
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsFortEditor}" Spacing="8">
-                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="地图地点"/><local:ModSearchPicker ItemsSource="{Binding FortLocations}" SelectedItem="{Binding SelectedFortLocation, Mode=TwoWay}"/></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="招募位置"/><ComboBox ItemsSource="{Binding FortRecordsAtLocation}" SelectedItem="{Binding SelectedFortRecord, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                    <Grid ColumnDefinitions="Auto,*,*" ColumnSpacing="12">
+                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="地图地点"/><local:ModSearchPicker ChoiceWidth="NaN" ItemsSource="{Binding FortLocations}" SelectedItem="{Binding SelectedFortLocation, Mode=TwoWay}"/></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="招募位置"/><ComboBox ItemsSource="{Binding FortRecordsAtLocation}" SelectedItem="{Binding SelectedFortRecordEntry, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Choice.DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                       <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="可招募职业"/><local:ModSearchPicker ItemsSource="{Binding ClassChoices}" SelectedItem="{Binding SelectedFortClass, Mode=TwoWay}"/></StackPanel>
                     </Grid>
                     <TextBlock Classes="caption" Text="按游戏中的据点名称选择招募位置；选择后载入该位置的原版职业。仅修改职业，不覆盖亚洲版额外字段。" TextWrapping="Wrap"/>
@@ -471,7 +471,7 @@
                   <StackPanel IsVisible="{Binding IsShopEditor}" Spacing="12">
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
                       <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="地图地点"/><ComboBox ItemsSource="{Binding ShopLocations}" SelectedItem="{Binding SelectedShopLocation, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="原版商品"/><ComboBox ItemsSource="{Binding ShopRecordsAtLocation}" SelectedIndex="{Binding SelectedShopRecordIndex, Mode=TwoWay}" PlaceholderText="{Binding SelectedShopRecord.DetailDisplayName}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Choice.DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="原版商品"/><ComboBox ItemsSource="{Binding ShopRecordsAtLocation}" SelectedItem="{Binding SelectedShopRecordEntry, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Choice.DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                       <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="修改为"/><local:ModSearchPicker ItemsSource="{Binding ItemChoices}" SelectedItem="{Binding SelectedShopItem, Mode=TwoWay}"/></StackPanel>
                     </Grid>
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">

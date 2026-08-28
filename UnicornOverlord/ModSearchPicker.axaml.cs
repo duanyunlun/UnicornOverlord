@@ -5,7 +5,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml;
-using Avalonia.Threading;
 
 namespace UnicornOverlord;
 
@@ -15,6 +14,8 @@ public partial class ModSearchPicker : UserControl
 		AvaloniaProperty.Register<ModSearchPicker, IEnumerable?>(nameof(ItemsSource));
 	public static readonly StyledProperty<double> ControlHeightProperty =
 		AvaloniaProperty.Register<ModSearchPicker, double>(nameof(ControlHeight), 32);
+	public static readonly StyledProperty<double> ChoiceWidthProperty =
+		AvaloniaProperty.Register<ModSearchPicker, double>(nameof(ChoiceWidth), 120);
 	public static readonly DirectProperty<ModSearchPicker, object?> SelectedItemProperty =
 		AvaloniaProperty.RegisterDirect<ModSearchPicker, object?>(nameof(SelectedItem), picker => picker.SelectedItem,
 			(picker, value) => picker.SelectedItem = value, defaultBindingMode: BindingMode.TwoWay);
@@ -52,13 +53,19 @@ public partial class ModSearchPicker : UserControl
 		set => SetValue(ControlHeightProperty, value);
 	}
 
+	public double ChoiceWidth
+	{
+		get => GetValue(ChoiceWidthProperty);
+		set => SetValue(ChoiceWidthProperty, value);
+	}
+
 	public object? SelectedItem
 	{
 		get => mSelectedItem;
 		set
 		{
 			if (!SetAndRaise(SelectedItemProperty, ref mSelectedItem, value) || mUpdating || mChoices == null) return;
-			ApplyFilter(false);
+			ApplyFilter();
 		}
 	}
 
@@ -69,30 +76,21 @@ public partial class ModSearchPicker : UserControl
 		{
 			mItems = ItemsSource?.Cast<object>().ToArray() ?? [];
 			if (mSearchBox != null) mSearchBox.Text = String.Empty;
-			ApplyFilter(false);
+			ApplyFilter();
 		}
 	}
 
-	private void OnSearchTextChanged(object? sender, TextChangedEventArgs args) => ApplyFilter(true);
+	private void OnSearchTextChanged(object? sender, TextChangedEventArgs args) => ApplyFilter();
 
-	private void ApplyFilter(bool openDropDown)
+	private void ApplyFilter()
 	{
 		if (mChoices == null || mSearchBox == null) return;
 		String query = mSearchBox.Text?.Trim() ?? String.Empty;
 		object[] visibleItems = query.Length == 0 ? mItems : mItems.Where(item => Matches(query, item)).ToArray();
-		mChoices.IsDropDownOpen = false;
 		mUpdating = true;
 		mChoices.ItemsSource = visibleItems;
 		mChoices.SelectedItem = visibleItems.Contains(SelectedItem) ? SelectedItem : null;
 		mUpdating = false;
-		if (openDropDown && query.Length > 0)
-		{
-			Dispatcher.UIThread.Post(() =>
-			{
-				if (String.Equals(mSearchBox.Text?.Trim(), query, StringComparison.Ordinal) && ReferenceEquals(mChoices.ItemsSource, visibleItems))
-					mChoices.IsDropDownOpen = true;
-			}, DispatcherPriority.Background);
-		}
 	}
 
 	private static String GetDisplayText(object? value) => value switch

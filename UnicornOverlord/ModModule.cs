@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Windows.Input;
-using Avalonia.Threading;
 
 namespace UnicornOverlord;
 
@@ -51,7 +50,7 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public IReadOnlyList<ModChoice> ItemChoices => ModCatalog.ItemChoices;
 	public IReadOnlyList<ModLocationChoice> FortLocations => ModCatalog.FortLocations;
 	public IReadOnlyList<ModLocationChoice> ShopLocations => ModCatalog.ShopLocations;
-	public IReadOnlyList<ModRecordChoice> FortRecordsAtLocation => Project.Fort.RecordsAtLocation.Select(record => record.Choice).ToArray();
+	public IReadOnlyList<FortRecordEdit> FortRecordsAtLocation => Project.Fort.RecordsAtLocation;
 	public IReadOnlyList<ShopRecordEdit> ShopRecordsAtLocation => Project.Shop.RecordsAtLocation;
 	public IReadOnlyList<ModChoice> TargetShapes { get; } =
 	[
@@ -156,11 +155,20 @@ internal sealed class ModModule : INotifyPropertyChanged
 		{
 			Project.Shop.SelectLocation(value);
 			NotifyEditor();
-			DispatcherTimer.RunOnce(() => Notify(nameof(SelectedShopRecordIndex), nameof(SelectedShopRecord)), TimeSpan.FromMilliseconds(80));
 		}
 	}
 	public ModRecordChoice SelectedFortRecord { get => Project.Fort.SelectedRecord.Choice; set { Project.Fort.SelectRecord(value); NotifyEditor(); } }
 	public ModRecordChoice SelectedShopRecord { get => Project.Shop.SelectedRecord.Choice; set { Project.Shop.SelectRecord(value); NotifyEditor(); } }
+	public FortRecordEdit SelectedFortRecordEntry
+	{
+		get => Project.Fort.SelectedRecord;
+		set { if (value != null) { Project.Fort.SelectRecord(value.Choice); NotifyEditor(); } }
+	}
+	public ShopRecordEdit SelectedShopRecordEntry
+	{
+		get => Project.Shop.SelectedRecord;
+		set { if (value != null) { Project.Shop.SelectRecord(value.Choice); NotifyEditor(); } }
+	}
 	public int SelectedShopRecordIndex
 	{
 		get
@@ -219,7 +227,7 @@ internal sealed class ModModule : INotifyPropertyChanged
 	}
 
 	private void NotifyEditor() => Notify(nameof(RecordId), nameof(AbilityFilterIndex), nameof(FilteredSkillChoices), nameof(SelectedSkill), nameof(SelectedClass),
-		nameof(SelectedFortLocation), nameof(SelectedShopLocation), nameof(FortRecordsAtLocation), nameof(ShopRecordsAtLocation), nameof(SelectedFortRecord), nameof(SelectedShopRecord), nameof(SelectedShopRecordIndex),
+		nameof(SelectedFortLocation), nameof(SelectedShopLocation), nameof(FortRecordsAtLocation), nameof(ShopRecordsAtLocation), nameof(SelectedFortRecord), nameof(SelectedShopRecord), nameof(SelectedFortRecordEntry), nameof(SelectedShopRecordEntry), nameof(SelectedShopRecordIndex),
 		nameof(SelectedFortClass), nameof(SelectedShopItem), nameof(SelectedTargetShape), nameof(AbilityTypeText), nameof(IsActiveAbility), nameof(IsPassiveAbility), nameof(AbilityDescription),
 		nameof(PreviewModeDescription), nameof(ValueA), nameof(ValueB), nameof(ValueC), nameof(ValueD), nameof(ValueE), nameof(ValueF), nameof(ValueG), nameof(ValueH), nameof(ValueI),
 		nameof(ValueJ), nameof(ValueK), nameof(ValueL), nameof(ValueM), nameof(ValueN), nameof(ActiveSkills), nameof(PassiveSkills));

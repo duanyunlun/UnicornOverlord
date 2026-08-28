@@ -233,6 +233,7 @@ internal sealed class FortRecordEdit
 internal sealed class FortEditorState
 {
 	private readonly IReadOnlyDictionary<int, FortRecordEdit> mRecords;
+	private readonly IReadOnlyDictionary<String, IReadOnlyList<FortRecordEdit>> mRecordsByLocation;
 	public FortEditorState()
 	{
 		mRecords = ModCatalog.FortRecordChoices.ToDictionary(choice => choice.Value, choice => new FortRecordEdit
@@ -241,12 +242,15 @@ internal sealed class FortEditorState
 			OriginalClassId = ModCatalog.FortRecords[choice.Value].ValueA,
 			ClassId = ModCatalog.FortRecords[choice.Value].ValueA,
 		});
+		mRecordsByLocation = ModCatalog.FortRecordChoices
+			.GroupBy(choice => choice.LocationKey)
+			.ToDictionary(group => group.Key, group => (IReadOnlyList<FortRecordEdit>)group.Select(choice => mRecords[choice.Value]).ToArray());
 		SelectedLocation = ModCatalog.FortLocations.First();
 		SelectedRecord = RecordsAtLocation.First();
 	}
 	public ModLocationChoice SelectedLocation { get; private set; }
 	public FortRecordEdit SelectedRecord { get; private set; }
-	public IReadOnlyList<FortRecordEdit> RecordsAtLocation => ModCatalog.FortRecordChoices.Where(choice => choice.LocationKey == SelectedLocation.Key).Select(choice => mRecords[choice.Value]).ToArray();
+	public IReadOnlyList<FortRecordEdit> RecordsAtLocation => mRecordsByLocation[SelectedLocation.Key];
 	public IEnumerable<FortRecordEdit> ModifiedRecords => mRecords.Values.Where(record => record.IsModified);
 	public void SelectLocation(ModLocationChoice? location)
 	{

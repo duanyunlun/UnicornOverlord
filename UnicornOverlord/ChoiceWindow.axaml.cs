@@ -22,7 +22,11 @@ public partial class ChoiceWindow : Window
 	public ChoiceWindow()
 	{
 		InitializeComponent();
+		LocaleManager.Instance.LanguageChanged += LocaleManager_LanguageChanged;
+		Closed += (_, _) => LocaleManager.Instance.LanguageChanged -= LocaleManager_LanguageChanged;
 	}
+
+	private void LocaleManager_LanguageChanged(object? sender, EventArgs e) => VisualLocalizer.Apply(this);
 
 	private ListBox ItemList => this.FindControl<ListBox>("ListBoxItem")!;
 	private TextBox FilterBox => this.FindControl<TextBox>("TextBoxFilter")!;
@@ -35,11 +39,12 @@ public partial class ChoiceWindow : Window
 
 	private void Window_Loaded(object? sender, RoutedEventArgs e)
 	{
+		VisualLocalizer.Apply(this);
 		ItemList.SelectionMode = AllowMultiple ? SelectionMode.Multiple : SelectionMode.Single;
 		if (AllowMultiple)
 		{
-			Title = "选择一个或多个条目";
-			DecisionButton.Content = "添加选中项";
+			Title = LocaleManager.Instance.Translate("选择一个或多个条目");
+			DecisionButton.Content = LocaleManager.Instance.Translate("添加选中项");
 		}
 		CreateItemList(String.Empty);
 		foreach (var item in ItemList.Items)

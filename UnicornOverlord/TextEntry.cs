@@ -11,7 +11,7 @@ internal sealed class TextEntry : INotifyPropertyChanged
 	public int Index { get; }
 	public String OriginalText => mDocument.GetOriginalText(Index);
 	public bool IsChanged => mDocument.IsChanged(Index);
-	public String StateText => IsChanged ? "已修改" : "原文";
+	public String StateText => LocaleManager.Instance.Translate(IsChanged ? "已修改" : "原文");
 
 	public String Text
 	{
@@ -33,4 +33,6 @@ internal sealed class TextEntry : INotifyPropertyChanged
 		Index = index;
 		mText = document.GetText(index);
 	}
+
+	public void RefreshLocale() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StateText)));
 }

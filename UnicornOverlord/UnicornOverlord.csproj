@@ -17,6 +17,7 @@
   <ItemGroup>
     <Content Include="info/**/*" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="mods/**/*" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="locales/*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

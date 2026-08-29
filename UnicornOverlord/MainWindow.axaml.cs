@@ -9,7 +9,12 @@ public partial class MainWindow : Window
 	{
 		InitializeComponent();
 		DataContext = new ViewModel(this);
+		Opened += (_, _) => VisualLocalizer.Apply(this);
+		LocaleManager.Instance.LanguageChanged += LocaleManager_LanguageChanged;
+		Closed += (_, _) => LocaleManager.Instance.LanguageChanged -= LocaleManager_LanguageChanged;
 	}
+
+	private void LocaleManager_LanguageChanged(object? sender, EventArgs e) => VisualLocalizer.Apply(this);
 
 	private void InitializeComponent()
 	{

@@ -1,0 +1,269 @@
+{
+  "独角兽之王": "Unicorn Overlord",
+  "独角兽之王 存档与 MOD 编辑器": "Unicorn Overlord Save & MOD Editor",
+  "Nintendo Switch 存档与 MOD 编辑器": "Nintendo Switch Save & MOD Editor",
+  "目标版本": "Target Version",
+  "编辑器语言": "Editor Language",
+  "切换技能、职业、物品等游戏数据名称的显示语言": "Change the language of the entire editor and game-data names",
+  "存档编辑": "Save Editor",
+  "MOD 制作": "MOD Creator",
+  "概览": "Overview",
+  "游戏进度": "Game Progress",
+  "当前存档的主要进度数值": "Main progression values in the current save",
+  "金币": "Gold",
+  "名望": "Renown",
+  "泽诺伊拉难度": "True Zenoiran Difficulty",
+  "启用": "Enabled",
+  "停用": "Disabled",
+  "角色": "Characters",
+  "角色列表": "Character List",
+  "角色属性": "Character Stats",
+  "职业": "Class",
+  "等级": "Level",
+  "经验值": "Experience",
+  "生命加成": "HP Bonus",
+  "物理攻击加成": "Physical Attack Bonus",
+  "物理防御加成": "Physical Defense Bonus",
+  "魔法攻击加成": "Magical Attack Bonus",
+  "魔法防御加成": "Magical Defense Bonus",
+  "命中加成": "Accuracy Bonus",
+  "闪避加成": "Evasion Bonus",
+  "暴击率加成": "Critical Rate Bonus",
+  "格挡率加成": "Guard Rate Bonus",
+  "行动速度加成": "Initiative Bonus",
+  "亲密度": "Rapport",
+  "角色之间的亲密度数值": "Rapport values between characters",
+  "全部设为 1000": "Set All to 1000",
+  "导出": "Export",
+  "替换": "Replace",
+  "新增": "Add",
+  "将当前角色保存为 .uocd 文件": "Save the current character as a .uocd file",
+  "用 .uocd 文件替换当前角色，保留当前角色 ID": "Replace the current character from .uocd while preserving its ID",
+  "从一个或多个 .uocd 文件新增角色": "Add characters from one or more .uocd files",
+  "物品": "Items",
+  "消耗品与材料": "Consumables & Materials",
+  "数量全部设为": "Set All Quantities to",
+  "全消耗道具": "All Consumables",
+  "添加物品": "Add Item",
+  "补齐非剧情关键的消耗品、素材和礼物，每种数量为 1": "Add one of every non-key consumable, material, and gift",
+  "装备": "Equipment",
+  "装备列表": "Equipment List",
+  "一键添加所有装备": "Add All Equipment",
+  "添加装备": "Add Equipment",
+  "为每种当前没有的装备添加一条记录": "Add one record for each missing equipment item",
+  "编队": "Units",
+  "部队编成": "Unit Formation",
+  "十个已保存的编队槽位": "Ten saved unit slots",
+  "技能": "Skills",
+  "战斗": "Battle",
+  "据点": "Forts",
+  "采矿": "Mining",
+  "商店": "Shops",
+  "文本": "Text",
+  "技能筛选": "Skill Filter",
+  "主动技能（AP）": "Active Skills (AP)",
+  "被动技能（PP）": "Passive Skills (PP)",
+  "全部技能": "All Skills",
+  "AP / PP 消耗": "AP / PP Cost",
+  "命中": "Accuracy",
+  "目标范围": "Targeting",
+  "物理威力": "Physical Potency",
+  "魔法威力": "Magical Potency",
+  "首个效果参数": "First Effect Value",
+  "固有类型": "Fixed Type",
+  "主动技能": "Active Skills",
+  "被动技能": "Passive Skills",
+  "技能说明": "Skill Description",
+  "搜索名称": "Search name",
+  "预览模式": "Preview Mode",
+  "随机种子": "Random Seed",
+  "重新随机": "Reroll",
+  "混合转职阶段": "Mix Promotion Tiers",
+  "保持相同转职阶段": "Keep the Same Promotion Tier",
+  "每级成长率（100 为基准）": "Growth per Level (100 baseline)",
+  "生命": "HP",
+  "物攻": "P. ATK",
+  "物防": "P. DEF",
+  "魔攻": "M. ATK",
+  "魔防": "M. DEF",
+  "闪避": "Evasion",
+  "暴击": "Critical",
+  "格挡": "Guard",
+  "速度": "Initiative",
+  "习得等级；第一项固定 1 级": "Learn level; the first slot is fixed at level 1",
+  "地图地点": "Map Location",
+  "原版招募": "Original Recruit",
+  "原版掉落": "Original Drop",
+  "原版商品": "Original Item",
+  "修改为": "Change To",
+  "掉落权重": "Drop Weight",
+  "挖掘目标": "Dig Target",
+  "单局上限": "Per-run Limit",
+  "库存（-1 为无限）": "Stock (-1 = unlimited)",
+  "金币买价": "Gold Buy Price",
+  "第五人扩充到第六人的荣誉费用": "Honor cost to expand from five to six members",
+  "骑兵对步兵": "Cavalry vs Infantry",
+  "弓兵对飞行": "Archers vs Flying",
+  "飞龙/狮鹫对骑兵": "Wyverns/Gryphons vs Cavalry",
+  "此模块本身只有启用或停用，没有额外参数。": "This module only has an enable switch and no additional settings.",
+  "文本编辑器": "Text Editor",
+  "文本 MOD": "Text MOD",
+  "选择 CPK 工具": "Choose CPK Tool",
+  "载入 CPK 副本": "Load CPK Copy",
+  "文本语言": "Text Language",
+  "输入索引或文本": "Enter index or text",
+  "搜索": "Search",
+  "索引 {0}": "Index {0}",
+  "原文": "Original Text",
+  "修改后文本": "Modified Text",
+  "打开存档": "Open Save",
+  "存档另存为": "Save As",
+  "保存存档": "Save",
+  "导出 MOD 包": "Export MOD Package",
+  "导出文本 MOD 包": "Export Text MOD Package",
+  "选择条目": "Select Entry",
+  "选择一个或多个条目": "Select One or More Entries",
+  "筛选": "Filter",
+  "输入名称或 ID": "Enter name or ID",
+  "取消": "Cancel",
+  "确定": "OK",
+  "添加选中项": "Add Selected",
+  "亚洲中文版": "Asian Chinese Version",
+  "欧美版": "Western Version",
+  "完全隐藏": "Completely Hidden",
+  "不完美预览": "Imperfect Preview",
+  "原始/无目标": "Original/None",
+  "单体": "Single",
+  "全体": "All",
+  "一排": "Row",
+  "前后纵列": "Front-to-back Column",
+  "已接入": "Integrated",
+  "待解析": "Pending Analysis",
+  "就绪": "Ready",
+  "应用": "Apply",
+  "更换": "Change",
+  "基于所选语言 CPK 的原始 FMS 按索引修改；不会改动源归档": "Edit original FMS entries by index from the selected language CPK; the source archive is never modified",
+  "按游戏中的据点名称选择招募位置；选择后载入该位置的原版职业。仅修改职业，不覆盖亚洲版额外字段。": "Select a recruitment slot by its in-game fort name. The original class is loaded automatically; only the class field is changed.",
+  "掉落权重是同地区各槽之间的相对概率；挖掘目标越高越难在限时内挖出；单局上限限制一次采矿最多取得数量。": "Drop weight is relative within a quarry; a higher dig target is harder to uncover in time, and the per-run limit caps the amount obtained.",
+  "先选地图地点，再选该武具店的商品；带“共享库存”的条目会同步影响引用同一库存的城镇。金币买价按物品全局共享，卖价自动设为买价的 10%。": "Select a map location, then an original shop item. Shared-stock entries affect every town using that stock. Buy prices are global per item; sell price is 10% of buy price.",
+  "并非默认开启：只有打开此开关并导出安装补丁后，S 级声望的小队才可扩充到六人。": "This is not enabled by default. Enable it and install the exported patch to expand S-rank units to six members.",
+  "三项倍率作用于对应兵种的每一次攻击，与技能自身的类型加成相乘。例如骑兵对步兵设为 1 表示取消固有双倍克制。": "These multipliers apply to every attack by the matching unit type and multiply skill-specific bonuses. Setting cavalry vs infantry to 1 removes the built-in double advantage.",
+  "技能下拉按主动/被动分开；第一项固定 1 级，后续技能可设置习得等级。更换为职业无法播放其动画的技能可能显示异常。": "Active and passive skills are listed separately. The first slot is fixed at level 1; later slots have configurable learn levels. Unsupported class animations may display incorrectly.",
+  "默认只在相同转职阶段内交换；启用后允许基础、转职及后期角色跨阶段交换。同一种子和选项会生成相同置换。": "By default, characters only swap within the same promotion tier. Enable this to mix base, promoted, and late-game tiers. The same seed and settings produce the same permutation.",
+  "技能编辑器": "Skill Editor",
+  "战斗预览调整": "Battle Preview",
+  "冻结战斗计时器": "Freeze Battle Timer",
+  "类型克制": "Type Matchups",
+  "角色加入随机化": "Character Recruitment Randomizer",
+  "职业编辑器": "Class Editor",
+  "据点雇佣编辑器": "Fort Recruitment Editor",
+  "采矿掉落编辑器": "Mining Drop Editor",
+  "商店库存编辑器": "Shop Inventory Editor",
+  "六人编队": "Six-member Units",
+  "打开独角兽之王存档": "Open Unicorn Overlord Save",
+  "将独角兽之王存档另存为": "Save Unicorn Overlord Save As",
+  "导出独角兽之王 MOD 包": "Export Unicorn Overlord MOD Package",
+  "所选文件不是受支持的独角兽之王存档。": "The selected file is not a supported Unicorn Overlord save.",
+  "存档已载入，并已在源文件旁创建备份。": "Save loaded and a backup was created beside the source file.",
+  "存档保存成功。": "Save written successfully.",
+  "当前未载入存档。": "No save is currently loaded.",
+  "存档副本保存成功。": "Save copy written successfully.",
+  "当前位于 MOD 制作工作区，未执行存档操作。": "Save operation ignored while the MOD workspace is active.",
+  "请至少选择一个已接入的 MOD 模块。": "Select at least one integrated MOD module.",
+  "亲密度已全部设为 1000。": "All rapport values were set to 1000.",
+  "尚未打开存档": "No Save Open",
+  "当前没有活动文件": "No active file",
+  "存档编辑 · 尚未打开存档": "Save Editor · No save open",
+  "仅生成模拟器 pchtxt": "emulator pchtxt output only",
+  "请选择至少一个已接入模块": "Select at least one integrated module"
+  ,"{0} 名角色": "{0} characters"
+  ,"参数 A：{0}": "Parameter A: {0}"
+  ,"参数 B：{0}": "Parameter B: {0}"
+  ,"简体中文": "Simplified Chinese"
+  ,"繁体中文": "Traditional Chinese"
+  ,"英语": "English"
+  ,"韩语": "Korean"
+  ,"日语（本体）": "Japanese (base game)"
+  ,"尚未载入 CPK": "No CPK loaded"
+  ,"尚未选择 cricodecs": "cricodecs not selected"
+  ,"{0} · {1} 张文本表": "{0} · {1} text tables"
+  ,"应选择 {0}": "Select {0}"
+  ,"共修改 {0} 项": "{0} changes"
+  ,"选择 cricodecs 可执行文件": "Choose the cricodecs executable"
+  ,"CPK 工具校验通过。": "CPK tool validation passed."
+  ,"CPK 工具不可用：{0}": "CPK tool unavailable: {0}"
+  ,"请先选择 cricodecs 可执行文件。": "Choose the cricodecs executable first."
+  ,"选择 {0} 的副本": "Choose a copy of {0}"
+  ,"文件名不匹配：当前语言需要 {0}。": "Filename mismatch: the selected language requires {0}."
+  ,"文本归档载入成功：共 {0:N0} 个索引。": "Text archive loaded: {0:N0} entries."
+  ,"载入文本归档失败：{0}": "Failed to load text archive: {0}"
+  ,"请先载入 CPK 并修改至少一个文本条目。": "Load a CPK and modify at least one text entry first."
+  ,"文本 MOD 导出成功：{0} 项修改，目标 {1}。": "Text MOD exported with {0} changes for {1}."
+  ,"文本 MOD 导出失败：{0}": "Failed to export text MOD: {0}"
+  ,"显示前 500 项，请缩小搜索范围。": "Showing the first 500 entries; narrow the search."
+  ,"找到 {0} 项。": "Found {0} entries."
+  ,"请选择一个文本条目。": "Select a text entry."
+  ,"格式标记与运行时占位符保持一致。": "Markup and runtime placeholders are unchanged."
+  ,"注意：格式标记或运行时占位符已变化，请确认这是有意修改。": "Warning: markup or runtime placeholders changed. Confirm that this is intentional."
+  ,"从 441 个已校准技能中选择主动或被动技能，修改其 AP/PP 消耗、威力、命中、目标范围和首个效果参数。技能类型由游戏数据决定，不能手动互换。": "Choose from 441 calibrated active and passive skills and edit AP/PP cost, potency, accuracy, targeting, and the first effect value. Skill type is fixed by game data."
+  ,"“不完美预览”用 5 次模拟的平均值展示大致趋势；“完全隐藏”则移除整个预览条。": "Imperfect Preview shows an approximate trend from five simulations; Completely Hidden removes the entire preview bar."
+  ,"冻结关卡实时计时器，战斗不再受时间限制。": "Freeze the stage timer so battles are no longer time-limited."
+  ,"设置游戏内三种固有兵种克制倍率。它会作用于对应单位的所有攻击，并与技能自身的“对某类型威力加成”叠加；不写入存档，可随时启停。": "Set the three built-in unit-type matchup multipliers. They apply to every matching attack and stack with skill-specific bonuses; saves are not modified."
+  ,"随机改变教程五人以外的 63 名剧情角色加入顺序；过场、地图事件和能力触发时点不变。": "Randomize the recruitment order of 63 story characters outside the tutorial group while preserving cutscenes, map events, and ability timing."
+  ,"按职业名称修改 73 个职业的十项成长率、AP/PP，以及 4 个主动和 4 个被动技能及习得等级。": "Edit ten growth rates, AP/PP, four active skills, four passive skills, and learn levels for 73 classes."
+  ,"按 63 个具体据点选择全部 248 个招募位置并修改可招募职业；选择后会载入原版职业，手动选择不受转职阶段限制。": "Select all 248 recruitment slots across 63 forts and change their recruitable classes. The original class is loaded automatically."
+  ,"按五个地区采掘场选择 63 条具体原版掉落，修改物品、相对权重、挖掘目标和单局上限。": "Select 63 original drops across five mining regions and edit the item, relative weight, dig target, and per-run limit."
+  ,"按科尔尼亚的具体地图地点选择武具店和原版商品，修改商品、库存与金币价格；共享库存会明确标识。": "Select Cornia armories and original items by map location, then edit items, stock, and gold price. Shared stock is clearly marked."
+  ,"允许 S 级声望下将部队扩充至六人，并可设置荣誉费用。": "Allow S-rank units to expand to six members and set the honor cost."
+  ,"基于所选语言 CPK 的原始 FMS 按索引修改文本，不改动源归档。": "Edit original FMS text by index from the selected language CPK without modifying the source archive."
+  ,"441 个技能已校准": "441 skills calibrated"
+  ,"亚洲版已重定位": "Asian version relocated"
+  ,"三项已校准": "3 values calibrated"
+  ,"73 个职业字段已校准": "73 class records calibrated"
+  ,"63 个据点 / 248 项已校准": "63 forts / 248 entries calibrated"
+  ,"5 个采掘场 / 63 项已校准": "5 mining sites / 63 entries calibrated"
+  ,"25 个武具店 / 211 个地点条目已校准": "25 armories / 211 location entries calibrated"
+  ,"CPK 文本表编辑": "CPK text-table editing"
+  ,"实验性功能：只用于新游戏，全流程保持启用并备份存档；中途移除可能使剧情读取不同步。": "Experimental: use only for a new game, keep it enabled throughout, and back up saves. Removing it mid-game may desynchronize story data."
+  ,"仅写职业字段，亚洲版记录中的性别与附加类型保持不变。": "Only the class field is written; gender and extra type fields in Asian records remain unchanged."
+  ,"藏宝图等一次性物品由游戏另行限制；提高权重时也要检查单局上限。": "One-time items such as treasure maps are restricted separately by the game; check the per-run limit when increasing weight."
+  ,"当前接入科尔尼亚普通武具店；兑换所价格结构不同，不会错误套用金币价格。": "Standard Cornia armories are supported. Exchange shops use a different price structure and will not receive gold prices."
+  ,"卸载前必须先撤下所有部队的第六名成员。": "Remove every unit's sixth member before uninstalling this MOD."
+  ,"{0} · {1:N0} 项 · 已修改 {2} 项": "{0} · {1:N0} entries · {2} changed"
+  ,"已修改": "Changed"
+  ,"第 {0} 项": "Slot {0}"
+  ,"未知角色（实例 ID {0}）": "Unknown character (instance ID {0})"
+  ,"独角兽之王存档": "Unicorn Overlord save"
+  ,"独角兽之王角色数据": "Unicorn Overlord character data"
+  ,"ZIP 压缩包": "ZIP archive"
+  ,"CRI CPK 归档": "CRI CPK archive"
+  ,"未找到名称数据，未知条目将显示为数字 ID。": "Name data was not found; unknown entries will display numeric IDs."
+  ,"物品 {0} 条，装备 {1} 条，共 {2} / {3} 条库存记录": "{0} items, {1} equipment, {2} / {3} inventory records"
+  ,"已选择 {0} 个可用模块": "{0} available modules selected"
+  ,"当前存档：{0}": "Current save: {0}"
+  ,"后台模拟 5 次战斗并显示平均结果，只给出胜负趋势，不再泄露确定结果。": "Simulate five battles in the background and show the average trend without revealing a deterministic result."
+  ,"完全隐藏战斗预览条；编队与战术判断不再得到结果提示。": "Hide the battle preview bar completely; unit and tactic decisions no longer receive outcome hints."
+  ,"MOD 包导出失败：{0}": "Failed to export MOD package: {0}"
+  ,"MOD 包导出成功：包含 {0} 个模块。": "MOD package exported with {0} modules."
+  ,"保存失败：{0}": "Save failed: {0}"
+  ,"另存为失败：{0}": "Save As failed: {0}"
+  ,"可修改的物品数量已全部设为 {0}。": "All editable item quantities were set to {0}."
+  ,"已新增 {0} 条角色记录。": "Added {0} character records."
+  ,"已添加 {0} 条物品记录。": "Added {0} item records."
+  ,"已添加 {0} 条装备记录。": "Added {0} equipment records."
+  ,"已添加 {0} 种当前缺少的装备。": "Added {0} missing equipment types."
+  ,"已补齐 {0} 种安全消耗道具，每种数量为 1。": "Added one each of {0} safe consumable types."
+  ,"库存容量不足：需要 {0} 条空记录，当前仅剩 {1} 条。未写入任何记录。": "Insufficient inventory capacity: {0} empty records required, {1} remain. Nothing was written."
+  ,"当前角色替换成功。": "Current character replaced successfully."
+  ,"所有安全消耗道具均已存在。": "All safe consumables are already present."
+  ,"所有已知装备均已存在。": "All known equipment is already present."
+  ,"打开失败：{0}": "Open failed: {0}"
+  ,"新增角色失败：{0}": "Failed to add character: {0}"
+  ,"替换角色失败：{0}": "Failed to replace character: {0}"
+  ,"替换角色失败：角色数据必须正好为 464 字节。": "Failed to replace character: character data must be exactly 464 bytes."
+  ,"角色导出失败：{0}": "Failed to export character: {0}"
+  ,"角色导出成功。": "Character exported successfully."
+  ,"导出角色": "Export Character"
+  ,"从文件新增角色": "Add Character from File"
+  ,"用文件替换当前角色": "Replace Current Character from File"
+}

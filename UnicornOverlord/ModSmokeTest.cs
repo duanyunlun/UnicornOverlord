@@ -36,6 +36,22 @@ internal static class ModSmokeTest
 		ModCatalog.RefreshLocalizedNames();
 		Require(ModCatalog.FindFortRecord(1)?.DisplayName.StartsWith("索力吉堡垒", StringComparison.Ordinal) == true, "据点名称没有跟随编辑器语言切换为中文。");
 		Require(ModCatalog.FindShopRecord(0)?.DisplayName.StartsWith("帕雷比亚镇 · 武具店", StringComparison.Ordinal) == true, "商店名称没有跟随编辑器语言切换为中文。");
+		LocaleManager.Instance.SetLanguage(0);
+		ModCatalog.RefreshLocalizedNames();
+		Require(modules.Single(module => module.Key == "ability_editor").Name == "Skill Editor", "MOD 模块标题没有跟随编辑器语言切换为英文。");
+		Require(modules.Single(module => module.Key == "ability_editor").Description.StartsWith("Choose from 441", StringComparison.Ordinal), "MOD 模块说明没有跟随编辑器语言切换为英文。");
+		Require(LocaleManager.Instance.Translate("打开存档") == "Open Save", "英文 locale 没有载入界面按钮文案。");
+		Require(LocaleManager.Instance.Translate("5 名角色") == "5 characters", "英文 locale 没有处理带运行时数值的界面文案。");
+		Require(LocaleManager.Instance.Format("{0} · {1:N0} 项 · 已修改 {2} 项", "Table", 1200, 3) == "Table · 1,200 entries · 3 changed", "英文 locale 没有处理多参数动态摘要。");
+		Require(TextModLanguage.All[0].Name == "Simplified Chinese", "文本 MOD 语言选项没有跟随编辑器语言切换为英文。");
+		Require(ModTarget.Asia.DisplayName.StartsWith("Asian Chinese Version", StringComparison.Ordinal), "目标版本没有跟随编辑器语言切换为英文。");
+		LocaleManager.Instance.SetLanguage(1);
+		ModCatalog.RefreshLocalizedNames();
+		Require(modules.Single(module => module.Key == "ability_editor").Name == "スキルエディター", "MOD 模块标题没有跟随编辑器语言切换为日文。");
+		Require(LocaleManager.Instance.Translate("打开存档") == "セーブを開く", "日文 locale 没有载入界面按钮文案。");
+		Require(TextModLanguage.All[0].Name == "簡体字中国語", "文本 MOD 语言选项没有跟随编辑器语言切换为日文。");
+		LocaleManager.Instance.SetLanguage(originalLanguage);
+		ModCatalog.RefreshLocalizedNames();
 
 			ModModule ability = modules.Single(module => module.Key == "ability_editor");
 			Require(ability.AbilityTypeText == "被动技能（PP）", "技能 372 应从游戏数据识别为被动技能。");

@@ -9,7 +9,7 @@ internal sealed class TextTable : INotifyPropertyChanged
 	public String ArchivePath { get; }
 	public int ArchiveIndex { get; }
 	public FmsDocument Document { get; }
-	public String Summary => $"{Name} · {Document.Count:N0} 项 · 已修改 {Document.ChangedCount} 项";
+	public String Summary => LocaleManager.Instance.Format("{0} · {1:N0} 项 · 已修改 {2} 项", Name, Document.Count, Document.ChangedCount);
 
 	public TextTable(String name, String archivePath, int archiveIndex, FmsDocument document)
 	{

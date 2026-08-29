@@ -1,7 +1,20 @@
 namespace UnicornOverlord;
 
-internal sealed record TextModLanguage(String Name, String CpkFileName)
+internal sealed class TextModLanguage
 {
+	private readonly String mSourceName;
+
+	public String Name => LocaleManager.Instance.Translate(mSourceName);
+	public String CpkFileName { get; }
+
+	private TextModLanguage(String name, String cpkFileName)
+	{
+		mSourceName = name;
+		CpkFileName = cpkFileName;
+	}
+
+	public override String ToString() => Name;
+
 	public static IReadOnlyList<TextModLanguage> All { get; } =
 	[
 		new("简体中文", "Unicorn_CN.CPK"),

@@ -3,26 +3,32 @@ using System.Windows.Input;
 
 namespace UnicornOverlord;
 
-internal sealed record ModCategory(String Name, IReadOnlyList<ModModule> Modules)
+internal sealed record ModCategory(String SourceName, IReadOnlyList<ModModule> Modules)
 {
+	public String Name => LocaleManager.Instance.Translate(SourceName);
 	public bool IsTextEditor => Modules.Count == 1 && Modules[0].IsTextEditor;
 }
 
 internal sealed class ModModule : INotifyPropertyChanged
 {
+	private String mCategory = String.Empty;
+	private String mName = String.Empty;
+	private String mDescription = String.Empty;
+	private String? mWarning;
+	private String? mCalibrationState;
 	public ModModule() => RerollCommand = new ActionCommand(_ => ValueA = Random.Shared.Next(1, Int32.MaxValue));
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 	public required ModProjectState Project { get; init; }
 	public required String Key { get; init; }
-	public required String Category { get; init; }
-	public required String Name { get; init; }
-	public required String Description { get; init; }
+	public required String Category { get => LocaleManager.Instance.Translate(mCategory); init => mCategory = value; }
+	public required String Name { get => LocaleManager.Instance.Translate(mName); init => mName = value; }
+	public required String Description { get => LocaleManager.Instance.Translate(mDescription); init => mDescription = value; }
 	public required bool IsAvailable { get; init; }
 	public String? TemplateFile { get; init; }
-	public String? Warning { get; init; }
-	public String? CalibrationState { get; init; }
-	public String StateText => CalibrationState ?? (IsAvailable ? "已接入" : "待解析");
+	public String? Warning { get => mWarning == null ? null : LocaleManager.Instance.Translate(mWarning); init => mWarning = value; }
+	public String? CalibrationState { get => mCalibrationState == null ? null : LocaleManager.Instance.Translate(mCalibrationState); init => mCalibrationState = value; }
+	public String StateText => CalibrationState ?? LocaleManager.Instance.Translate(IsAvailable ? "已接入" : "待解析");
 	public bool IsAbilityEditor => Key == "ability_editor";
 	public bool IsBattlePreview => Key == "battle_preview";
 	public bool IsCharacterRandomizer => Key == "character_randomizer";
@@ -36,8 +42,8 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public bool ShowHeaderEnableToggle => !IsTextEditor;
 	public bool ShowContentSeparator => Key is "battle_preview" or "battle_timer_freeze";
 	public bool HasNoOptions => Key == "battle_timer_freeze";
-	public IReadOnlyList<String> PreviewModes { get; } = ["完全隐藏", "不完美预览"];
-	public IReadOnlyList<String> AbilityFilters { get; } = ["全部技能", "主动技能（AP）", "被动技能（PP）"];
+	public IReadOnlyList<String> PreviewModes => [LocaleManager.Instance.Translate("完全隐藏"), LocaleManager.Instance.Translate("不完美预览")];
+	public IReadOnlyList<String> AbilityFilters => [LocaleManager.Instance.Translate("全部技能"), LocaleManager.Instance.Translate("主动技能（AP）"), LocaleManager.Instance.Translate("被动技能（PP）")];
 	public IReadOnlyList<double> MatchupValues { get; } = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
 	public IReadOnlyList<ModChoice> SkillChoices => ModCatalog.SkillChoices;
 	public IReadOnlyList<ModChoice> FilteredSkillChoices => AbilityFilterIndex switch
@@ -196,14 +202,16 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public bool IsPassiveAbility => Project.Ability.SelectedRecord.Original.IsPassive;
 	public String AbilityDescription => Project.Ability.SelectedRecord.Original.Description;
 	public String PreviewModeDescription => RecordId == 1
-		? "后台模拟 5 次战斗并显示平均结果，只给出胜负趋势，不再泄露确定结果。"
-		: "完全隐藏战斗预览条；编队与战术判断不再得到结果提示。";
+		? LocaleManager.Instance.Translate("后台模拟 5 次战斗并显示平均结果，只给出胜负趋势，不再泄露确定结果。")
+		: LocaleManager.Instance.Translate("完全隐藏战斗预览条；编队与战术判断不再得到结果提示。");
 
 	public void RefreshLocalizedChoices()
 	{
 		Project.Fort.RefreshLocalizedChoices();
 		Project.Mine.RefreshLocalizedChoices();
 		Project.Shop.RefreshLocalizedChoices();
+		foreach (ModSkillSlot slot in ActiveSkills.Concat(PassiveSkills)) slot.RefreshLocale();
+		Notify(nameof(Category), nameof(Name), nameof(Description), nameof(Warning), nameof(CalibrationState), nameof(StateText), nameof(PreviewModes), nameof(AbilityFilters));
 		NotifyEditor();
 	}
 

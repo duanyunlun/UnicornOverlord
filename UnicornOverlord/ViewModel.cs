@@ -12,16 +12,16 @@ internal class ViewModel : INotifyPropertyChanged
 	private const int InventoryCapacity = 3800;
 	private const int MaximumItemCount = 999;
 
-	private static readonly FilePickerFileType SaveFileType = new("独角兽之王存档")
+	private static FilePickerFileType SaveFileType() => new(T("独角兽之王存档"))
 	{
 		Patterns = ["UCSAVEFILE*.DAT", "*.DAT", "*.dat"],
 	};
 
-	private static readonly FilePickerFileType CharacterFileType = new("独角兽之王角色数据")
+	private static FilePickerFileType CharacterFileType() => new(T("独角兽之王角色数据"))
 	{
 		Patterns = ["*.uocd"],
 	};
-	private static readonly FilePickerFileType ModPackageFileType = new("ZIP 压缩包")
+	private static FilePickerFileType ModPackageFileType() => new(T("ZIP 压缩包"))
 	{
 		Patterns = ["*.zip"],
 	};
@@ -29,8 +29,8 @@ internal class ViewModel : INotifyPropertyChanged
 	private readonly Window mOwner;
 	private readonly Info Info = Info.Instance();
 	private bool mIsSaveLoaded;
-	private String mCurrentFileName = "尚未打开存档";
-	private String mFileLocation = "当前没有活动文件";
+	private String mCurrentFileName = T("尚未打开存档");
+	private String mFileLocation = T("当前没有活动文件");
 	private String mStatusMessage;
 	private int mWorkspaceIndex;
 	private int mLanguageIndex;
@@ -38,6 +38,8 @@ internal class ViewModel : INotifyPropertyChanged
 	private int mItemCountTarget = 99;
 	private ModCategory? mSelectedModCategory;
 	private ModTarget mSelectedModTarget = ModTarget.Asia;
+	private static String T(String source) => LocaleManager.Instance.Translate(source);
+	private static String F(String source, params object?[] args) => LocaleManager.Instance.Format(source, args);
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -66,19 +68,19 @@ internal class ViewModel : INotifyPropertyChanged
 	public ObservableCollection<Unit> Units { get; } = [];
 	public ModProjectState ModProject { get; }
 	public ObservableCollection<ModModule> ModModules { get; }
-	public IReadOnlyList<ModCategory> ModCategories { get; }
+	public IReadOnlyList<ModCategory> ModCategories { get; private set; }
 	public IReadOnlyList<ModTarget> ModTargets { get; } = ModTarget.All;
-	public IReadOnlyList<String> Languages { get; } = ["英文", "日文", "简体中文"];
-	public String InventorySummary => $"物品 {Items.Count} 条，装备 {Equipments.Count} 条，共 {Items.Count + Equipments.Count} / {InventoryCapacity} 条库存记录";
+	public IReadOnlyList<EditorLanguage> Languages => LocaleManager.Instance.Languages;
+	public String InventorySummary => LocaleManager.Instance.Format("物品 {0} 条，装备 {1} 条，共 {2} / {3} 条库存记录", Items.Count, Equipments.Count, Items.Count + Equipments.Count, InventoryCapacity);
 	public String ModTargetSummary => $"{SelectedModTarget.DisplayName} · Title ID {SelectedModTarget.TitleId} · Build ID {SelectedModTarget.BuildId}";
 	public int SelectedModCount => ModModules.Count(module => !module.IsTextEditor && module.IsSelected);
 	public bool CanExportMods => SelectedModCount > 0;
-	public String ModSelectionSummary => CanExportMods ? $"已选择 {SelectedModCount} 个可用模块" : "请选择至少一个已接入模块";
+	public String ModSelectionSummary => CanExportMods ? LocaleManager.Instance.Format("已选择 {0} 个可用模块", SelectedModCount) : LocaleManager.Instance.Translate("请选择至少一个已接入模块");
 	public String ContextStatusMessage => WorkspaceIndex switch
 	{
-		0 => IsSaveLoaded ? $"当前存档：{CurrentFileName}" : "存档编辑 · 尚未打开存档",
+		0 => IsSaveLoaded ? LocaleManager.Instance.Format("当前存档：{0}", CurrentFileName) : LocaleManager.Instance.Translate("存档编辑 · 尚未打开存档"),
 		_ when IsTextEditorSelected => $"{TextEditor.SourceSummary} · {TextEditor.ChangeSummary}",
-		_ => $"{ModSelectionSummary} · 仅生成模拟器 pchtxt",
+		_ => $"{ModSelectionSummary} · {LocaleManager.Instance.Translate("仅生成模拟器 pchtxt")}",
 	};
 	public ModCategory? SelectedModCategory
 	{
@@ -174,9 +176,19 @@ internal class ViewModel : INotifyPropertyChanged
 			int normalized = Math.Clamp(value, 0, Languages.Count - 1);
 			if (mLanguageIndex == normalized) return;
 			mLanguageIndex = normalized;
-			ApplicationSettings.Language = normalized;
+			LocaleManager.Instance.SetLanguage(normalized);
 			RefreshLocalizedCollections();
 			OnPropertyChanged(nameof(LanguageIndex));
+			OnPropertyChanged(nameof(InventorySummary));
+			OnPropertyChanged(nameof(ModSelectionSummary));
+			OnPropertyChanged(nameof(ContextStatusMessage));
+			OnPropertyChanged(nameof(ModTargetSummary));
+			if (!IsSaveLoaded)
+			{
+				CurrentFileName = LocaleManager.Instance.Translate("尚未打开存档");
+				FileLocation = LocaleManager.Instance.Translate("当前没有活动文件");
+			}
+			StatusMessage = LocaleManager.Instance.Translate("就绪");
 		}
 	}
 
@@ -199,8 +211,8 @@ internal class ViewModel : INotifyPropertyChanged
 		ModModules = CreateModModules(ModProject);
 		mLanguageIndex = ApplicationSettings.Language;
 		mStatusMessage = Info.Item.Count == 0
-			? "未找到名称数据，未知条目将显示为数字 ID。"
-			: "就绪";
+			? T("未找到名称数据，未知条目将显示为数字 ID。")
+			: T("就绪");
 
 		OpenFileCommand = new ActionCommand(OpenFile);
 		SaveFileCommand = new ActionCommand(SaveFile);
@@ -338,26 +350,26 @@ internal class ViewModel : INotifyPropertyChanged
 		{
 			var files = await mOwner.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
 			{
-				Title = "打开独角兽之王存档",
+				Title = T("打开独角兽之王存档"),
 				AllowMultiple = false,
-				FileTypeFilter = [SaveFileType],
+				FileTypeFilter = [SaveFileType()],
 			});
 			String? filename = files.FirstOrDefault()?.TryGetLocalPath();
 			if (String.IsNullOrEmpty(filename)) return;
 
 			if (!SaveData.Instance().Open(filename))
 			{
-				StatusMessage = "所选文件不是受支持的独角兽之王存档。";
+				StatusMessage = T("所选文件不是受支持的独角兽之王存档。");
 				return;
 			}
 
 			InitializeData();
 			UpdateActiveFile(filename);
-			StatusMessage = "存档已载入，并已在源文件旁创建备份。";
+			StatusMessage = T("存档已载入，并已在源文件旁创建备份。");
 		}
 		catch (Exception exception)
 		{
-			StatusMessage = $"打开失败：{exception.Message}";
+			StatusMessage = F("打开失败：{0}", exception.Message);
 		}
 	}
 
@@ -366,11 +378,11 @@ internal class ViewModel : INotifyPropertyChanged
 		if (!EnsureSaveWorkspace()) return;
 		try
 		{
-			StatusMessage = SaveData.Instance().Save() ? "存档保存成功。" : "当前未载入存档。";
+			StatusMessage = SaveData.Instance().Save() ? T("存档保存成功。") : T("当前未载入存档。");
 		}
 		catch (Exception exception)
 		{
-			StatusMessage = $"保存失败：{exception.Message}";
+			StatusMessage = F("保存失败：{0}", exception.Message);
 		}
 	}
 
@@ -382,8 +394,8 @@ internal class ViewModel : INotifyPropertyChanged
 		{
 			var file = await mOwner.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
 			{
-				Title = "将独角兽之王存档另存为",
-				FileTypeChoices = [SaveFileType],
+					Title = T("将独角兽之王存档另存为"),
+				FileTypeChoices = [SaveFileType()],
 				DefaultExtension = "DAT",
 				SuggestedFileName = CurrentFileName,
 			});
@@ -393,19 +405,19 @@ internal class ViewModel : INotifyPropertyChanged
 			if (SaveData.Instance().SaveAs(filename))
 			{
 				UpdateActiveFile(filename);
-				StatusMessage = "存档副本保存成功。";
+					StatusMessage = T("存档副本保存成功。");
 			}
 		}
 		catch (Exception exception)
 		{
-			StatusMessage = $"另存为失败：{exception.Message}";
+			StatusMessage = F("另存为失败：{0}", exception.Message);
 		}
 	}
 
 	private bool EnsureSaveWorkspace()
 	{
 		if (WorkspaceIndex == 0) return true;
-		StatusMessage = "当前位于 MOD 制作工作区，未执行存档操作。";
+		StatusMessage = T("当前位于 MOD 制作工作区，未执行存档操作。");
 		return false;
 	}
 
@@ -414,7 +426,7 @@ internal class ViewModel : INotifyPropertyChanged
 		ModModule[] selectedModules = ModModules.Where(module => !module.IsTextEditor && module.IsSelected && module.IsAvailable).ToArray();
 		if (selectedModules.Length == 0)
 		{
-			StatusMessage = "请至少选择一个已接入的 MOD 模块。";
+			StatusMessage = T("请至少选择一个已接入的 MOD 模块。");
 			return;
 		}
 
@@ -422,8 +434,8 @@ internal class ViewModel : INotifyPropertyChanged
 		{
 			var file = await mOwner.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
 			{
-				Title = "导出独角兽之王 MOD 包",
-				FileTypeChoices = [ModPackageFileType],
+					Title = T("导出独角兽之王 MOD 包"),
+				FileTypeChoices = [ModPackageFileType()],
 				DefaultExtension = "zip",
 				SuggestedFileName = $"UnicornOverlord-{SelectedModTarget.Key}-{SelectedModTarget.GameVersion}-Mods.zip",
 			});
@@ -431,11 +443,11 @@ internal class ViewModel : INotifyPropertyChanged
 			if (String.IsNullOrEmpty(filename)) return;
 
 			ModPackageBuilder.Create(filename, selectedModules, SelectedModTarget);
-			StatusMessage = $"MOD 包导出成功：包含 {selectedModules.Length} 个模块。";
+			StatusMessage = F("MOD 包导出成功：包含 {0} 个模块。", selectedModules.Length);
 		}
 		catch (Exception exception)
 		{
-			StatusMessage = $"MOD 包导出失败：{exception.Message}";
+			StatusMessage = F("MOD 包导出失败：{0}", exception.Message);
 		}
 	}
 
@@ -479,7 +491,7 @@ internal class ViewModel : INotifyPropertyChanged
 			item.Count = 1;
 			Items.Add(item);
 		}
-		if (selectedIDs.Count > 0) StatusMessage = $"已添加 {selectedIDs.Count} 条物品记录。";
+		if (selectedIDs.Count > 0) StatusMessage = F("已添加 {0} 条物品记录。", selectedIDs.Count);
 		NotifyInventoryChanged();
 	}
 
@@ -488,7 +500,7 @@ internal class ViewModel : INotifyPropertyChanged
 		IReadOnlyList<uint> selectedIDs = await SelectInventoryIDsAsync(ChoiceWindow.eType.eEquipment);
 		if (!EnsureInventoryCapacity(selectedIDs.Count)) return;
 		foreach (uint id in selectedIDs) Equipments.Add(CreateInventoryItem(id));
-		if (selectedIDs.Count > 0) StatusMessage = $"已添加 {selectedIDs.Count} 条装备记录。";
+		if (selectedIDs.Count > 0) StatusMessage = F("已添加 {0} 条装备记录。", selectedIDs.Count);
 		NotifyInventoryChanged();
 	}
 
@@ -529,7 +541,7 @@ internal class ViewModel : INotifyPropertyChanged
 			item.Count = 1;
 			Items.Add(item);
 		}
-		StatusMessage = missingIDs.Length == 0 ? "所有安全消耗道具均已存在。" : $"已补齐 {missingIDs.Length} 种安全消耗道具，每种数量为 1。";
+		StatusMessage = missingIDs.Length == 0 ? T("所有安全消耗道具均已存在。") : F("已补齐 {0} 种安全消耗道具，每种数量为 1。", missingIDs.Length);
 		NotifyInventoryChanged();
 	}
 
@@ -544,7 +556,7 @@ internal class ViewModel : INotifyPropertyChanged
 		if (!EnsureInventoryCapacity(missingIDs.Length)) return;
 
 		foreach (uint id in missingIDs) Equipments.Add(CreateInventoryItem(id));
-		StatusMessage = missingIDs.Length == 0 ? "所有已知装备均已存在。" : $"已添加 {missingIDs.Length} 种当前缺少的装备。";
+		StatusMessage = missingIDs.Length == 0 ? T("所有已知装备均已存在。") : F("已添加 {0} 种当前缺少的装备。", missingIDs.Length);
 		NotifyInventoryChanged();
 	}
 
@@ -553,7 +565,7 @@ internal class ViewModel : INotifyPropertyChanged
 		if (requestedCount == 0) return true;
 		int remainingCount = InventoryCapacity - Items.Count - Equipments.Count;
 		if (requestedCount <= remainingCount) return true;
-		StatusMessage = $"库存容量不足：需要 {requestedCount} 条空记录，当前仅剩 {remainingCount} 条。未写入任何记录。";
+		StatusMessage = F("库存容量不足：需要 {0} 条空记录，当前仅剩 {1} 条。未写入任何记录。", requestedCount, remainingCount);
 		return false;
 	}
 
@@ -574,8 +586,8 @@ internal class ViewModel : INotifyPropertyChanged
 		{
 			var file = await mOwner.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
 			{
-				Title = "导出角色",
-				FileTypeChoices = [CharacterFileType],
+					Title = T("导出角色"),
+				FileTypeChoices = [CharacterFileType()],
 				DefaultExtension = "uocd",
 				SuggestedFileName = "角色.uocd",
 			});
@@ -584,11 +596,11 @@ internal class ViewModel : INotifyPropertyChanged
 
 			uint address = Util.calcCharacterAddress((uint)index);
 			File.WriteAllBytes(filename, SaveData.Instance().ReadValue(address, 464));
-			StatusMessage = "角色导出成功。";
+			StatusMessage = T("角色导出成功。");
 		}
 		catch (Exception exception)
 		{
-			StatusMessage = $"角色导出失败：{exception.Message}";
+			StatusMessage = F("角色导出失败：{0}", exception.Message);
 		}
 	}
 
@@ -599,9 +611,9 @@ internal class ViewModel : INotifyPropertyChanged
 		{
 			var files = await mOwner.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
 			{
-				Title = "用文件替换当前角色",
+					Title = T("用文件替换当前角色"),
 				AllowMultiple = false,
-				FileTypeFilter = [CharacterFileType],
+				FileTypeFilter = [CharacterFileType()],
 			});
 			String? filename = files.FirstOrDefault()?.TryGetLocalPath();
 			if (String.IsNullOrEmpty(filename)) return;
@@ -609,7 +621,7 @@ internal class ViewModel : INotifyPropertyChanged
 			Byte[] buffer = File.ReadAllBytes(filename);
 			if (buffer.Length != 464)
 			{
-				StatusMessage = "替换角色失败：角色数据必须正好为 464 字节。";
+					StatusMessage = T("替换角色失败：角色数据必须正好为 464 字节。");
 				return;
 			}
 
@@ -619,11 +631,11 @@ internal class ViewModel : INotifyPropertyChanged
 			Array.Copy(BitConverter.GetBytes(id), buffer, 4);
 			SaveData.Instance().WriteValue(address, buffer);
 			Characters[index] = new Character(address);
-			StatusMessage = "当前角色替换成功。";
+			StatusMessage = T("当前角色替换成功。");
 		}
 		catch (Exception exception)
 		{
-			StatusMessage = $"替换角色失败：{exception.Message}";
+			StatusMessage = F("替换角色失败：{0}", exception.Message);
 		}
 	}
 
@@ -634,9 +646,9 @@ internal class ViewModel : INotifyPropertyChanged
 		{
 			var files = await mOwner.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
 			{
-				Title = "从文件新增角色",
+					Title = T("从文件新增角色"),
 				AllowMultiple = true,
-				FileTypeFilter = [CharacterFileType],
+				FileTypeFilter = [CharacterFileType()],
 			});
 
 			int inserted = 0;
@@ -663,11 +675,11 @@ internal class ViewModel : INotifyPropertyChanged
 				Characters.Add(character);
 				inserted++;
 			}
-			StatusMessage = $"已新增 {inserted} 条角色记录。";
+			StatusMessage = F("已新增 {0} 条角色记录。", inserted);
 		}
 		catch (Exception exception)
 		{
-			StatusMessage = $"新增角色失败：{exception.Message}";
+			StatusMessage = F("新增角色失败：{0}", exception.Message);
 		}
 	}
 
@@ -678,14 +690,14 @@ internal class ViewModel : INotifyPropertyChanged
 		{
 			if (item.ID > 4) item.Count = targetCount;
 		}
-		StatusMessage = $"可修改的物品数量已全部设为 {targetCount}。";
+		StatusMessage = F("可修改的物品数量已全部设为 {0}。", targetCount);
 	}
 
 	private void ChangeCharacterBondMax(object? parameter)
 	{
 		if (parameter is not Character { Bonds: not null } character) return;
 		foreach (var bond in character.Bonds) bond.Value = 1000;
-		StatusMessage = "亲密度已全部设为 1000。";
+		StatusMessage = T("亲密度已全部设为 1000。");
 	}
 
 	private static Byte[] ProcessingCharacter(Byte[] buffer)
@@ -742,6 +754,7 @@ internal class ViewModel : INotifyPropertyChanged
 	private void RefreshLocalizedCollections()
 	{
 		ModCatalog.RefreshLocalizedNames();
+		TextEditor.RefreshLocale();
 		int selectedCharacterIndex = SelectedCharacterIndex;
 		Characters = new ObservableCollection<Character>(Characters);
 		Items = new ObservableCollection<Item>(Items);
@@ -751,6 +764,12 @@ internal class ViewModel : INotifyPropertyChanged
 		OnPropertyChanged(nameof(Equipments));
 		OnPropertyChanged(nameof(InventorySummary));
 		foreach (ModModule module in ModModules) module.RefreshLocalizedChoices();
+		String? selectedCategory = SelectedModCategory?.SourceName;
+		ModCategories = CreateModCategories(ModModules);
+		SelectedModCategory = ModCategories.FirstOrDefault(category => category.SourceName == selectedCategory) ?? ModCategories.FirstOrDefault();
+		OnPropertyChanged(nameof(ModCategories));
+		OnPropertyChanged(nameof(ModTargets));
+		OnPropertyChanged(nameof(ActiveModTarget));
 		SelectedCharacterIndex = selectedCharacterIndex;
 	}
 

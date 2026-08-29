@@ -11,7 +11,7 @@ internal sealed class ModSkillSlot : INotifyPropertyChanged
 	public required int Index { get; init; }
 	public required bool IsPassive { get; init; }
 	public IReadOnlyList<ModChoice> Choices => IsPassive ? ModCatalog.PassiveSkillChoices : ModCatalog.ActiveSkillChoices;
-	public String SlotName => $"第 {Index + 1} 项";
+	public String SlotName => LocaleManager.Instance.Format("第 {0} 项", Index + 1);
 	public bool IsFirst => Index == 0;
 	public bool CanEditLevel => Index > 0;
 
@@ -37,4 +37,6 @@ internal sealed class ModSkillSlot : INotifyPropertyChanged
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Level)));
 		}
 	}
+
+	public void RefreshLocale() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SlotName)));
 }

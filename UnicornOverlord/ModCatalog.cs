@@ -31,7 +31,7 @@ internal sealed class ModSkillInfo
 	public required int TargetShape { get; init; }
 	public required double EffectValue { get; init; }
 	public required String ChineseDescription { get; init; }
-	public String TypeText => IsPassive ? "被动技能（PP）" : "主动技能（AP）";
+	public String TypeText => LocaleManager.Instance.Translate(IsPassive ? "被动技能（PP）" : "主动技能（AP）");
 	public String Description => ChineseDescription;
 }
 

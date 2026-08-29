@@ -2,11 +2,14 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 
 namespace UnicornOverlord;
 
 public partial class ChoiceWindow : Window
 {
+	private bool mLocalizationQueued;
+
 	public enum eType
 	{
 		eItem,
@@ -22,11 +25,24 @@ public partial class ChoiceWindow : Window
 	public ChoiceWindow()
 	{
 		InitializeComponent();
+		LayoutUpdated += (_, _) => QueueLocalization(false);
 		LocaleManager.Instance.LanguageChanged += LocaleManager_LanguageChanged;
 		Closed += (_, _) => LocaleManager.Instance.LanguageChanged -= LocaleManager_LanguageChanged;
 	}
 
-	private void LocaleManager_LanguageChanged(object? sender, EventArgs e) => VisualLocalizer.Apply(this);
+	private void LocaleManager_LanguageChanged(object? sender, EventArgs e) => QueueLocalization(true);
+
+	private void QueueLocalization(bool applyNow)
+	{
+		if (applyNow) VisualLocalizer.Apply(this);
+		if (mLocalizationQueued) return;
+		mLocalizationQueued = true;
+		Dispatcher.UIThread.Post(() =>
+		{
+			mLocalizationQueued = false;
+			VisualLocalizer.Apply(this);
+		}, DispatcherPriority.Background);
+	}
 
 	private ListBox ItemList => this.FindControl<ListBox>("ListBoxItem")!;
 	private TextBox FilterBox => this.FindControl<TextBox>("TextBoxFilter")!;

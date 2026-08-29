@@ -43,10 +43,12 @@ internal sealed class LocaleManager : INotifyPropertyChanged
 	public void SetLanguage(int index)
 	{
 		int normalized = Math.Clamp(index, 0, Languages.Count - 1);
+		ApplicationSettings.Language = normalized;
 		if (mLanguageIndex == normalized) return;
 		mLanguageIndex = normalized;
-		ApplicationSettings.Language = normalized;
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LanguageIndex)));
+		ModTarget.RefreshLocale();
+		TextModLanguage.RefreshLocale();
 		LanguageChanged?.Invoke(this, EventArgs.Empty);
 	}
 
@@ -100,12 +102,17 @@ internal static class VisualLocalizer
 	private static void Translate(AvaloniaObject target, AvaloniaProperty<String?> property)
 	{
 		String? value = (String?)target.GetValue(property);
-		if (value != null) target.SetCurrentValue(property, LocaleManager.Instance.Translate(value));
+		if (value == null) return;
+		String translated = LocaleManager.Instance.Translate(value);
+		if (!String.Equals(value, translated, StringComparison.Ordinal)) target.SetCurrentValue(property, translated);
 	}
 
 	private static void TranslateObject(AvaloniaObject target, AvaloniaProperty<object?> property)
 	{
 		if (target.GetValue(property) is String value)
-			target.SetCurrentValue(property, LocaleManager.Instance.Translate(value));
+		{
+			String translated = LocaleManager.Instance.Translate(value);
+			if (!String.Equals(value, translated, StringComparison.Ordinal)) target.SetCurrentValue(property, translated);
+		}
 	}
 }

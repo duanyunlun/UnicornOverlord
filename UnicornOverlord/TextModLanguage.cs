@@ -1,8 +1,11 @@
+using System.ComponentModel;
+
 namespace UnicornOverlord;
 
-internal sealed class TextModLanguage
+internal sealed class TextModLanguage : INotifyPropertyChanged
 {
 	private readonly String mSourceName;
+	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public String Name => LocaleManager.Instance.Translate(mSourceName);
 	public String CpkFileName { get; }
@@ -23,4 +26,10 @@ internal sealed class TextModLanguage
 		new("韩语", "Unicorn_KO.CPK"),
 		new("日语（本体）", "Unicorn.CPK"),
 	];
+
+	public static void RefreshLocale()
+	{
+		foreach (TextModLanguage language in All)
+			language.PropertyChanged?.Invoke(language, new PropertyChangedEventArgs(nameof(Name)));
+	}
 }

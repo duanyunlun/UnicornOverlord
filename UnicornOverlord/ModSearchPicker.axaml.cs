@@ -113,7 +113,7 @@ public partial class ModSearchPicker : UserControl
 
 	private static IEnumerable<String> GetSearchTerms(object item) => item switch
 	{
-		ModChoice choice => [choice.Name, choice.EnglishName, choice.ChineseName],
+		ModChoice choice => [choice.Name, choice.EnglishName, choice.JapaneseName, choice.ChineseName],
 		ModLocationChoice location => [location.DisplayName, location.EnglishName, location.JapaneseName, location.ChineseName],
 		FortLocationState location => [location.DisplayName, location.Choice.EnglishName, location.Choice.JapaneseName, location.Choice.ChineseName],
 		ModRecordChoice record =>

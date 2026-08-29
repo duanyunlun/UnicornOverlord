@@ -1,442 +1,442 @@
-# ID	英文	简体中文	类型	消耗	物理威力	魔法威力	命中	目标范围	首个效果参数
-28	Lean Edge	统御之刃	A	1	100	0	100	1	0.25
-29	Cavalry Slayer	骑兵诛杀	A	1	100	0	100	1	1
-30	Spinning Edge	螺旋刺刃	A	2	60	0	100	6	0.5
-31	Astral Blade	星辰一剑	A	2	150	0	100	6	0.5
-32	Warding Slash	格挡斩击	A	1	100	0	100	1	0.20000000298023224
-33	Shield Bash	盾装冲撞	A	1	50	0	100	1	0
-34	Defender	捍卫者	A	2	75	0	100	1	0.5
-35	Keen Edge	振奋利刃	A	1	100	0	100	1	0.5
-36	Impale	穿透	A	1	100	0	100	1	1
-37	Passive Steal	被动窃取	A	1	50	0	100	1	4
-38	Active Steal	主动窃取	A	2	25	0	100	1	1
-39	Toxic Throw	淬毒一掷	A	1	25	0	100	1	0
-40	Shadowbite	暗影啮咬	A	2	15	0	100	6	0
-41	Meteor Slash	流星斩击	A	2	20	0	100	1	0.30000001192092896
-42	Lightning Blade	雷霆剑	A	1	75	75	100	1	0
-43	Mirage Stab	幻影戳刺	A	2	75	75	100	6	0
-44	Heavy Slash	重斩	A	1	150	0	100	1	0
-45	Killing Chain	杀戮连锁	A	1	100	0	100	1	1
-46	Bastard's Cross	恶徒十字	A	2	70	0	100	1	60
-47	Finishing Stab	终结戳刺	A	1	100	0	100	1	0.5
-48	Decimate	穷寇杀手	A	1	75	0	100	1	25
-49	Wild Fang	野蛮尖齿	A	2	20	0	100	6	50
-50	Spiral Sword	螺旋剑	A	1	100	0	100	1	20
-51	Shield Smite	盾装重击	A	1	100	0	100	1	0.20000000298023224
-52	Honed Slash	强化斩击	A	2	70	0	100	1	0
-53	Impulse	冲荡	A	1	100	0	100	1	0.5
-54	Hache	精细斩击	A	1	100	0	100	1	0
-55	Saint's Blade	圣洁一剑	A	1	50	0	100	1	25
-56	Slice	削击	A	1	100	0	100	1	0
-57	Divine Cross	神圣十字	A	2	50	50	100	1	0
-58	Vertical Edge	垂直之刃	A	1	100	0	100	1	0.5
-59	Iron Crusher	钢铁撕扯	A	1	100	0	100	1	0.5
-60	Brandish	乱舞	A	2	50	0	100	1	0.5
-61	Burning Edge	灼热之刃	A	1	75	0	100	1	1
-62	Inferno	炼狱	A	2	100	0	100	6	0.5
-63	Long Thrust	长枪穿刺	A	1	100	0	100	7	0
-64	Javelin	标枪	A	1	100	0	100	1	50
-65	Flame Javelin	烈火标枪	A	2	150	0	100	1	50
-66	Honed Spear	强化利矛	A	2	130	0	100	7	0
-67	Assaulting Lance	骑枪突击	A	1	100	0	100	1	0
-68	Wild Rush	狂野冲杀	A	1	80	0	100	7	0
-69	Pile Thrust	连续穿刺	A	2	50	0	100	1	1
-70	Sting	钉刺	A	1	100	0	100	1	50
-71	Piercing Lance	尖利骑枪	A	1	100	0	100	1	0
-72	Passive Hold	被动禁锢	A	1	100	0	100	1	0
-73	Venom Thrust	剧毒穿刺	A	2	75	0	100	7	0
-74	Diving Thrust	俯冲穿刺	A	1	100	0	100	1	0
-75	Fire Breath	灼热吐息	A	2	75	0	100	6	0
-76	Tempest Drive	暴风涤荡	A	2	150	0	100	7	0
-77	Dragoon Dive	龙骑天降	A	2	100	0	100	5	50
-78	Heavy Smash	重装克星	A	1	100	0	100	1	1
-79	Assaulting Blow	突进打击	A	1	100	0	100	1	0
-80	Row Smash	阵线破坏	A	2	100	0	100	6	1
-81	Ground Strike	全域冲击	A	2	150	0	100	1	1
-82	High Swing	空中挥击	A	1	100	0	100	6	0
-83	Aerial Smite	天空重击	A	2	150	0	100	6	0
-84	Fatal Dive	致命俯冲	A	2	0	0	100	7	0.5
-85	Carnage	屠戮	A	1	100	0	100	1	1
-86	Vicious Torment	魔崇诡击	A	2	75	0	100	1	75
-87	Death Spin	死亡螺旋	A	1	75	0	100	6	0
-88	Bear Crush	战熊撞击	A	1	100	0	100	1	0
-89	Round Swing	回旋挥击	A	2	25	0	75	6	50
-90	Earthshaker	大地震击	A	2	75	0	100	5	75
-91	Smash	猛击	A	1	100	0	100	1	0.20000000298023224
-92	Rolling Axe	旋风斧	A	1	40	0	75	6	0.15000000596046448
-93	Wide Breaker	破阵横扫	A	2	100	0	100	6	0.30000001192092896
-94	Vengeful Axe	复仇之斧	A	1	50	0	100	1	0
-95	Venom Axe	剧毒之斧	A	1	75	0	100	1	0
-96	Dark Flame	暗黑邪火	A	2	50	50	100	6	0.30000001192092896
-97	Desperation	以牙还牙	A	2	0	0	100	1	0
-98	Wide Smash	破阵猛击	A	1	150	0	80	6	50
-99	Grand Smash	全域强袭	A	2	100	0	80	5	50
-100	Brutal Swing	残忍挥击	A	1	80	0	100	6	80
-101	Brutal Drive	残忍猛击	A	1	50	0	100	5	100
-102	Fallen One	天堕	A	2	0	0	100	5	1
-103	Dark Armor	暗黑护甲	A	1	0	0	100	1	0
-104	Extinction	大灭绝	A	2	50	0	100	5	0
-105	Chaos Unending	无止境的混沌	A	2	0	0	100	5	0
-106	Flame Thrust	烈火穿刺	A	1	100	0	100	7	0
-107	Deadly Rush	致死冲杀	A	1	40	0	100	1	0
-108	Primus Edge	卓绝利刃	A	1	50	100	100	1	1
-109	Thunderous Thrust	雷霆穿刺	A	1	100	100	100	1	0
-110	Freezing Thrust	冰冻穿刺	A	1	100	100	100	1	0
-111	Elemental Roar	元素咆哮	A	3	70	70	100	5	30
-112	Banishing Stab	消逝戳刺	A	1	100	0	100	1	0
-113	Leaping Slash	飞跃斩击	A	1	100	0	100	1	1
-114	Provoking Slash	恨意斩击	A	1	75	0	100	1	0
-115	Poison Slash	毒素斩击	A	1	100	0	100	1	0
-116	Fire Slash	灼热斩击	A	1	100	0	100	1	0
-117	Grisly Poison	血污之毒	A	2	150	0	100	1	0
-118	Grisly Fire	血污之火	A	2	150	0	100	1	0
-119	Firestorm	灼热逆刃	A	1	100	0	100	1	0
-120	Icestorm	冰霜逆刃	A	1	100	0	100	1	0
-121	Sonic Blast	音速爆炸	A	1	70	0	100	1	80
-122	Double Blast	双重音速	A	2	70	0	100	2	80
-123	Assassin's Nail	暗杀钉刺	A	2	100	0	100	1	0
-124	Crush	撞击	A	1	100	0	100	1	0
-125	Spiked Blow	锋锐打击	A	1	50	0	100	1	0
-126	Icy Blow	冰霜打击	A	1	100	0	100	1	0
-127	Icy Crush	冰霜撞击	A	2	100	0	100	1	0
-128	True Thrust	真切穿刺	A	1	80	0	100	7	0
-129	Icicle Dart	冰锥飞刺	A	2	100	50	100	1	0
-130	Shadow Thrust	阴影穿刺	A	1	80	0	100	7	0
-131	Lightning Shaker	雷霆震荡	A	2	100	100	100	6	0
-132	Penetrate	穿甲	A	2	100	0	100	7	0.30000001192092896
-133	Lethal Venom	致命剧毒	A	3	100	0	75	7	0
-134	Rampage	横冲直撞	A	1	100	0	100	1	1
-135	Execution	处决	A	1	100	0	75	1	0
-136	Powerful Impact	肌肉冲撞	A	2	200	0	25	1	0
-137	Demolition	拆解	A	2	300	0	100	1	0.5
-138	Heavy Smash	沉重猛击	A	2	100	0	100	6	0
-139	Painful Smash	痛之猛击	A	2	150	0	100	1	0.25
-140	Banishing Smite	消逝重击	A	2	100	0	100	6	0
-141	Sanguine Attack	鲜血兵器	A	1	100	0	100	1	0.5
-142	Magick Attack	魔法兵器	A	1	0	150	100	1	0
-143	Phantom Attack	幻象兵器	A	1	0	120	100	1	1
-144	Elfslayer	精灵诛杀	A	2	100	0	100	7	1
-145	Beastslayer	野兽诛杀	A	2	100	0	100	6	1
-146	Strength Shatter	力量崩解	A	1	100	0	100	1	0.4000000059604645
-147	Strength Shatter II	力量崩解Ⅱ	A	2	150	0	100	1	0.75
-148	Armor Shatter	护甲崩解	A	1	100	0	100	1	0.30000001192092896
-149	Armor Shatter II	护甲崩解Ⅱ	A	2	150	0	100	1	0.5
-150	Magick Shatter	魔法崩解	A	2	75	0	100	6	0.5
-151	Active Shatter	主动崩解	A	1	100	0	100	1	1
-152	Passive Shatter	被动崩解	A	1	50	0	100	1	1
-153	Passive Shatter (Spear)	被动崩解	A	1	50	0	100	7	1
-154	Single Shot	单一射击	A	1	100	0	100	1	0
-155	Dual Shot	双重射击	A	1	70	0	100	2	0
-156	Row Shot	阵线射击	A	2	100	0	100	6	0
-157	Triple Shatter	三重崩解	A	2	50	0	100	3	0.5
-158	Arrow Rain	箭雨	A	2	60	0	80	5	0
-159	Glacial Rain	冰封箭雨	A	2	60	0	80	5	0
-160	Mystic Arrow	神秘之箭	A	1	100	0	100	1	100
-161	Sonic Shaft	音速飞矢	A	1	100	0	100	1	1
-162	Checkmate	瓮中捉鳖	A	2	150	0	100	1	0
-163	Poison Arrow	毒素之箭	A	1	100	0	100	1	0
-164	Flame Arrow	烈火之箭	A	1	100	0	100	1	0
-165	Shadow Arrow	阴影之箭	A	1	100	0	100	1	0
-166	Wind Arrow	疾风之箭	A	1	75	75	100	1	50
-167	Icicle Arrow	冰锥之箭	A	2	75	75	100	2	0
-168	Delaying Shot	迟滞射击	A	1	25	0	100	1	20
-169	Saint's Shot	圣洁射击	A	1	80	0	100	1	1
-170	Photon Arrow	光子箭	A	2	80	0	100	2	0.5
-171	Power Bolt	强力弩箭	A	1	120	0	100	1	0
-172	Toxic Bolt	淬毒弩箭	A	1	80	0	100	1	0
-173	Heavy Bolt	沉重弩箭	A	2	100	0	100	1	100
-174	Harpoon Bolt	鱼叉弩箭	A	2	100	0	100	7	0
-175	Spiked Bolt	锋锐弩箭	A	2	50	0	100	1	0
-176	Fireball	火球术	A	1	0	40	100	1	0
-177	Icebolt	冰霜射击	A	1	0	100	100	1	0
-178	Magick Missile	魔法飞弹	A	1	0	70	100	2	0
-179	Ice Coffin	冰柩	A	2	0	100	100	6	0
-180	Aqua Venom	液态剧毒	A	1	0	100	100	6	0
-181	Maelstrom	大漩涡	A	2	0	25	100	5	25
-182	Thunderous Strike	雷霆万钧	A	2	0	100	90	6	0
-183	Volcano	火山喷发	A	2	0	150	90	7	0
-184	Holy Light	神圣之光	A	1	0	100	100	1	0
-185	Innocent Ray	无秽射线	A	2	0	150	100	6	0
-186	Sanguine Darts	鲜血镖雨	A	2	0	100	100	7	0.5
-187	Skyward Thrust	气流穿刺	A	2	0	75	100	3	50
-188	Earthquake	地震术	A	3	0	100	100	5	0
-189	Blizzard	暴风雪	A	2	0	50	100	5	0
-190	Gravity	重力魔法	A	2	0	0	100	5	0.5
-191	Trinity Rain	三一之雨	A	3	0	100	100	5	0
-192	Sanguine Rain	血雨	A	2	0	50	100	5	0.30000001192092896
-193	Passive Absorb	被动汲取	A	1	0	0	100	1	2
-194	Memento Mori	终有一死	A	1	0	80	100	5	0
-195	Overlord	独角兽之怒	A	4	0	999	100	5	0
-196	Heal	疗愈	A	1	0	100	100	1	0
-197	Double Heal	双重疗愈	A	1	0	60	100	2	0
-198	Row Heal	阵线疗愈	A	1	0	100	100	6	0
-199	Sacred Heal	圣崇疗愈	A	2	0	100	100	6	0
-200	Circle Heal	环形疗愈	A	2	0	150	100	5	0
-201	Radiant Heal	绚烂疗愈	A	3	0	150	100	5	1
-202	Active Heal	行进疗愈	A	2	0	100	100	1	1
-203	Extra Heal	额外疗愈	A	2	0	100	100	1	0.25
-204	Overheal	过量疗愈	A	1	0	50	100	6	1.5
-205	Limited Heal	孤军疗愈	A	2	0	50	100	5	1.5
-206	Faerie Heal	精魂疗愈	A	2	0	100	100	6	0
-207	Aurora Veil	极光护罩	A	1	0	0	100	6	0.25
-208	Phantom Veil	幻象护罩	A	2	0	0	100	6	0
-209	Curing Call	治愈呐喊	A	1	0	50	100	6	0
-210	Healing Wind	疗愈之风	A	2	0	0	100	6	0
-211	Honed Healing	疗愈强化	A	1	0	0	100	6	1
-212	Holy Cradle	神圣摇篮	A	2	0	0	100	6	1
-213	Resurrection	妙手回春	A	2	0	0	100	1	0
-214	Reincarnation	轮回转生	A	3	0	0	100	1	0
-215	Animated Dead	尸变	A	1	0	100	100	1	1
-216	Night Vision	夜观千里	A	1	0	0	100	6	50
-217	Glowing Light	黯淡之光	A	1	0	0	100	5	30
-218	Offensive Order	攻击号令	A	1	0	0	100	5	0.20000000298023224
-219	Defensive Order	防卫号令	A	1	0	0	100	5	0.20000000298023224
-220	Passive Curse	被动诅咒	A	1	0	0	100	6	1
-221	Poison Curse	毒素诅咒	A	1	0	0	100	6	0
-222	Fire Curse	灼热诅咒	A	1	0	0	100	6	0
-223	Offensive Curse	攻击诅咒	A	1	0	0	100	6	0.5
-224	Defensive Curse	防卫诅咒	A	1	0	0	100	6	0.5
-225	Compounding Curse	诅咒危机	A	1	0	0	100	6	1.5
-226	Dispel All	全体驱散	A	2	0	0	100	5	0
-227	Sandstorm	沙尘暴	A	3	0	0	100	5	0
-228	Sorcerous Blow	巫术打击	A	2	150	150	100	1	0
-229	Cursed Strike	诅咒冲击	A	2	100	0	100	1	0.5
-230	Holy Smite	神圣重击	A	2	0	200	100	1	0
-231	Wall	壁垒	A	1	0	0	100	1	0
-232	Bulwark	铜墙铁壁	A	2	0	0	100	6	0
-233	Magick Wall	魔法壁垒	A	1	0	0	100	1	0
-234	Row Protection	阵线防护	A	1	0	0	100	6	0.5
-235	Row Resistance	阵线抵抗	A	1	0	0	100	6	0
-236	Greatshield	伟大护盾	A	1	0	0	100	1	0.5
-237	Mystic Shield	神秘护盾	A	1	0	0	100	1	0.5
-238	Dark Mist	暗黑薄雾	A	1	0	0	100	1	50
-239	Mounting Charge	厚积薄发	A	1	0	0	100	1	0.30000001192092896
-240	Nature's Wrath	灵魄薙刀	A	1	0	100	100	7	1
-241	Sylphic Wind	风灵吹掠	A	2	0	40	100	6	20
-242	Mystic Conferral	神秘剑刃	A	1	0	0	100	1	50
-243	Omega Shatter	终极崩解	A	2	100	0	100	1	0
-244	Wyrmcleave	龙断	A	1	100	0	100	1	0
-245	Blitz Rush	牙突迅雷	A	2	100	0	100	7	1
-246	Heavens Asunder	天狱杀	A	2	20	0	100	5	30
-247	Honed Shield	盾装强化	P	1	0	0	100	1	1
-248	Bunker Stance	铁壁架势	P	1	0	0	100	1	30
-249	Impetus Stance	行进架势	P	1	0	0	100	1	1
-250	War Cry	战吼	P	1	0	0	100	1	0.20000000298023224
-251	Magick Shell	魔法外壳	P	1	0	0	100	1	0
-252	Dark Armor	暗黑护甲	P	1	0	0	100	1	0
-253	Darkness Armor	暗黑护甲	P	1	0	0	100	1	0
-254	Hastened Charge	快速蓄力	P	4	0	0	100	1	0
-255	Quick Action	迅速前行	P	1	0	0	100	1	15
-256	Hastened Action	快速前行	P	3	0	0	100	1	999
-257	Quick Cast	迅速出场	P	2	0	0	100	1	999
-258	Hastened Cast	快速出击	P	3	0	0	100	1	999
-259	Rapid Order	极速号令	P	1	0	0	100	5	20
-260	Dawn Horn	黎明号角	P	2	0	0	100	5	0
-261	War Horn	战斗号角	P	2	0	0	100	5	0
-262	Provoke	吸引注意	P	1	0	0	100	6	0
-263	Provoking Wall	吸引之墙	P	2	0	0	100	5	0
-264	Scornful Dead	死之鄙斥	P	1	0	0	100	5	0
-265	Dragon's Roar	龙之咆哮	P	2	0	0	100	5	20
-266	Hastened Curse	快速诅咒	P	1	0	0	100	1	30
-267	Cursed Swamp	诅咒沼地	P	2	0	0	100	5	10
-268	Eye of the Warrior Princess	独眼战姬	P	1	0	0	100	5	0.20000000298023224
-269	Ominous Wall	不祥壁垒	P	1	0	0	100	5	0
-270	Animated Dead	尸变	P	1	0	70	100	6	0
-271	Heavy Alignment	重装战阵	P	1	0	0	100	6	0.20000000298023224
-272	Aerial Alignment	翔羽战阵	P	1	0	0	100	6	0.20000000298023224
-273	United Front	以一当十	P	1	0	0	100	5	30
-274	Wolf Pack	狼之护佑	P	2	0	0	100	5	0.20000000298023224
-275	Bear's Den	战熊堡垒	P	2	0	0	100	5	0.20000000298023224
-276	Iron Veil	钢铁护罩	P	1	0	0	100	5	0.5
-277	Pure Field	纯净领域	P	1	0	0	100	5	0
-278	Reheal	回春术	P	1	0	0	100	6	0.25
-279	Divine Blessing	磅礴加护	P	1	0	0	100	5	0.25
-280	Hastened Heal	快速疗愈	P	1	0	50	100	5	0.25
-281	Boon of the Faeries	精魂加护	P	1	0	100	100	6	0
-282	Hastened Strike	快速袭击	P	1	150	0	100	1	0
-283	Artenie Strike	灵动袭击	P	1	100	0	100	1	2
-284	Nocturnal Strike	夜幕袭击	P	1	150	0	100	1	1
-285	Sneaking Edge	奇袭之刃	P	1	50	0	100	1	0
-286	Rapid Shot	极速射击	P	1	100	0	100	1	0
-287	Hastened Shatter	快速破坏	P	2	150	0	100	1	0.5
-288	Provoking Strike	恨意袭击	P	1	50	0	100	1	0
-289	Rage of the Faeries	精魂之怒	P	1	0	100	100	6	0
-290	Ground Punisher	全域惩戒	P	1	50	0	100	5	1
-291	Parting Blow	斩草除根	P	1	75	0	100	1	0
-292	Fire Burst	灼热爆炸	P	1	0	100	100	1	0
-293	Poison Burst	毒素爆炸	P	1	0	100	100	1	0
-294	Life Blow	倾身一击	P	1	0	0	100	1	0.800000011920929
-295	Parting Death	死亡终焉	P	1	100	0	100	1	0
-296	Judgment	裁决	P	1	100	0	100	5	0.5
-297	First Aid	紧急救治	P	1	0	0	100	1	0.25
-298	Medical Aid	医疗救治	P	1	0	0	100	6	0.15000000596046448
-299	Party Aid	群体救治	P	2	0	0	100	5	0.25
-300	Wing Rest	潜翼委翅	P	1	0	0	100	1	0.25
-301	Parting Resurrection	复活	P	1	0	0	100	1	0
-302	Charged Impetus	蓄力行进	P	2	0	0	100	1	1
-303	Bull Force	公牛之力	P	2	0	0	100	1	1
-304	Daemonic Pact	恶魔交易	P	1	0	0	100	1	0.25
-305	Elemental Impetus	元素行进	P	2	0	0	100	1	1
-306	Diurnal Impetus	昼日行进	P	2	0	0	100	1	0.20000000298023224
-307	Nocturnal Impetus	暗夜行进	P	2	0	0	100	1	0.20000000298023224
-308	Grave Impetus	安葬行进	P	1	0	0	100	1	1
-309	Blade Dance	刃舞	P	1	0	0	100	1	0.20000000298023224
-310	Tailwind	踏风而行	P	1	0	0	100	6	10
-311	Quick Reload	迅速装填	P	1	50	0	100	1	0
-312	Nocturnal Rest	乘夜休憩	P	1	0	0	100	1	0.30000001192092896
-313	Concentrate	全神贯注	P	2	0	0	100	1	1
-314	Recast	重复咏唱	P	4	0	0	100	1	0
-315	Bestral Howl	野兽狂吼	P	1	0	0	100	6	0.15000000596046448
-316	Cavalier Call	骑兵呐喊	P	1	0	0	100	6	0.20000000298023224
-317	Feathering	翔羽护佑	P	1	0	0	100	6	15
-318	Undying Will	不屈不挠	P	1	0	0	100	1	100
-319	Eagle Eye	鹰眼	P	1	0	0	100	1	0
-320	Hawk Eye	隼眼	P	2	0	0	100	1	0
-321	Inner Balance	炼气	P	1	0	0	100	1	0
-322	Aerial Wing	天空振翅	P	1	0	0	100	1	0
-323	Discharge	迸发	P	1	0	0	100	1	0.25
-324	Binding Guard	封锁格挡	P	1	0	0	100	1	0
-325	Sanguine Arts	鲜血绝技	P	1	0	0	100	1	0.5
-326	Passive Gift	被动馈赠	P	2	0	0	100	1	1
-327	Restore	重振士气	P	1	0	0	100	1	1
-328	Active Gift	主动馈赠	P	2	0	0	100	1	1
-329	Quick Impetus	迅速行进	P	4	0	0	100	1	0
-330	Bulk Up	肌肉膨胀	P	1	0	0	100	1	0.4000000059604645
-331	Berserk	狂暴无道	P	1	0	0	100	1	0
-332	Accelerate	风驰电掣	P	1	0	0	100	1	20
-333	Counter	反击	P	1	150	0	100	1	0
-334	Ground Counter	全域反击	P	1	50	0	100	1	100
-335	Heavy Counter	重装反击	P	1	150	0	100	1	1
-336	Following Slash	追踪斩击	P	1	75	0	90	1	1
-337	Aerial Snipe	天空狙击	P	1	50	0	100	1	100
-338	Frenzied Strike	狂热	P	1	50	0	100	1	0.15000000596046448
-339	Vanitas	虚寂	P	1	0	50	100	1	0
-340	Enrage	怒不可遏	P	1	0	0	100	1	0.20000000298023224
-341	Maiden's Hammer	少女的铁锤	P	1	150	0	100	1	100
-342	Magick Counter	反击魔法	P	1	0	150	100	1	0
-343	Banishing Counter	消逝反击	P	1	150	0	100	1	0
-344	Phantom Counter	幻象之刃	P	1	100	0	100	1	0
-345	Wide Counter	破阵反击	P	1	100	0	75	6	0
-346	Triple Counter	三重反击	P	1	100	0	100	3	0
-347	Vanquish	落井下石	P	1	100	0	100	6	2
-348	Magick Burst	魔法爆炸	P	3	0	100	100	5	10
-349	Phantom Kick	幻影踢	P	1	50	0	100	6	0
-350	Poison Touch	毒素之触	P	1	0	0	100	1	0
-351	Venom Touch	剧毒之触	P	1	0	0	100	6	0
-352	Phalanx Shift	方阵御敌	P	1	0	0	100	6	0.20000000298023224
-353	Aerial Shift	对空御敌	P	1	0	0	100	6	0.20000000298023224
-354	Self-Care	自我护理	P	1	0	0	100	1	0
-355	Quick Heal	迅速疗愈	P	1	0	50	100	1	0
-356	Curing Heal	治愈疗愈	P	1	0	50	100	1	0
-357	Relic Heal	余韵疗愈	P	2	0	100	100	1	0.25
-358	Selfless Heal	无私疗愈	P	1	0	50	100	5	0
-359	Passive Miracle	被动供给	P	1	0	50	100	1	1
-360	Lifeshare	生命分流	P	1	0	0	100	1	0.5
-361	Poison Cure	治愈毒素	P	1	0	0	100	1	0
-362	Fire Cure	治愈灼热	P	1	0	0	100	1	0
-363	Freeze Cure	治愈冰冻	P	1	0	0	100	1	0
-364	Stun Cure	治愈晕眩	P	1	0	0	100	1	0
-365	Blind Cure	治愈阴影	P	1	0	0	100	1	0
-366	Guard Cure	治愈格挡	P	1	0	0	100	1	0
-367	Passive Cure	治愈被动	P	1	0	0	100	1	0
-368	Refresh	净化术	P	1	0	0	100	6	0
-369	Quick Cure	迅速治愈	P	1	0	0	100	1	0
-370	Sacred Cure	圣崇治愈	P	1	0	0	100	6	0
-371	Quick Dispel	迅速驱散	P	1	0	0	100	1	0
-372	Abyssal Miasma	幽世瘴气	P	1	0	0	100	1	0
-373	Remove Weakness	衰弱移除	P	1	0	0	100	1	0
-374	Cursed Impetus	诅咒行进	P	1	0	0	100	1	1
-375	Mirror Weakness	衰弱转嫁	P	1	0	0	100	1	0
-376	Pursuit	追击	P	1	75	0	100	1	0
-377	Magick Pursuit	追击魔法	P	1	0	100	100	1	0
-378	Knight's Pursuit	骑士追击	P	1	50	0	100	7	0
-379	Aerial Pursuit	追击羽翼	P	1	100	0	100	1	0
-380	Banishing Pursuit	消逝追击	P	1	75	0	100	1	0
-381	Wide Pursuit	破阵追击	P	2	75	0	100	6	0
-382	Shattering Pursuit	崩溃追击	P	2	75	0	100	7	0.25
-383	Snow-white Strike	银色魔弹	P	1	75	0	100	1	0
-384	Sanguine Pursuit	鲜血追击	P	1	100	0	100	1	0.5
-385	Killing Pursuit	杀戮追击	P	1	75	0	100	1	1
-386	Shadow Pursuit	阴影追击	P	1	75	0	100	1	0
-387	Healing Pursuit	追击疗愈	P	1	0	50	100	1	1.5
-388	Healing Hunter	疗愈猎杀	P	1	100	0	100	1	0.30000001192092896
-389	Guard Hunter	格挡猎杀	P	1	0	100	100	1	0.30000001192092896
-390	Wild Kick	狂野踢击	P	1	50	0	100	1	0
-391	Weakness Hunter	衰弱猎杀	P	2	100	0	100	1	0.5
-392	Reflect Magick	魔法反射	P	2	0	0	100	1	0
-393	Quick Curse	迅速诅咒	P	1	0	0	100	1	0.20000000298023224
-394	Cursed Gaol	诅咒牢狱	P	1	0	0	100	1	0.5
-395	Shining Light	眩目	P	2	0	0	100	6	0
-396	Preemptive Heal	防患疗愈	P	2	0	100	100	1	0
-397	Holy Breath	神圣祝福	P	1	0	50	100	1	0
-398	Sorcerous Connection	巫术连结	P	1	0	0	100	1	0.5
-399	Focus Sight	聚精会神	P	1	0	0	100	1	0
-400	Sniping Order	狙击号令	P	2	0	0	100	6	0
-401	Keen Call	振奋呐喊	P	1	0	0	100	1	1
-402	Powerful Call	力量呐喊	P	1	0	0	100	1	0.30000001192092896
-403	Inspiration	良机	P	1	0	0	100	1	0.30000001192092896
-404	Wide Inspiration	共夺良机	P	2	0	0	100	6	0.30000001192092896
-405	Reinforce	施以援手	P	4	0	0	100	1	1
-406	Sylphic Barrier	风灵屏障	P	1	0	0	100	1	0
-407	Grant Evade	躲闪攻击	P	2	0	0	100	1	0
-408	Quick Barrier	迅速屏障	P	1	0	0	100	1	0.5
-409	Protection	庇护	P	1	0	0	100	6	0.5
-410	Circle Barrier	环形屏障	P	2	0	0	100	5	0.25
-411	Holy Barrier	洁白屏障	P	1	0	0	100	1	0.5
-412	Saint's Barrier	圣洁屏障	P	1	0	0	100	1	0.5
-413	Magick Barrier	魔法屏障	P	1	0	0	100	1	0
-414	Row Barrier	阵线屏障	P	2	0	0	100	6	0
-415	Mighty Shield	强力护盾	P	2	0	0	100	1	0
-416	Celestial Light	天穹之光	P	1	0	0	100	5	0
-417	Quick Cover	迅速掩护	P	1	0	0	100	1	0
-418	Heavy Cover	沉着掩护	P	1	0	0	100	1	0
-419	Enduring Cover	坚毅掩护	P	2	0	0	100	1	0
-420	Hastened Cover	快速掩护	P	2	0	0	100	1	0
-421	Row Cover	阵线掩护	P	2	0	0	100	6	0
-422	Arrow Cover	飞矢掩护	P	1	0	0	100	1	0
-423	Radiant Cover	暗光掩护	P	1	0	0	100	1	0
-424	Luminous Cover	荧光掩护	P	1	0	0	100	1	0
-425	Healing Cover	急救掩护	P	1	0	0	100	1	0
-426	Advance Cover	前进掩护	P	1	0	0	100	1	0
-427	Evil Cover	邪恶掩护	P	1	0	0	100	1	0
-428	Sacrifice	舍己为人	P	1	0	0	100	1	0
-429	Guard Order	格挡号令	P	1	0	0	100	6	1
-430	Magick Conferral	附魔剑刃	P	1	0	0	100	1	0
-431	Flame Conferral	烈火剑刃	P	2	0	0	100	1	0
-432	Ice Conferral	冰霜剑刃	P	2	0	0	100	1	0
-433	Thunderous Conferral	雷霆剑刃	P	2	0	0	100	1	0
-434	Sanguine Conferral	鲜血剑刃	P	2	0	0	100	1	50
-435	Dark Conferral	暗黑剑刃	P	1	0	0	100	1	0
-436	Toughness	坚韧不拔	P	1	0	0	100	1	1
-437	Lifesaver	自我救赎	P	1	0	50	100	1	1
-438	Painbringer	痛之加速	P	1	0	0	100	1	1
-439	Vengeance	复仇者	P	1	0	0	100	1	0.20000000298023224
-440	Nimble Fighter	近身肉搏	P	1	0	0	100	1	0.20000000298023224
-441	Guarding Fighter	格挡肉搏	P	1	0	0	100	1	0.20000000298023224
-442	Guardian	铁卫	P	1	0	0	100	1	0.20000000298023224
-443	Vengeful Impetus	复仇行进	P	1	0	0	100	1	1
-444	Guarding Impetus	格挡行进	P	1	0	0	100	1	1
-445	Evasive Impetus	躲闪行进	P	1	0	0	100	1	1
-446	Quick Guard	迅速格挡	P	1	0	0	100	1	1
-447	Heavy Guard	沉着格挡	P	1	0	0	100	1	1
-448	Enduring Guard	坚毅格挡	P	2	0	0	100	1	1
-449	Cavalry Guard	骑兵格挡	P	1	0	0	100	1	1
-450	Aerial Guard	天空格挡	P	1	0	0	100	1	1
-451	Bestral Guard	野兽格挡	P	1	0	0	100	1	1
-452	Noble Guard	崇高格挡	P	1	0	0	100	1	1
-453	Royal Guard	皇家格挡	P	1	0	0	100	1	1
-454	Vengeful Guard	复仇格挡	P	1	0	0	100	1	1
-455	Holy Guard	神圣格挡	P	1	0	0	100	1	1
-456	Diurnal Guard	昼日格挡	P	1	0	0	100	1	1
-457	Nocturnal Guard	暗夜格挡	P	1	0	0	100	1	1
-458	Undead Wall	不死之墙	P	1	0	0	100	1	0
-459	Invincible	无可撼动	P	2	0	0	100	1	0
-460	Evade	躲闪	P	1	0	0	100	1	0
-461	Phantom Step	幻象微步	P	2	0	0	100	1	0
-462	Dynamic Glide	骑术	P	2	0	0	100	1	0
-463	Nocturnal Evade	月下玲珑	P	1	0	0	100	1	0
-464	Dark Step	暗黑微步	P	1	0	0	100	1	0
-465	Gryphon Glide	狮鹫破空	P	2	0	0	100	1	0
-466	Deflect	扭转	P	1	0	0	100	1	0
-467	Parry	拨挡	P	1	0	0	100	1	0
-468	Magick Conversion	魔法转换	P	1	0	0	100	1	0
+# ID	英文	日文	简体中文	类型	消耗	物理威力	魔法威力	命中	目标范围	首个效果参数
+28	Lean Edge	リーンエッジ	统御之刃	A	1	100	0	100	1	0.25
+29	Cavalry Slayer	キャバルリースレイ	骑兵诛杀	A	1	100	0	100	1	1
+30	Spinning Edge	スピニングエッジ	螺旋刺刃	A	2	60	0	100	6	0.5
+31	Astral Blade	アストラルブレード	星辰一剑	A	2	150	0	100	6	0.5
+32	Warding Slash	ガードスラッシュ	格挡斩击	A	1	100	0	100	1	0.20000000298023224
+33	Shield Bash	シールドバッシュ	盾装冲撞	A	1	50	0	100	1	0
+34	Defender	ディフェンダー	捍卫者	A	2	75	0	100	1	0.5
+35	Keen Edge	シャープエッジ	振奋利刃	A	1	100	0	100	1	0.5
+36	Impale	インペイル	穿透	A	1	100	0	100	1	1
+37	Passive Steal	パッシブスティール	被动窃取	A	1	50	0	100	1	4
+38	Active Steal	アクティブスティール	主动窃取	A	2	25	0	100	1	1
+39	Toxic Throw	トキシックスロー	淬毒一掷	A	1	25	0	100	1	0
+40	Shadowbite	シャドウバイト	暗影啮咬	A	2	15	0	100	6	0
+41	Meteor Slash	メテオスラッシュ	流星斩击	A	2	20	0	100	1	0.30000001192092896
+42	Lightning Blade	ライトニングソード	雷霆剑	A	1	75	75	100	1	0
+43	Mirage Stab	ミラージュスタブ	幻影戳刺	A	2	75	75	100	6	0
+44	Heavy Slash	メガスラッシュ	重斩	A	1	150	0	100	1	0
+45	Killing Chain	キリングチェイン	杀戮连锁	A	1	100	0	100	1	1
+46	Bastard's Cross	バスタードクロス	恶徒十字	A	2	70	0	100	1	60
+47	Finishing Stab	フィニッシュスタブ	终结戳刺	A	1	100	0	100	1	0.5
+48	Decimate	デシマルキラー	穷寇杀手	A	1	75	0	100	1	25
+49	Wild Fang	ワイルドファング	野蛮尖齿	A	2	20	0	100	6	50
+50	Spiral Sword	スパイラルソード	螺旋剑	A	1	100	0	100	1	20
+51	Shield Smite	シールドスマイト	盾装重击	A	1	100	0	100	1	0.20000000298023224
+52	Honed Slash	エンハンスラッシュ	强化斩击	A	2	70	0	100	1	0
+53	Impulse	インパルス	冲荡	A	1	100	0	100	1	0.5
+54	Hache	ハッシュ	精细斩击	A	1	100	0	100	1	0
+55	Saint's Blade	セイントブレード	圣洁一剑	A	1	50	0	100	1	25
+56	Slice	スライス	削击	A	1	100	0	100	1	0
+57	Divine Cross	ディバインクロス	神圣十字	A	2	50	50	100	1	0
+58	Vertical Edge	バーティカルエッジ	垂直之刃	A	1	100	0	100	1	0.5
+59	Iron Crusher	アイアンリッパー	钢铁撕扯	A	1	100	0	100	1	0.5
+60	Brandish	ブランディッシュ	乱舞	A	2	50	0	100	1	0.5
+61	Burning Edge	バーンエッジ	灼热之刃	A	1	75	0	100	1	1
+62	Inferno	インフェルノ	炼狱	A	2	100	0	100	6	0.5
+63	Long Thrust	ロングスラスト	长枪穿刺	A	1	100	0	100	7	0
+64	Javelin	ジャベリン	标枪	A	1	100	0	100	1	50
+65	Flame Javelin	フレイムジャベリン	烈火标枪	A	2	150	0	100	1	50
+66	Honed Spear	エンハンスドスピア	强化利矛	A	2	130	0	100	7	0
+67	Assaulting Lance	アサルトランス	骑枪突击	A	1	100	0	100	1	0
+68	Wild Rush	ワイルドラッシュ	狂野冲杀	A	1	80	0	100	7	0
+69	Pile Thrust	パイルスラスト	连续穿刺	A	2	50	0	100	1	1
+70	Sting	スティング	钉刺	A	1	100	0	100	1	50
+71	Piercing Lance	ピアシングランス	尖利骑枪	A	1	100	0	100	1	0
+72	Passive Hold	パッシブホールド	被动禁锢	A	1	100	0	100	1	0
+73	Venom Thrust	ヴェノムスラスト	剧毒穿刺	A	2	75	0	100	7	0
+74	Diving Thrust	フォールスラスト	俯冲穿刺	A	1	100	0	100	1	0
+75	Fire Breath	ファイアブレス	灼热吐息	A	2	75	0	100	6	0
+76	Tempest Drive	テンペストドライブ	暴风涤荡	A	2	150	0	100	7	0
+77	Dragoon Dive	ドラグーンダイブ	龙骑天降	A	2	100	0	100	5	50
+78	Heavy Smash	ヘヴィバスター	重装克星	A	1	100	0	100	1	1
+79	Assaulting Blow	アサルトブロウ	突进打击	A	1	100	0	100	1	0
+80	Row Smash	ラインバスター	阵线破坏	A	2	100	0	100	6	1
+81	Ground Strike	グランドストライク	全域冲击	A	2	150	0	100	1	1
+82	High Swing	ハイスイング	空中挥击	A	1	100	0	100	6	0
+83	Aerial Smite	エリアルスマイト	天空重击	A	2	150	0	100	6	0
+84	Fatal Dive	フェイタルフォール	致命俯冲	A	2	0	0	100	7	0.5
+85	Carnage	カーネイジ	屠戮	A	1	100	0	100	1	1
+86	Vicious Torment	ディアボネイター	魔崇诡击	A	2	75	0	100	1	75
+87	Death Spin	デッドスピニング	死亡螺旋	A	1	75	0	100	6	0
+88	Bear Crush	ベアクラッシュ	战熊撞击	A	1	100	0	100	1	0
+89	Round Swing	アラウンドスイング	回旋挥击	A	2	25	0	75	6	50
+90	Earthshaker	アーススタンプ	大地震击	A	2	75	0	100	5	75
+91	Smash	スマッシュ	猛击	A	1	100	0	100	1	0.20000000298023224
+92	Rolling Axe	ロールアックス	旋风斧	A	1	40	0	75	6	0.15000000596046448
+93	Wide Breaker	ワイドブレイカー	破阵横扫	A	2	100	0	100	6	0.30000001192092896
+94	Vengeful Axe	リベンジアックス	复仇之斧	A	1	50	0	100	1	0
+95	Venom Axe	ヴェノムアックス	剧毒之斧	A	1	75	0	100	1	0
+96	Dark Flame	ダークフレイム	暗黑邪火	A	2	50	50	100	6	0.30000001192092896
+97	Desperation	デスペレイト	以牙还牙	A	2	0	0	100	1	0
+98	Wide Smash	ワイドスマッシュ	破阵猛击	A	1	150	0	80	6	50
+99	Grand Smash	グランドスラム	全域强袭	A	2	100	0	80	5	50
+100	Brutal Swing	ブルータルスイング	残忍挥击	A	1	80	0	100	6	80
+101	Brutal Drive	ブルータルドライブ	残忍猛击	A	1	50	0	100	5	100
+102	Fallen One	フォールン・ワン	天堕	A	2	0	0	100	5	1
+103	Dark Armor	ダークアーマー	暗黑护甲	A	1	0	0	100	1	0
+104	Extinction	エクスティンクション	大灭绝	A	2	50	0	100	5	0
+105	Chaos Unending	終わりなき混沌	无止境的混沌	A	2	0	0	100	5	0
+106	Flame Thrust	フレイムスラスト	烈火穿刺	A	1	100	0	100	7	0
+107	Deadly Rush	デッドリーラッシュ	致死冲杀	A	1	40	0	100	1	0
+108	Primus Edge	プリムスエッジ	卓绝利刃	A	1	50	100	100	1	1
+109	Thunderous Thrust	サンダースラスト	雷霆穿刺	A	1	100	100	100	1	0
+110	Freezing Thrust	フリーズスラスト	冰冻穿刺	A	1	100	100	100	1	0
+111	Elemental Roar	エレメンタルロアー	元素咆哮	A	3	70	70	100	5	30
+112	Banishing Stab	バニッシュスタブ	消逝戳刺	A	1	100	0	100	1	0
+113	Leaping Slash	リープスラッシュ	飞跃斩击	A	1	100	0	100	1	1
+114	Provoking Slash	ヘイトスラッシュ	恨意斩击	A	1	75	0	100	1	0
+115	Poison Slash	ポイズンスラッシュ	毒素斩击	A	1	100	0	100	1	0
+116	Fire Slash	ファイアスラッシュ	灼热斩击	A	1	100	0	100	1	0
+117	Grisly Poison	ゴアポイズン	血污之毒	A	2	150	0	100	1	0
+118	Grisly Fire	ゴアファイア	血污之火	A	2	150	0	100	1	0
+119	Firestorm	ファイアネイト	灼热逆刃	A	1	100	0	100	1	0
+120	Icestorm	アイスネイト	冰霜逆刃	A	1	100	0	100	1	0
+121	Sonic Blast	ソニックブーム	音速爆炸	A	1	70	0	100	1	80
+122	Double Blast	ダブルソニック	双重音速	A	2	70	0	100	2	80
+123	Assassin's Nail	アサシンネイル	暗杀钉刺	A	2	100	0	100	1	0
+124	Crush	クラッシュ	撞击	A	1	100	0	100	1	0
+125	Spiked Blow	スパイクブロウ	锋锐打击	A	1	50	0	100	1	0
+126	Icy Blow	アイスブロウ	冰霜打击	A	1	100	0	100	1	0
+127	Icy Crush	アイスクラッシュ	冰霜撞击	A	2	100	0	100	1	0
+128	True Thrust	トゥルースラスト	真切穿刺	A	1	80	0	100	7	0
+129	Icicle Dart	アイシクルダート	冰锥飞刺	A	2	100	50	100	1	0
+130	Shadow Thrust	シェイドスラスト	阴影穿刺	A	1	80	0	100	7	0
+131	Lightning Shaker	ライトニングシェイカー	雷霆震荡	A	2	100	100	100	6	0
+132	Penetrate	ペネトレート	穿甲	A	2	100	0	100	7	0.30000001192092896
+133	Lethal Venom	リーサルヴェノム	致命剧毒	A	3	100	0	75	7	0
+134	Rampage	ランペイジ	横冲直撞	A	1	100	0	100	1	1
+135	Execution	エクスキューション	处决	A	1	100	0	75	1	0
+136	Powerful Impact	マッスルインパクト	肌肉冲撞	A	2	200	0	25	1	0
+137	Demolition	デモリッション	拆解	A	2	300	0	100	1	0.5
+138	Heavy Smash	ヘヴィスマッシュ	沉重猛击	A	2	100	0	100	6	0
+139	Painful Smash	ペインスマッシュ	痛之猛击	A	2	150	0	100	1	0.25
+140	Banishing Smite	バニッシュスマイト	消逝重击	A	2	100	0	100	6	0
+141	Sanguine Attack	ブラッドウェポン	鲜血兵器	A	1	100	0	100	1	0.5
+142	Magick Attack	マジックウェポン	魔法兵器	A	1	0	150	100	1	0
+143	Phantom Attack	ファントムウェポン	幻象兵器	A	1	0	120	100	1	1
+144	Elfslayer	エルフスレイ	精灵诛杀	A	2	100	0	100	7	1
+145	Beastslayer	ビーストスレイ	野兽诛杀	A	2	100	0	100	6	1
+146	Strength Shatter	パワーブレイク	力量崩解	A	1	100	0	100	1	0.4000000059604645
+147	Strength Shatter II	パワーブレイクⅡ	力量崩解Ⅱ	A	2	150	0	100	1	0.75
+148	Armor Shatter	アーマーブレイク	护甲崩解	A	1	100	0	100	1	0.30000001192092896
+149	Armor Shatter II	アーマーブレイクⅡ	护甲崩解Ⅱ	A	2	150	0	100	1	0.5
+150	Magick Shatter	マジックブレイク	魔法崩解	A	2	75	0	100	6	0.5
+151	Active Shatter	アクティブブレイク	主动崩解	A	1	100	0	100	1	1
+152	Passive Shatter	パッシブブレイク	被动崩解	A	1	50	0	100	1	1
+153	Passive Shatter (Spear)	パッシブブレイク	被动崩解	A	1	50	0	100	7	1
+154	Single Shot	シングルショット	单一射击	A	1	100	0	100	1	0
+155	Dual Shot	ダブルショット	双重射击	A	1	70	0	100	2	0
+156	Row Shot	ラインショット	阵线射击	A	2	100	0	100	6	0
+157	Triple Shatter	トリプルブレイク	三重崩解	A	2	50	0	100	3	0.5
+158	Arrow Rain	アローレイン	箭雨	A	2	60	0	80	5	0
+159	Glacial Rain	グラシアルレイン	冰封箭雨	A	2	60	0	80	5	0
+160	Mystic Arrow	ミスティックアロー	神秘之箭	A	1	100	0	100	1	100
+161	Sonic Shaft	ソニックシャフト	音速飞矢	A	1	100	0	100	1	1
+162	Checkmate	チェックメイト	瓮中捉鳖	A	2	150	0	100	1	0
+163	Poison Arrow	ポイズンアロー	毒素之箭	A	1	100	0	100	1	0
+164	Flame Arrow	フレイムアロー	烈火之箭	A	1	100	0	100	1	0
+165	Shadow Arrow	シェイドアロー	阴影之箭	A	1	100	0	100	1	0
+166	Wind Arrow	ウインドアロー	疾风之箭	A	1	75	75	100	1	50
+167	Icicle Arrow	アイシクルアロー	冰锥之箭	A	2	75	75	100	2	0
+168	Delaying Shot	ディレイショット	迟滞射击	A	1	25	0	100	1	20
+169	Saint's Shot	セイントショット	圣洁射击	A	1	80	0	100	1	1
+170	Photon Arrow	フォトンアロー	光子箭	A	2	80	0	100	2	0.5
+171	Power Bolt	パワーボルト	强力弩箭	A	1	120	0	100	1	0
+172	Toxic Bolt	トキシックボルト	淬毒弩箭	A	1	80	0	100	1	0
+173	Heavy Bolt	ヘヴィボルト	沉重弩箭	A	2	100	0	100	1	100
+174	Harpoon Bolt	ハープーンボルト	鱼叉弩箭	A	2	100	0	100	7	0
+175	Spiked Bolt	スパイクボルト	锋锐弩箭	A	2	50	0	100	1	0
+176	Fireball	ファイアーボール	火球术	A	1	0	40	100	1	0
+177	Icebolt	アイスショット	冰霜射击	A	1	0	100	100	1	0
+178	Magick Missile	マジックミサイル	魔法飞弹	A	1	0	70	100	2	0
+179	Ice Coffin	アイスコフィン	冰柩	A	2	0	100	100	6	0
+180	Aqua Venom	アクアヴェノム	液态剧毒	A	1	0	100	100	6	0
+181	Maelstrom	メイルシュトローム	大漩涡	A	2	0	25	100	5	25
+182	Thunderous Strike	サンダーストラック	雷霆万钧	A	2	0	100	90	6	0
+183	Volcano	ヴォルケーノ	火山喷发	A	2	0	150	90	7	0
+184	Holy Light	ホーリーライト	神圣之光	A	1	0	100	100	1	0
+185	Innocent Ray	イノセントレイ	无秽射线	A	2	0	150	100	6	0
+186	Sanguine Darts	ブラッドダーツ	鲜血镖雨	A	2	0	100	100	7	0.5
+187	Skyward Thrust	エアスラスト	气流穿刺	A	2	0	75	100	3	50
+188	Earthquake	アースクエイク	地震术	A	3	0	100	100	5	0
+189	Blizzard	ブリザード	暴风雪	A	2	0	50	100	5	0
+190	Gravity	グラビティ	重力魔法	A	2	0	0	100	5	0.5
+191	Trinity Rain	トリニティレイン	三一之雨	A	3	0	100	100	5	0
+192	Sanguine Rain	ブラッドレイン	血雨	A	2	0	50	100	5	0.30000001192092896
+193	Passive Absorb	パッシブアブソーブ	被动汲取	A	1	0	0	100	1	2
+194	Memento Mori	メメント・モリ	终有一死	A	1	0	80	100	5	0
+195	Overlord	ユニコルヌス・イラ	独角兽之怒	A	4	0	999	100	5	0
+196	Heal	ヒール	疗愈	A	1	0	100	100	1	0
+197	Double Heal	ダブルヒール	双重疗愈	A	1	0	60	100	2	0
+198	Row Heal	ラインヒール	阵线疗愈	A	1	0	100	100	6	0
+199	Sacred Heal	セイクリッドヒール	圣崇疗愈	A	2	0	100	100	6	0
+200	Circle Heal	サークルヒール	环形疗愈	A	2	0	150	100	5	0
+201	Radiant Heal	レイディアントヒール	绚烂疗愈	A	3	0	150	100	5	1
+202	Active Heal	アクトヒール	行进疗愈	A	2	0	100	100	1	1
+203	Extra Heal	エクストラヒール	额外疗愈	A	2	0	100	100	1	0.25
+204	Overheal	オーバーヒール	过量疗愈	A	1	0	50	100	6	1.5
+205	Limited Heal	リミテッドヒール	孤军疗愈	A	2	0	50	100	5	1.5
+206	Faerie Heal	フェアリーヒール	精魂疗愈	A	2	0	100	100	6	0
+207	Aurora Veil	オーロラヴェール	极光护罩	A	1	0	0	100	6	0.25
+208	Phantom Veil	ファントムヴェール	幻象护罩	A	2	0	0	100	6	0
+209	Curing Call	キュアエール	治愈呐喊	A	1	0	50	100	6	0
+210	Healing Wind	ヒールウインド	疗愈之风	A	2	0	0	100	6	0
+211	Honed Healing	ヒールエンハンス	疗愈强化	A	1	0	0	100	6	1
+212	Holy Cradle	ホーリークレイドル	神圣摇篮	A	2	0	0	100	6	1
+213	Resurrection	リザレクション	妙手回春	A	2	0	0	100	1	0
+214	Reincarnation	リンカネーション	轮回转生	A	3	0	0	100	1	0
+215	Animated Dead	アニメイトデッド	尸变	A	1	0	100	100	1	1
+216	Night Vision	ナイトビジョン	夜观千里	A	1	0	0	100	6	50
+217	Glowing Light	グロウライト	黯淡之光	A	1	0	0	100	5	30
+218	Offensive Order	オフェンスオーダー	攻击号令	A	1	0	0	100	5	0.20000000298023224
+219	Defensive Order	ディフェンスオーダー	防卫号令	A	1	0	0	100	5	0.20000000298023224
+220	Passive Curse	パッシブカース	被动诅咒	A	1	0	0	100	6	1
+221	Poison Curse	ポイズンカース	毒素诅咒	A	1	0	0	100	6	0
+222	Fire Curse	ファイアカース	灼热诅咒	A	1	0	0	100	6	0
+223	Offensive Curse	オフェンスカース	攻击诅咒	A	1	0	0	100	6	0.5
+224	Defensive Curse	ディフェンスカース	防卫诅咒	A	1	0	0	100	6	0.5
+225	Compounding Curse	カースハザード	诅咒危机	A	1	0	0	100	6	1.5
+226	Dispel All	オールディスペル	全体驱散	A	2	0	0	100	5	0
+227	Sandstorm	サンドストーム	沙尘暴	A	3	0	0	100	5	0
+228	Sorcerous Blow	ソーサリーブロウ	巫术打击	A	2	150	150	100	1	0
+229	Cursed Strike	カースストライク	诅咒冲击	A	2	100	0	100	1	0.5
+230	Holy Smite	ホーリースマイト	神圣重击	A	2	0	200	100	1	0
+231	Wall	ウォール	壁垒	A	1	0	0	100	1	0
+232	Bulwark	グレートウォール	铜墙铁壁	A	2	0	0	100	6	0
+233	Magick Wall	マジックウォール	魔法壁垒	A	1	0	0	100	1	0
+234	Row Protection	ラインプロテクト	阵线防护	A	1	0	0	100	6	0.5
+235	Row Resistance	ラインレジスト	阵线抵抗	A	1	0	0	100	6	0
+236	Greatshield	グレートシールド	伟大护盾	A	1	0	0	100	1	0.5
+237	Mystic Shield	ミスティックシールド	神秘护盾	A	1	0	0	100	1	0.5
+238	Dark Mist	ダークミスト	暗黑薄雾	A	1	0	0	100	1	50
+239	Mounting Charge	マッシブチャージ	厚积薄发	A	1	0	0	100	1	0.30000001192092896
+240	Nature's Wrath	グレムリングレイブ	灵魄薙刀	A	1	0	100	100	7	1
+241	Sylphic Wind	シルフィードウインド	风灵吹掠	A	2	0	40	100	6	20
+242	Mystic Conferral	ミスティックセイバー	神秘剑刃	A	1	0	0	100	1	50
+243	Omega Shatter	オメガブレイク	终极崩解	A	2	100	0	100	1	0
+244	Wyrmcleave	竜断	龙断	A	1	100	0	100	1	0
+245	Blitz Rush	牙突迅雷	牙突迅雷	A	2	100	0	100	7	1
+246	Heavens Asunder	天獄殺	天狱杀	A	2	20	0	100	5	30
+247	Honed Shield	シールドエンハンス	盾装强化	P	1	0	0	100	1	1
+248	Bunker Stance	バンカースタンス	铁壁架势	P	1	0	0	100	1	30
+249	Impetus Stance	アクトスタンス	行进架势	P	1	0	0	100	1	1
+250	War Cry	ウォークライ	战吼	P	1	0	0	100	1	0.20000000298023224
+251	Magick Shell	マジックシェル	魔法外壳	P	1	0	0	100	1	0
+252	Dark Armor	ダークアーマー	暗黑护甲	P	1	0	0	100	1	0
+253	Darkness Armor	ダークネスアーマー	暗黑护甲	P	1	0	0	100	1	0
+254	Hastened Charge	ファストチャージ	快速蓄力	P	4	0	0	100	1	0
+255	Quick Action	クイックムーブ	迅速前行	P	1	0	0	100	1	15
+256	Hastened Action	ファストムーブ	快速前行	P	3	0	0	100	1	999
+257	Quick Cast	クイックキャスト	迅速出场	P	2	0	0	100	1	999
+258	Hastened Cast	ファストキャスト	快速出击	P	3	0	0	100	1	999
+259	Rapid Order	ラピッドオーダー	极速号令	P	1	0	0	100	5	20
+260	Dawn Horn	ドーンホルン	黎明号角	P	2	0	0	100	5	0
+261	War Horn	バトルホルン	战斗号角	P	2	0	0	100	5	0
+262	Provoke	アトラクト	吸引注意	P	1	0	0	100	6	0
+263	Provoking Wall	アトラクトウォール	吸引之墙	P	2	0	0	100	5	0
+264	Scornful Dead	デッドブーイング	死之鄙斥	P	1	0	0	100	5	0
+265	Dragon's Roar	ドラゴンロアー	龙之咆哮	P	2	0	0	100	5	20
+266	Hastened Curse	ファストカース	快速诅咒	P	1	0	0	100	1	30
+267	Cursed Swamp	カースドスワンプ	诅咒沼地	P	2	0	0	100	5	10
+268	Eye of the Warrior Princess	隻眼の戦姫	独眼战姬	P	1	0	0	100	5	0.20000000298023224
+269	Ominous Wall	オミノスウォール	不祥壁垒	P	1	0	0	100	5	0
+270	Animated Dead	アニメイトデッド	尸变	P	1	0	70	100	6	0
+271	Heavy Alignment	ヘヴィアライン	重装战阵	P	1	0	0	100	6	0.20000000298023224
+272	Aerial Alignment	フェザーアライン	翔羽战阵	P	1	0	0	100	6	0.20000000298023224
+273	United Front	リミットフォース	以一当十	P	1	0	0	100	5	30
+274	Wolf Pack	ウルフパック	狼之护佑	P	2	0	0	100	5	0.20000000298023224
+275	Bear's Den	ベアキャッスル	战熊堡垒	P	2	0	0	100	5	0.20000000298023224
+276	Iron Veil	アイアンヴェール	钢铁护罩	P	1	0	0	100	5	0.5
+277	Pure Field	ピュアフィールド	纯净领域	P	1	0	0	100	5	0
+278	Reheal	リヒール	回春术	P	1	0	0	100	6	0.25
+279	Divine Blessing	大いなる加護	磅礴加护	P	1	0	0	100	5	0.25
+280	Hastened Heal	ファストヒール	快速疗愈	P	1	0	50	100	5	0.25
+281	Boon of the Faeries	精霊の加護	精魂加护	P	1	0	100	100	6	0
+282	Hastened Strike	ファストストライク	快速袭击	P	1	150	0	100	1	0
+283	Artenie Strike	アーテニーストライク	灵动袭击	P	1	100	0	100	1	2
+284	Nocturnal Strike	ナイトストライク	夜幕袭击	P	1	150	0	100	1	1
+285	Sneaking Edge	スニークエッジ	奇袭之刃	P	1	50	0	100	1	0
+286	Rapid Shot	ラピッドショット	极速射击	P	1	100	0	100	1	0
+287	Hastened Shatter	ファストブレイク	快速破坏	P	2	150	0	100	1	0.5
+288	Provoking Strike	ヘイトストライク	恨意袭击	P	1	50	0	100	1	0
+289	Rage of the Faeries	精霊の怒り	精魂之怒	P	1	0	100	100	6	0
+290	Ground Punisher	グランドパニッシャー	全域惩戒	P	1	50	0	100	5	1
+291	Parting Blow	エンドブロウ	斩草除根	P	1	75	0	100	1	0
+292	Fire Burst	ファイアバースト	灼热爆炸	P	1	0	100	100	1	0
+293	Poison Burst	ポイズンバースト	毒素爆炸	P	1	0	100	100	1	0
+294	Life Blow	ライフブロウ	倾身一击	P	1	0	0	100	1	0.800000011920929
+295	Parting Death	デッドエンド	死亡终焉	P	1	100	0	100	1	0
+296	Judgment	ジャッジメント	裁决	P	1	100	0	100	5	0.5
+297	First Aid	ファーストエイド	紧急救治	P	1	0	0	100	1	0.25
+298	Medical Aid	メディカルエイド	医疗救治	P	1	0	0	100	6	0.15000000596046448
+299	Party Aid	パーティーエイド	群体救治	P	2	0	0	100	5	0.25
+300	Wing Rest	ウイングレスト	潜翼委翅	P	1	0	0	100	1	0.25
+301	Parting Resurrection	エンドリザレクト	复活	P	1	0	0	100	1	0
+302	Charged Impetus	チャージアクト	蓄力行进	P	2	0	0	100	1	1
+303	Bull Force	ブルフォース	公牛之力	P	2	0	0	100	1	1
+304	Daemonic Pact	デモントレード	恶魔交易	P	1	0	0	100	1	0.25
+305	Elemental Impetus	エレメンタルアクト	元素行进	P	2	0	0	100	1	1
+306	Diurnal Impetus	ダイアーナルアクト	昼日行进	P	2	0	0	100	1	0.20000000298023224
+307	Nocturnal Impetus	ノクターナルアクト	暗夜行进	P	2	0	0	100	1	0.20000000298023224
+308	Grave Impetus	グレイブアクト	安葬行进	P	1	0	0	100	1	1
+309	Blade Dance	ブレイドダンス	刃舞	P	1	0	0	100	1	0.20000000298023224
+310	Tailwind	フォローウインド	踏风而行	P	1	0	0	100	6	10
+311	Quick Reload	クイックリロード	迅速装填	P	1	50	0	100	1	0
+312	Nocturnal Rest	ナイトレスト	乘夜休憩	P	1	0	0	100	1	0.30000001192092896
+313	Concentrate	コンセントレート	全神贯注	P	2	0	0	100	1	1
+314	Recast	リスペル	重复咏唱	P	4	0	0	100	1	0
+315	Bestral Howl	ビーストハウリング	野兽狂吼	P	1	0	0	100	6	0.15000000596046448
+316	Cavalier Call	キャバリエール	骑兵呐喊	P	1	0	0	100	6	0.20000000298023224
+317	Feathering	フェザリング	翔羽护佑	P	1	0	0	100	6	15
+318	Undying Will	不屈の精神	不屈不挠	P	1	0	0	100	1	100
+319	Eagle Eye	イーグルアイ	鹰眼	P	1	0	0	100	1	0
+320	Hawk Eye	ホークアイ	隼眼	P	2	0	0	100	1	0
+321	Inner Balance	練気	炼气	P	1	0	0	100	1	0
+322	Aerial Wing	エリアルウイング	天空振翅	P	1	0	0	100	1	0
+323	Discharge	ディスチャージ	迸发	P	1	0	0	100	1	0.25
+324	Binding Guard	ガードバインド	封锁格挡	P	1	0	0	100	1	0
+325	Sanguine Arts	ブラッドアーツ	鲜血绝技	P	1	0	0	100	1	0.5
+326	Passive Gift	パッシブギフト	被动馈赠	P	2	0	0	100	1	1
+327	Restore	レストア	重振士气	P	1	0	0	100	1	1
+328	Active Gift	アクティブギフト	主动馈赠	P	2	0	0	100	1	1
+329	Quick Impetus	クイックアクト	迅速行进	P	4	0	0	100	1	0
+330	Bulk Up	パンプアップ	肌肉膨胀	P	1	0	0	100	1	0.4000000059604645
+331	Berserk	バーサーク	狂暴无道	P	1	0	0	100	1	0
+332	Accelerate	アクセラレート	风驰电掣	P	1	0	0	100	1	20
+333	Counter	カウンター	反击	P	1	150	0	100	1	0
+334	Ground Counter	グランドカウンター	全域反击	P	1	50	0	100	1	100
+335	Heavy Counter	ヘヴィカウンター	重装反击	P	1	150	0	100	1	1
+336	Following Slash	フォロースラッシュ	追踪斩击	P	1	75	0	90	1	1
+337	Aerial Snipe	エリアルスナイプ	天空狙击	P	1	50	0	100	1	100
+338	Frenzied Strike	フレンジー	狂热	P	1	50	0	100	1	0.15000000596046448
+339	Vanitas	ヴァニタス	虚寂	P	1	0	50	100	1	0
+340	Enrage	アウトレイジ	怒不可遏	P	1	0	0	100	1	0.20000000298023224
+341	Maiden's Hammer	乙女の鉄槌	少女的铁锤	P	1	150	0	100	1	100
+342	Magick Counter	カウンターマジック	反击魔法	P	1	0	150	100	1	0
+343	Banishing Counter	バニッシュカウンター	消逝反击	P	1	150	0	100	1	0
+344	Phantom Counter	ファントムエッジ	幻象之刃	P	1	100	0	100	1	0
+345	Wide Counter	ワイドカウンター	破阵反击	P	1	100	0	75	6	0
+346	Triple Counter	トリプルカウンター	三重反击	P	1	100	0	100	3	0
+347	Vanquish	ヴァンキッシュダウン	落井下石	P	1	100	0	100	6	2
+348	Magick Burst	マジックバースト	魔法爆炸	P	3	0	100	100	5	10
+349	Phantom Kick	幻影脚	幻影踢	P	1	50	0	100	6	0
+350	Poison Touch	ポイズンタッチ	毒素之触	P	1	0	0	100	1	0
+351	Venom Touch	ヴェノムタッチ	剧毒之触	P	1	0	0	100	6	0
+352	Phalanx Shift	ファランクスシフト	方阵御敌	P	1	0	0	100	6	0.20000000298023224
+353	Aerial Shift	エリアルシフト	对空御敌	P	1	0	0	100	6	0.20000000298023224
+354	Self-Care	セルフケア	自我护理	P	1	0	0	100	1	0
+355	Quick Heal	クイックヒール	迅速疗愈	P	1	0	50	100	1	0
+356	Curing Heal	キュアヒール	治愈疗愈	P	1	0	50	100	1	0
+357	Relic Heal	レリックヒール	余韵疗愈	P	2	0	100	100	1	0.25
+358	Selfless Heal	シェアヒール	无私疗愈	P	1	0	50	100	5	0
+359	Passive Miracle	パッシブサプライ	被动供给	P	1	0	50	100	1	1
+360	Lifeshare	ライフディバイド	生命分流	P	1	0	0	100	1	0.5
+361	Poison Cure	キュアポイズン	治愈毒素	P	1	0	0	100	1	0
+362	Fire Cure	キュアファイア	治愈灼热	P	1	0	0	100	1	0
+363	Freeze Cure	キュアフリーズ	治愈冰冻	P	1	0	0	100	1	0
+364	Stun Cure	キュアスタン	治愈晕眩	P	1	0	0	100	1	0
+365	Blind Cure	キュアシェイド	治愈阴影	P	1	0	0	100	1	0
+366	Guard Cure	キュアガード	治愈格挡	P	1	0	0	100	1	0
+367	Passive Cure	キュアパッシブ	治愈被动	P	1	0	0	100	1	0
+368	Refresh	リフレッシュ	净化术	P	1	0	0	100	6	0
+369	Quick Cure	クイックキュア	迅速治愈	P	1	0	0	100	1	0
+370	Sacred Cure	セイクリッドキュア	圣崇治愈	P	1	0	0	100	6	0
+371	Quick Dispel	クイックディスペル	迅速驱散	P	1	0	0	100	1	0
+372	Abyssal Miasma	幽世の瘴気	幽世瘴气	P	1	0	0	100	1	0
+373	Remove Weakness	ウィークリムーブ	衰弱移除	P	1	0	0	100	1	0
+374	Cursed Impetus	カースアクト	诅咒行进	P	1	0	0	100	1	1
+375	Mirror Weakness	ウィークスペキュラー	衰弱转嫁	P	1	0	0	100	1	0
+376	Pursuit	チェイス	追击	P	1	75	0	100	1	0
+377	Magick Pursuit	チェイスマジック	追击魔法	P	1	0	100	100	1	0
+378	Knight's Pursuit	ナイツチェイス	骑士追击	P	1	50	0	100	7	0
+379	Aerial Pursuit	チェイスウイング	追击羽翼	P	1	100	0	100	1	0
+380	Banishing Pursuit	バニッシュチェイス	消逝追击	P	1	75	0	100	1	0
+381	Wide Pursuit	ワイドチェイス	破阵追击	P	2	75	0	100	6	0
+382	Shattering Pursuit	クラックチェイス	崩溃追击	P	2	75	0	100	7	0.25
+383	Snow-white Strike	白銀の魔弾	银色魔弹	P	1	75	0	100	1	0
+384	Sanguine Pursuit	ブラッドチェイス	鲜血追击	P	1	100	0	100	1	0.5
+385	Killing Pursuit	キリングチェイス	杀戮追击	P	1	75	0	100	1	1
+386	Shadow Pursuit	シェイドチェイス	阴影追击	P	1	75	0	100	1	0
+387	Healing Pursuit	チェイスヒール	追击疗愈	P	1	0	50	100	1	1.5
+388	Healing Hunter	ヒールハント	疗愈猎杀	P	1	100	0	100	1	0.30000001192092896
+389	Guard Hunter	ガードハント	格挡猎杀	P	1	0	100	100	1	0.30000001192092896
+390	Wild Kick	ワイルドキック	狂野踢击	P	1	50	0	100	1	0
+391	Weakness Hunter	ウィークハント	衰弱猎杀	P	2	100	0	100	1	0.5
+392	Reflect Magick	マジックリフレクト	魔法反射	P	2	0	0	100	1	0
+393	Quick Curse	クイックカース	迅速诅咒	P	1	0	0	100	1	0.20000000298023224
+394	Cursed Gaol	カースドジェイル	诅咒牢狱	P	1	0	0	100	1	0.5
+395	Shining Light	シャイニング	眩目	P	2	0	0	100	6	0
+396	Preemptive Heal	ビフォアヒール	防患疗愈	P	2	0	100	100	1	0
+397	Holy Breath	ホーリーブレス	神圣祝福	P	1	0	50	100	1	0
+398	Sorcerous Connection	ソーサリーコネクト	巫术连结	P	1	0	0	100	1	0.5
+399	Focus Sight	フォーカサイト	聚精会神	P	1	0	0	100	1	0
+400	Sniping Order	スナイプオーダー	狙击号令	P	2	0	0	100	6	0
+401	Keen Call	シャープエール	振奋呐喊	P	1	0	0	100	1	1
+402	Powerful Call	パワーエール	力量呐喊	P	1	0	0	100	1	0.30000001192092896
+403	Inspiration	チャンス	良机	P	1	0	0	100	1	0.30000001192092896
+404	Wide Inspiration	ワイドチャンス	共夺良机	P	2	0	0	100	6	0.30000001192092896
+405	Reinforce	リィンフォース	施以援手	P	4	0	0	100	1	1
+406	Sylphic Barrier	シルフィードバリア	风灵屏障	P	1	0	0	100	1	0
+407	Grant Evade	イヴェイドアタッチ	躲闪攻击	P	2	0	0	100	1	0
+408	Quick Barrier	クイックバリア	迅速屏障	P	1	0	0	100	1	0.5
+409	Protection	プロテクション	庇护	P	1	0	0	100	6	0.5
+410	Circle Barrier	サークルバリア	环形屏障	P	2	0	0	100	5	0.25
+411	Holy Barrier	ホワイトバリア	洁白屏障	P	1	0	0	100	1	0.5
+412	Saint's Barrier	セイントバリア	圣洁屏障	P	1	0	0	100	1	0.5
+413	Magick Barrier	マジックバリア	魔法屏障	P	1	0	0	100	1	0
+414	Row Barrier	ラインバリア	阵线屏障	P	2	0	0	100	6	0
+415	Mighty Shield	マイティシールド	强力护盾	P	2	0	0	100	1	0
+416	Celestial Light	セレスティアルライト	天穹之光	P	1	0	0	100	5	0
+417	Quick Cover	クイックカバー	迅速掩护	P	1	0	0	100	1	0
+418	Heavy Cover	ヘヴィカバー	沉着掩护	P	1	0	0	100	1	0
+419	Enduring Cover	エンデュランスカバー	坚毅掩护	P	2	0	0	100	1	0
+420	Hastened Cover	ファストカバー	快速掩护	P	2	0	0	100	1	0
+421	Row Cover	ラインカバー	阵线掩护	P	2	0	0	100	6	0
+422	Arrow Cover	アローカバー	飞矢掩护	P	1	0	0	100	1	0
+423	Radiant Cover	グロウカバー	暗光掩护	P	1	0	0	100	1	0
+424	Luminous Cover	ルミナスカバー	荧光掩护	P	1	0	0	100	1	0
+425	Healing Cover	エイドカバー	急救掩护	P	1	0	0	100	1	0
+426	Advance Cover	アドバンスカバー	前进掩护	P	1	0	0	100	1	0
+427	Evil Cover	イービルカバー	邪恶掩护	P	1	0	0	100	1	0
+428	Sacrifice	サクリファイス	舍己为人	P	1	0	0	100	1	0
+429	Guard Order	ガードオーダー	格挡号令	P	1	0	0	100	6	1
+430	Magick Conferral	マジックセイバー	附魔剑刃	P	1	0	0	100	1	0
+431	Flame Conferral	フレイムセイバー	烈火剑刃	P	2	0	0	100	1	0
+432	Ice Conferral	アイスセイバー	冰霜剑刃	P	2	0	0	100	1	0
+433	Thunderous Conferral	サンダーセイバー	雷霆剑刃	P	2	0	0	100	1	0
+434	Sanguine Conferral	ブラッドセイバー	鲜血剑刃	P	2	0	0	100	1	50
+435	Dark Conferral	ダークセイバー	暗黑剑刃	P	1	0	0	100	1	0
+436	Toughness	タフネス	坚韧不拔	P	1	0	0	100	1	1
+437	Lifesaver	ライフセーブ	自我救赎	P	1	0	50	100	1	1
+438	Painbringer	ペインアクセル	痛之加速	P	1	0	0	100	1	1
+439	Vengeance	リベンジャー	复仇者	P	1	0	0	100	1	0.20000000298023224
+440	Nimble Fighter	インファイト	近身肉搏	P	1	0	0	100	1	0.20000000298023224
+441	Guarding Fighter	ガードファイト	格挡肉搏	P	1	0	0	100	1	0.20000000298023224
+442	Guardian	ガーディアン	铁卫	P	1	0	0	100	1	0.20000000298023224
+443	Vengeful Impetus	リベンジアクト	复仇行进	P	1	0	0	100	1	1
+444	Guarding Impetus	ガードアクト	格挡行进	P	1	0	0	100	1	1
+445	Evasive Impetus	イヴェイドアクト	躲闪行进	P	1	0	0	100	1	1
+446	Quick Guard	クイックガード	迅速格挡	P	1	0	0	100	1	1
+447	Heavy Guard	ヘヴィガード	沉着格挡	P	1	0	0	100	1	1
+448	Enduring Guard	エンデュランスガード	坚毅格挡	P	2	0	0	100	1	1
+449	Cavalry Guard	キャバルリーガード	骑兵格挡	P	1	0	0	100	1	1
+450	Aerial Guard	エアリアルガード	天空格挡	P	1	0	0	100	1	1
+451	Bestral Guard	ビーストガード	野兽格挡	P	1	0	0	100	1	1
+452	Noble Guard	ノーブルガード	崇高格挡	P	1	0	0	100	1	1
+453	Royal Guard	ロイヤルガード	皇家格挡	P	1	0	0	100	1	1
+454	Vengeful Guard	リベンジガード	复仇格挡	P	1	0	0	100	1	1
+455	Holy Guard	ホーリーガード	神圣格挡	P	1	0	0	100	1	1
+456	Diurnal Guard	ダイアーナルガード	昼日格挡	P	1	0	0	100	1	1
+457	Nocturnal Guard	ノクターナルガード	暗夜格挡	P	1	0	0	100	1	1
+458	Undead Wall	アンデッドウォール	不死之墙	P	1	0	0	100	1	0
+459	Invincible	インビンシブル	无可撼动	P	2	0	0	100	1	0
+460	Evade	イヴェイド	躲闪	P	1	0	0	100	1	0
+461	Phantom Step	ファントムステップ	幻象微步	P	2	0	0	100	1	0
+462	Dynamic Glide	ダイナミックライド	骑术	P	2	0	0	100	1	0
+463	Nocturnal Evade	ナイトイヴェイド	月下玲珑	P	1	0	0	100	1	0
+464	Dark Step	ダークステップ	暗黑微步	P	1	0	0	100	1	0
+465	Gryphon Glide	グリフォングライド	狮鹫破空	P	2	0	0	100	1	0
+466	Deflect	ディフレクト	扭转	P	1	0	0	100	1	0
+467	Parry	パリィ	拨挡	P	1	0	0	100	1	0
+468	Magick Conversion	　マジックコンバート	魔法转换	P	1	0	0	100	1	0

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.IO.Compression;
 using System.Text.Json;
 
@@ -20,8 +21,8 @@ internal static class ModSmokeTest
 
 	private static void ValidateEditorSemantics(ModModule[] modules)
 	{
-		int originalLanguage = ApplicationSettings.Language;
-		ApplicationSettings.Language = 0;
+		int originalLanguage = LocaleManager.Instance.LanguageIndex;
+		LocaleManager.Instance.SetLanguage(0);
 		ModCatalog.RefreshLocalizedNames();
 		Require(ModCatalog.FindSkill(372)?.Name == "Abyssal Miasma", "技能名称没有跟随编辑器语言切换为英文。");
 		Require(ModCatalog.FindClass(1)?.Name == "Lord", "职业名称没有跟随编辑器语言切换为英文。");
@@ -32,7 +33,7 @@ internal static class ModSmokeTest
 		Require(ModCatalog.FortRecordChoices.Select(choice => choice.Value).SequenceEqual(Enumerable.Range(1, 248)), "据点名称映射存在重复或缺失记录。");
 		Require(ModCatalog.MineRecordChoices.Select(choice => choice.Value).SequenceEqual(Enumerable.Range(0, 63)), "采矿名称映射存在重复或缺失记录。");
 		Require(ModCatalog.ShopRecordChoices.Select(choice => choice.Value).SequenceEqual(Enumerable.Range(0, 211)), "商店名称映射存在重复或缺失记录。");
-		ApplicationSettings.Language = originalLanguage;
+		LocaleManager.Instance.SetLanguage(2);
 		ModCatalog.RefreshLocalizedNames();
 		Require(ModCatalog.FindFortRecord(1)?.DisplayName.StartsWith("索力吉堡垒", StringComparison.Ordinal) == true, "据点名称没有跟随编辑器语言切换为中文。");
 		Require(ModCatalog.FindShopRecord(0)?.DisplayName.StartsWith("帕雷比亚镇 · 武具店", StringComparison.Ordinal) == true, "商店名称没有跟随编辑器语言切换为中文。");
@@ -45,13 +46,28 @@ internal static class ModSmokeTest
 		Require(LocaleManager.Instance.Format("{0} · {1:N0} 项 · 已修改 {2} 项", "Table", 1200, 3) == "Table · 1,200 entries · 3 changed", "英文 locale 没有处理多参数动态摘要。");
 		Require(TextModLanguage.All[0].Name == "Simplified Chinese", "文本 MOD 语言选项没有跟随编辑器语言切换为英文。");
 		Require(ModTarget.Asia.DisplayName.StartsWith("Asian Chinese Version", StringComparison.Ordinal), "目标版本没有跟随编辑器语言切换为英文。");
+		bool targetDisplayNameChanged = false;
+		PropertyChangedEventHandler targetHandler = (_, e) => targetDisplayNameChanged |= e.PropertyName == nameof(ModTarget.DisplayName);
+		ModTarget.Asia.PropertyChanged += targetHandler;
 		LocaleManager.Instance.SetLanguage(1);
+		ModTarget.Asia.PropertyChanged -= targetHandler;
+		Require(targetDisplayNameChanged, "目标版本条目没有通知界面刷新显示名称。");
 		ModCatalog.RefreshLocalizedNames();
 		Require(modules.Single(module => module.Key == "ability_editor").Name == "スキルエディター", "MOD 模块标题没有跟随编辑器语言切换为日文。");
 		Require(LocaleManager.Instance.Translate("打开存档") == "セーブを開く", "日文 locale 没有载入界面按钮文案。");
+		Require(LocaleManager.Instance.Translate("首个效果参数") == "第1効果値", "日文 locale 没有覆盖技能编辑器字段标题。");
 		Require(TextModLanguage.All[0].Name == "簡体字中国語", "文本 MOD 语言选项没有跟随编辑器语言切换为日文。");
-		LocaleManager.Instance.SetLanguage(originalLanguage);
+		Require(ModCatalog.FindSkill(372)?.Name == "幽世の瘴気", "技能名称没有跟随编辑器语言切换为日文。");
+		Require(ModCatalog.Skills.Single(skill => skill.Choice.Value == 372).Description.StartsWith("自身のデバフ", StringComparison.Ordinal), "技能说明没有跟随编辑器语言切换为日文。");
+		Require(ModCatalog.FindClass(1)?.Name == "ロード", "职业名称没有跟随编辑器语言切换为日文。");
+		Require(Info.Instance().Search(Info.Instance().Name, 2)?.Name == "アレイン", "存档角色名称没有跟随编辑器语言切换为日文。");
+		Require(ModCatalog.FindFortRecord(1)?.DisplayName.StartsWith("ソリジー砦", StringComparison.Ordinal) == true, "据点名称没有跟随编辑器语言切换为日文。");
+		Require(ModCatalog.FindMineRecord(0)?.DisplayName.StartsWith("コルニア採掘場", StringComparison.Ordinal) == true, "采矿地点没有跟随编辑器语言切换为日文。");
+		Require(ModCatalog.FindShopRecord(0)?.DisplayName.StartsWith("パレヴィアの町 · 武具屋", StringComparison.Ordinal) == true, "商店名称没有跟随编辑器语言切换为日文。");
+		LocaleManager.Instance.SetLanguage(2);
 		ModCatalog.RefreshLocalizedNames();
+		Require(ModTarget.Asia.DisplayName.StartsWith("亚洲中文版", StringComparison.Ordinal), "目标版本在日文切回中文后没有刷新。");
+		Require(TextModLanguage.All[0].Name == "简体中文", "文本 MOD 语言在日文切回中文后没有刷新。");
 
 			ModModule ability = modules.Single(module => module.Key == "ability_editor");
 			Require(ability.AbilityTypeText == "被动技能（PP）", "技能 372 应从游戏数据识别为被动技能。");
@@ -204,6 +220,8 @@ internal static class ModSmokeTest
 		String mixed = ModPatchGenerator.Generate(randomizer, ModTarget.Asia);
 		Require(!String.Equals(tiered, mixed, StringComparison.Ordinal), "混合转职阶段必须改变角色置换结果。");
 		randomizer.MixPromotionTiers = false;
+		LocaleManager.Instance.SetLanguage(originalLanguage);
+		ModCatalog.RefreshLocalizedNames();
 	}
 
 	private static void Require(bool condition, String message)

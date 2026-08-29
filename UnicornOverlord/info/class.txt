@@ -1,78 +1,78 @@
 # ID	英文	日文	名称（简体中文，来源：v1.0.5 中文资源）
-0	None		无
-1	Lord		领主
-2	High Lord		君主
-3	Fighter		斗士
-4	Vanguard		先锋
-5	Soldier		兵士
-6	Sergeant		士官
-7	Housecarl		近卫
-8	Viking		维京
-9	Sword Fighter		剑士
-10	Swordmaster		剑豪
-11	Sellsword		佣兵
-12	Landsknecht		国土佣仆
-13	Hoplite		重装步兵
-14	Legionnaire		铁甲卫士
-15	Gladiator		角斗士
-16	Berserker		狂战士
-17	Warrior		战士
-18	Breaker		扫荡者
-19	Hunter		猎人
-20	Sniper		神猎手
-21	Arbalist		射手
-22	Shield Shooter		盾射手
-23	Thief		盗贼
-24	Rogue		恶棍
-25	Knight		骑士
-26	Great Knight		重骑士
-27	Radiant Knight		白骑士
-28	Sainted Knight		圣洁骑士
-29	Dark Knight		黑骑士
-30	Doom Knight		末日骑士
-31	Cleric		牧师
-32	Bishop		主教
-33	Wizard		法师
-34	Warlock		术士
-35	Witch		魔女
-36	Sorceress		女巫
-37	Shaman		萨满
-38	Druid		德鲁伊
-39	Wyvern Knight		飞龙骑士
-40	Wyvern Master		飞龙驭师
-41	Gryphon Knight		狮鹫骑士
-42	Gryphon Master		狮鹫驭师
-43	Elven Fencer		精灵剑客
-44	Elven Archer		精灵弓手
-45	Werewolf		战狼
-46	Werefox		战狐
-47	Werebear		战熊
-48	Wereowl		战枭
-49	Feathersword		翔羽剑士
-50	Featherbow		翔羽弓手
-51	Featherstaff		翔羽神官
-52	Feathershield		翔羽盾卫
-53	Priestess		女祭司
-54	High Priestess		女主祭
-55	Crusader		圣战士
-56	Valkyria		女武神
-57	Elven Sibyl		精灵巫女
-58	Elven Augur		精灵卜者
-59	Snow Ranger		雪地游兵
-60	Werelion		战狮
-61	Paladin		圣骑士
-62	Prince		王子
-63	Dreadnought		死士
-64	Possessed Dreadnought		附身死士
-65	Necromancer		死灵法师
-66	Necromancer		死灵法师
-67	Dark Lord		暗黑领主
-68	Overlord		桀纣霸主
-69	Dark Marquess		暗黑侯爵
-70	Dark Marquess		暗黑侯爵
-71	Dark Marquess		暗黑侯爵
-72	Dark Marquess		暗黑侯爵
-73	Dark Marquess		暗黑侯爵
+0	None	なし	无
+1	Lord	ロード	领主
+2	High Lord	ハイロード	君主
+3	Fighter	ファイター	斗士
+4	Vanguard	ヴァンガード	先锋
+5	Soldier	ソルジャー	兵士
+6	Sergeant	サージェント	士官
+7	Housecarl	ハスカール	近卫
+8	Viking	ヴァイキング	维京
+9	Sword Fighter	ソードマン	剑士
+10	Swordmaster	ソードマスター	剑豪
+11	Sellsword	マーセナリー	佣兵
+12	Landsknecht	ランツクネヒト	国土佣仆
+13	Hoplite	ホプリタイ	重装步兵
+14	Legionnaire	カタフラクト	铁甲卫士
+15	Gladiator	グラディエーター	角斗士
+16	Berserker	バーサーカー	狂战士
+17	Warrior	ウォーリア	战士
+18	Breaker	ブレイカー	扫荡者
+19	Hunter	ハンター	猎人
+20	Sniper	スナイパー	神猎手
+21	Arbalist	シューター	射手
+22	Shield Shooter	シールドシューター	盾射手
+23	Thief	シーフ	盗贼
+24	Rogue	ローグ	恶棍
+25	Knight	ナイト	骑士
+26	Great Knight	グレートナイト	重骑士
+27	Radiant Knight	ホワイトナイト	白骑士
+28	Sainted Knight	セイントナイト	圣洁骑士
+29	Dark Knight	ブラックナイト	黑骑士
+30	Doom Knight	ドゥームナイト	末日骑士
+31	Cleric	クレリック	牧师
+32	Bishop	ビショップ	主教
+33	Wizard	ウィザード	法师
+34	Warlock	ウォーロック	术士
+35	Witch	ウィッチ	魔女
+36	Sorceress	ソーサレス	女巫
+37	Shaman	シャーマン	萨满
+38	Druid	ドルイド	德鲁伊
+39	Wyvern Knight	ワイバーンナイト	飞龙骑士
+40	Wyvern Master	ワイバーンルーラー	飞龙驭师
+41	Gryphon Knight	グリフォンナイト	狮鹫骑士
+42	Gryphon Master	グリフォンルーラー	狮鹫驭师
+43	Elven Fencer	エルフフェンサー	精灵剑客
+44	Elven Archer	エルフアーチャー	精灵弓手
+45	Werewolf	ワーウルフ	战狼
+46	Werefox	ワーフォックス	战狐
+47	Werebear	ワーベア	战熊
+48	Wereowl	ワーオウル	战枭
+49	Feathersword	フェザーソード	翔羽剑士
+50	Featherbow	フェザーボウ	翔羽弓手
+51	Featherstaff	フェザーロッド	翔羽神官
+52	Feathershield	フェザーシールド	翔羽盾卫
+53	Priestess	プリーステス	女祭司
+54	High Priestess	ハイプリーステス	女主祭
+55	Crusader	クルセイダー	圣战士
+56	Valkyria	ヴァルキュリア	女武神
+57	Elven Sibyl	エルフシビュラ	精灵巫女
+58	Elven Augur	エルフアウグル	精灵卜者
+59	Snow Ranger	スノーレンジャー	雪地游兵
+60	Werelion	ワーライオン	战狮
+61	Paladin	パラディン	圣骑士
+62	Prince	プリンス	王子
+63	Dreadnought	ドレッドノート	死士
+64	Possessed Dreadnought	憑依ドレッドノート	附身死士
+65	Necromancer	ネクロマンサー	死灵法师
+66	Necromancer	ネクロマンサー	死灵法师
+67	Dark Lord	ダークロード	暗黑领主
+68	Overlord	オーバーロード	桀纣霸主
+69	Dark Marquess	ダークマーキス	暗黑侯爵
+70	Dark Marquess	ダークマーキス	暗黑侯爵
+71	Dark Marquess	ダークマーキス	暗黑侯爵
+72	Dark Marquess	ダークマーキス	暗黑侯爵
+73	Dark Marquess	ダークマーキス	暗黑侯爵
 74
 	拥有王之资质的战士。 同时长于攻击和防御。 拥有保护友方的技能，适合守护同伴。
 	拥有王之资质的战士。 同时长于攻击和防御。 拥有保护友方的技能，适合守护同伴。

@@ -60,13 +60,13 @@ internal sealed class ModModule : INotifyPropertyChanged
 	public IReadOnlyList<ShopRecordEdit> ShopRecordsAtLocation => Project.Shop.RecordsAtLocation;
 	public IReadOnlyList<ModChoice> TargetShapes { get; } =
 	[
-		new() { Value = 0, EnglishName = "Original/none", ChineseName = "原始/无目标" },
-		new() { Value = 1, EnglishName = "Single", ChineseName = "单体" },
-		new() { Value = 2, EnglishName = "Double", ChineseName = "2 个目标" },
-		new() { Value = 3, EnglishName = "Triple", ChineseName = "3 个目标" },
-		new() { Value = 5, EnglishName = "All", ChineseName = "全体" },
-		new() { Value = 6, EnglishName = "Row", ChineseName = "一排" },
-		new() { Value = 7, EnglishName = "Front-back", ChineseName = "前后纵列" },
+		new() { Value = 0, EnglishName = "Original/none", JapaneseName = "元の設定/対象なし", ChineseName = "原始/无目标" },
+		new() { Value = 1, EnglishName = "Single", JapaneseName = "単体", ChineseName = "单体" },
+		new() { Value = 2, EnglishName = "Double", JapaneseName = "2体", ChineseName = "2 个目标" },
+		new() { Value = 3, EnglishName = "Triple", JapaneseName = "3体", ChineseName = "3 个目标" },
+		new() { Value = 5, EnglishName = "All", JapaneseName = "全体", ChineseName = "全体" },
+		new() { Value = 6, EnglishName = "Row", JapaneseName = "一列", ChineseName = "一排" },
+		new() { Value = 7, EnglishName = "Front-back", JapaneseName = "前後縦列", ChineseName = "前后纵列" },
 	];
 	public IReadOnlyList<ModSkillSlot> ActiveSkills => Project.Classes.SelectedRecord.ActiveSkills;
 	public IReadOnlyList<ModSkillSlot> PassiveSkills => Project.Classes.SelectedRecord.PassiveSkills;

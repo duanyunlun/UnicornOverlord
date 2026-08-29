@@ -9,10 +9,17 @@ internal sealed class ModChoice : INotifyPropertyChanged
 	public event PropertyChangedEventHandler? PropertyChanged;
 	public required int Value { get; init; }
 	public required String EnglishName { get; init; }
+	public required String JapaneseName { get; init; }
 	public required String ChineseName { get; init; }
 	public NameValueInfo? Source { get; init; }
-	public String Name => Source?.Name ?? (ApplicationSettings.Language == 0 && !String.IsNullOrWhiteSpace(EnglishName) ? EnglishName : ChineseName);
+	public String Name => Source?.Name ?? ApplicationSettings.Language switch
+	{
+		0 => FirstAvailable(EnglishName, JapaneseName, ChineseName),
+		1 => FirstAvailable(JapaneseName, ChineseName, EnglishName),
+		_ => FirstAvailable(ChineseName, JapaneseName, EnglishName),
+	};
 	public String DisplayName => Name;
+	private static String FirstAvailable(params String[] names) => names.FirstOrDefault(name => !String.IsNullOrWhiteSpace(name)) ?? String.Empty;
 	public void RefreshName()
 	{
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
@@ -31,8 +38,11 @@ internal sealed class ModSkillInfo
 	public required int TargetShape { get; init; }
 	public required double EffectValue { get; init; }
 	public required String ChineseDescription { get; init; }
+	public required String JapaneseDescription { get; init; }
 	public String TypeText => LocaleManager.Instance.Translate(IsPassive ? "被动技能（PP）" : "主动技能（AP）");
-	public String Description => ChineseDescription;
+	public String Description => ApplicationSettings.Language == 1 && !String.IsNullOrWhiteSpace(JapaneseDescription)
+		? JapaneseDescription
+		: ChineseDescription;
 }
 
 internal sealed class ModClassInfo
@@ -77,6 +87,7 @@ internal sealed class ModRecordChoice : INotifyPropertyChanged
 	public required String ChineseLocation { get; init; }
 	public required ModChoice Detail { get; init; }
 	public String? EnglishFacilityType { get; init; }
+	public String? JapaneseFacilityType { get; init; }
 	public String? ChineseFacilityType { get; init; }
 	public int Ordinal { get; init; }
 	public int GroupCount { get; init; }
@@ -85,12 +96,16 @@ internal sealed class ModRecordChoice : INotifyPropertyChanged
 	{
 		get
 		{
-			bool english = ApplicationSettings.Language == 0;
 			String location = ApplicationSettings.Language switch { 0 => EnglishLocation, 1 => JapaneseLocation, _ => ChineseLocation };
-			String facilityType = english ? EnglishFacilityType ?? String.Empty : ChineseFacilityType ?? String.Empty;
+			String facilityType = ApplicationSettings.Language switch
+			{
+				0 => EnglishFacilityType ?? String.Empty,
+				1 => JapaneseFacilityType ?? String.Empty,
+				_ => ChineseFacilityType ?? String.Empty,
+			};
 			String prefix = String.IsNullOrEmpty(facilityType) ? location : $"{location} · {facilityType}";
 			String suffix = GroupCount > 0
-				? english ? $"{Detail.Name} · recruit {Ordinal}/{GroupCount}" : $"{Detail.Name} · 招募 {Ordinal}/{GroupCount}"
+				? $"{Detail.Name} · {RecruitLabel} {Ordinal}/{GroupCount}"
 				: Detail.Name;
 			return $"{prefix} · {suffix}";
 		}
@@ -100,12 +115,14 @@ internal sealed class ModRecordChoice : INotifyPropertyChanged
 		get
 		{
 			String suffix = GroupCount > 0
-				? ApplicationSettings.Language == 0 ? $"{Detail.Name} · recruit {Ordinal}/{GroupCount}" : $"{Detail.Name} · 招募 {Ordinal}/{GroupCount}"
+				? $"{Detail.Name} · {RecruitLabel} {Ordinal}/{GroupCount}"
 				: Detail.Name;
-			return IsShared ? $"{suffix} · {(ApplicationSettings.Language == 0 ? "shared stock" : "共享库存")}" : suffix;
+			return IsShared ? $"{suffix} · {SharedStockLabel}" : suffix;
 		}
 	}
 	public bool IsShared { get; init; }
+	private static String RecruitLabel => ApplicationSettings.Language switch { 0 => "recruit", 1 => "雇用", _ => "招募" };
+	private static String SharedStockLabel => ApplicationSettings.Language switch { 0 => "shared stock", 1 => "共有在庫", _ => "共享库存" };
 
 	public void RefreshName()
 	{
@@ -124,16 +141,18 @@ internal static class ModCatalog
 	public static IReadOnlyList<ModChoice> PassiveSkillChoicesWithoutEmpty { get; } = PassiveSkillChoices.Where(choice => choice.Value != 0).ToArray();
 	public static IReadOnlyList<ModChoice> ClassChoices { get; } = Info.Instance().Class
 		.Where(item => item.Value is >= 1 and <= 73)
-		.Select(item => new ModChoice { Value = checked((int)item.Value), EnglishName = String.Empty, ChineseName = item.Name, Source = item })
+		.Select(item => new ModChoice { Value = checked((int)item.Value), EnglishName = String.Empty, JapaneseName = String.Empty, ChineseName = item.Name, Source = item })
 		.ToArray();
 	public static IReadOnlyList<ModChoice> ItemChoices { get; } = Info.Instance().Item
 		.Where(item => item.Value <= 970)
-		.Select(item => new ModChoice { Value = checked((int)item.Value), EnglishName = item.Name, ChineseName = item.Name, Source = item })
+		.Select(item => new ModChoice { Value = checked((int)item.Value), EnglishName = item.Name, JapaneseName = String.Empty, ChineseName = item.Name, Source = item })
 		.ToArray();
 	public static IReadOnlyDictionary<int, ModClassInfo> Classes { get; } = LoadClasses();
 	public static IReadOnlyDictionary<int, ModRecordInfo> FortRecords { get; } = LoadRecords("fortmod.txt", 3);
 	public static IReadOnlyDictionary<int, ModRecordInfo> MineRecords { get; } = LoadRecords("minemod.txt", 5);
 	public static IReadOnlyDictionary<int, ModShopRecordInfo> ShopRecords { get; } = LoadShopRecords();
+	private static IReadOnlyDictionary<String, String> JapaneseFacilityNames { get; } = ReadRows("facility-ja.txt")
+		.ToDictionary(values => values[0], values => values[1], StringComparer.Ordinal);
 	public static IReadOnlyList<ModRecordChoice> FortRecordChoices { get; } = CreateFortRecordChoices();
 	public static IReadOnlyList<ModRecordChoice> MineRecordChoices { get; } = CreateMineRecordChoices();
 	public static IReadOnlyList<ModRecordChoice> ShopRecordChoices { get; } = CreateShopRecordChoices();
@@ -160,7 +179,7 @@ internal static class ModCatalog
 		{
 			ModRecordChoice first = group.First();
 			String english = String.IsNullOrEmpty(first.EnglishFacilityType) ? first.EnglishLocation : $"{first.EnglishLocation} · {first.EnglishFacilityType}";
-			String japanese = String.IsNullOrEmpty(first.ChineseFacilityType) ? first.JapaneseLocation : $"{first.JapaneseLocation} · {first.ChineseFacilityType}";
+			String japanese = String.IsNullOrEmpty(first.JapaneseFacilityType) ? first.JapaneseLocation : $"{first.JapaneseLocation} · {first.JapaneseFacilityType}";
 			String chinese = String.IsNullOrEmpty(first.ChineseFacilityType) ? first.ChineseLocation : $"{first.ChineseLocation} · {first.ChineseFacilityType}";
 			return new ModLocationChoice { Key = group.Key, EnglishName = english, JapaneseName = japanese, ChineseName = chinese };
 		}).ToArray();
@@ -210,7 +229,7 @@ internal static class ModCatalog
 				int id = start + offset;
 				result.Add(new ModRecordChoice
 				{
-					Value = id, LocationKey = english, EnglishLocation = english, JapaneseLocation = chinese, ChineseLocation = chinese,
+					Value = id, LocationKey = english, EnglishLocation = english, JapaneseLocation = JapaneseFacilityName(chinese), ChineseLocation = chinese,
 					Detail = FindClass(FortRecords[id].ValueA) ?? throw new InvalidDataException($"据点记录 {id} 的原版职业不存在。"),
 					Ordinal = offset + 1, GroupCount = count,
 				});
@@ -229,7 +248,7 @@ internal static class ModCatalog
 		];
 		return locations.SelectMany(location => Enumerable.Range(location.Start, location.Count).Select(id => new ModRecordChoice
 		{
-			Value = id, LocationKey = location.English, EnglishLocation = location.English, JapaneseLocation = location.Chinese, ChineseLocation = location.Chinese,
+			Value = id, LocationKey = location.English, EnglishLocation = location.English, JapaneseLocation = JapaneseFacilityName(location.Chinese), ChineseLocation = location.Chinese,
 			Detail = FindItem(MineRecords[id].ValueA) ?? throw new InvalidDataException($"采矿记录 {id} 的原版物品不存在。"),
 		})).ToArray();
 	}
@@ -238,7 +257,7 @@ internal static class ModCatalog
 	{
 		Value = record.Id, LocationKey = record.LocationKey,
 		EnglishLocation = record.LocationKey.Split('|')[0], JapaneseLocation = record.LocationKey.Split('|')[1], ChineseLocation = record.LocationKey.Split('|')[2],
-		EnglishFacilityType = "Armorer", ChineseFacilityType = "武具店",
+		EnglishFacilityType = "Armorer", JapaneseFacilityType = "武具屋", ChineseFacilityType = "武具店",
 		Detail = FindItem(record.ItemId) ?? throw new InvalidDataException($"商店记录 {record.Id} 的原版物品不存在。"),
 		IsShared = record.IsShared,
 	}).ToArray();
@@ -247,7 +266,7 @@ internal static class ModCatalog
 	{
 		var choices = new List<ModChoice>
 		{
-			new() { Value = 0, EnglishName = "(empty)", ChineseName = "（空）" },
+			new() { Value = 0, EnglishName = "(empty)", JapaneseName = "（空）", ChineseName = "（空）" },
 		};
 		choices.AddRange(Skills.Where(skill => skill.IsPassive == passive).Select(skill => skill.Choice));
 		return choices;
@@ -255,27 +274,34 @@ internal static class ModCatalog
 
 	private static IReadOnlyList<ModSkillInfo> LoadSkills()
 	{
-		IReadOnlyDictionary<int, String> descriptions = ReadRows("skilldesc-cn.txt").ToDictionary(values => ParseInt(values[0]),
-			values => Encoding.UTF8.GetString(Convert.FromBase64String(values[1])));
+		IReadOnlyDictionary<int, String> chineseDescriptions = LoadDescriptions("skilldesc-cn.txt");
+		IReadOnlyDictionary<int, String> japaneseDescriptions = LoadDescriptions("skilldesc-ja.txt");
 		var result = new List<ModSkillInfo>();
 		foreach (String[] values in ReadRows("skill.txt"))
 		{
-			if (values.Length < 10) continue;
+			if (values.Length < 11) continue;
+			int id = ParseInt(values[0]);
 			result.Add(new ModSkillInfo
 			{
-				Choice = new ModChoice { Value = ParseInt(values[0]), EnglishName = values[1], ChineseName = values[2] },
-				IsPassive = values[3] == "P",
-				Cost = ParseInt(values[4]),
-				PhysicalPotency = ParseDouble(values[5]),
-				MagicalPotency = ParseDouble(values[6]),
-				Accuracy = ParseInt(values[7]),
-				TargetShape = ParseInt(values[8]),
-				EffectValue = ParseDouble(values[9]),
-				ChineseDescription = descriptions.GetValueOrDefault(ParseInt(values[0]), String.Empty),
+				Choice = new ModChoice { Value = id, EnglishName = values[1], JapaneseName = values[2], ChineseName = values[3] },
+				IsPassive = values[4] == "P",
+				Cost = ParseInt(values[5]),
+				PhysicalPotency = ParseDouble(values[6]),
+				MagicalPotency = ParseDouble(values[7]),
+				Accuracy = ParseInt(values[8]),
+				TargetShape = ParseInt(values[9]),
+				EffectValue = ParseDouble(values[10]),
+				ChineseDescription = chineseDescriptions.GetValueOrDefault(id, String.Empty),
+				JapaneseDescription = japaneseDescriptions.GetValueOrDefault(id, String.Empty),
 			});
 		}
 		return result;
 	}
+
+	private static IReadOnlyDictionary<int, String> LoadDescriptions(String filename) => ReadRows(filename).ToDictionary(
+		values => ParseInt(values[0]), values => Encoding.UTF8.GetString(Convert.FromBase64String(values[1])));
+
+	private static String JapaneseFacilityName(String chinese) => JapaneseFacilityNames.GetValueOrDefault(chinese, chinese);
 
 	private static IReadOnlyDictionary<int, ModClassInfo> LoadClasses()
 	{

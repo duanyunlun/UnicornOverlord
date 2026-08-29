@@ -32,13 +32,28 @@
     <Style Selector="TextBlock.section-title">
       <Setter Property="FontSize" Value="18" />
       <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Height" Value="28" />
+      <Setter Property="LineHeight" Value="26" />
+      <Setter Property="TextWrapping" Value="NoWrap" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
     </Style>
     <Style Selector="TextBlock.caption">
       <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
       <Setter Property="FontSize" Value="12" />
+      <Setter Property="LineHeight" Value="18" />
     </Style>
     <Style Selector="TextBlock.option-title">
       <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Height" Value="20" />
+      <Setter Property="LineHeight" Value="20" />
+      <Setter Property="TextWrapping" Value="NoWrap" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+    <Style Selector="TextBlock.stable-help">
+      <Setter Property="Height" Value="40" />
+      <Setter Property="MaxLines" Value="2" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
     </Style>
     <Style Selector="Border.panel">
       <Setter Property="Background" Value="White" />
@@ -90,9 +105,11 @@
     <Style Selector="TabItem.workspace">
       <Setter Property="FontSize" Value="17" />
       <Setter Property="FontWeight" Value="SemiBold" />
-      <Setter Property="Padding" Value="20,10" />
-      <Setter Property="MinWidth" Value="148" />
+      <Setter Property="Height" Value="48" />
+      <Setter Property="Padding" Value="20,0" />
+      <Setter Property="Width" Value="148" />
       <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
       <Setter Property="Background" Value="#E4E7EA" />
       <Setter Property="Margin" Value="0,0,8,0" />
     </Style>
@@ -106,26 +123,30 @@
     </Style>
     <Style Selector="TabItem.section">
       <Setter Property="FontSize" Value="15" />
-      <Setter Property="Padding" Value="14,8" />
+      <Setter Property="Width" Value="120" />
+      <Setter Property="Height" Value="42" />
+      <Setter Property="Padding" Value="14,0" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
   </Window.Styles>
 
   <Grid RowDefinitions="Auto,*,Auto,Auto">
-    <Border Grid.Row="0" Background="#20252B" Padding="24,16">
+    <Border Grid.Row="0" Height="82" Background="#20252B" Padding="24,0">
       <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
         <StackPanel Spacing="2">
-          <TextBlock Text="独角兽之王" FontSize="22" FontWeight="SemiBold" Foreground="White" />
-          <TextBlock Text="Nintendo Switch 存档与 MOD 编辑器" Foreground="#BFC6CE" FontSize="12" />
+          <TextBlock Height="28" LineHeight="28" Text="独角兽之王" FontSize="22" FontWeight="SemiBold" Foreground="White" TextWrapping="NoWrap" />
+          <TextBlock Height="16" LineHeight="16" Text="Nintendo Switch 存档与 MOD 编辑器" Foreground="#BFC6CE" FontSize="12" TextWrapping="NoWrap" />
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
           <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" IsVisible="{Binding IsModWorkspace}">
-          <TextBlock Classes="option-title" Text="目标版本" Foreground="#D7DCE1" VerticalAlignment="Center" />
-            <ComboBox Width="168" ItemsSource="{Binding ModTargets}" SelectedItem="{Binding ActiveModTarget, Mode=TwoWay}">
+          <TextBlock Classes="option-title" Width="112" Text="目标版本" Foreground="#D7DCE1" VerticalAlignment="Center" TextWrapping="NoWrap" />
+            <ComboBox Width="168" Height="32" ItemsSource="{Binding ModTargets}" SelectedItem="{Binding ActiveModTarget, Mode=TwoWay}">
               <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}" /></DataTemplate></ComboBox.ItemTemplate>
             </ComboBox>
           </StackPanel>
-          <TextBlock Classes="option-title" Text="编辑器语言" Foreground="#D7DCE1" ToolTip.Tip="切换技能、职业、物品等游戏数据名称的显示语言" VerticalAlignment="Center" />
-          <ComboBox Width="120" ItemsSource="{Binding Languages}" SelectedIndex="{Binding LanguageIndex, Mode=TwoWay}" />
+          <TextBlock Classes="option-title" Width="120" Text="编辑器语言" Foreground="#D7DCE1" ToolTip.Tip="切换技能、职业、物品等游戏数据名称的显示语言" VerticalAlignment="Center" TextWrapping="NoWrap" />
+          <ComboBox Width="120" Height="32" ItemsSource="{Binding Languages}" SelectedIndex="{Binding LanguageIndex, Mode=TwoWay}" />
         </StackPanel>
       </Grid>
     </Border>
@@ -350,13 +371,13 @@
 	                <StackPanel>
 	                <StackPanel Spacing="10">
                   <StackPanel Spacing="4">
-                    <StackPanel Orientation="Horizontal" Spacing="14">
+                    <Grid ColumnDefinitions="260,Auto" ColumnSpacing="14">
                       <TextBlock Classes="section-title" Text="{Binding Name}" VerticalAlignment="Center" />
                       <ToggleSwitch IsVisible="{Binding ShowHeaderEnableToggle}" IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                    OnContent="" OffContent="" VerticalAlignment="Center" />
-                    </StackPanel>
-                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-                    <TextBlock Foreground="#A24A37" FontSize="12" Text="{Binding Warning}" TextWrapping="Wrap" />
+                                    Grid.Column="1" OnContent="" OffContent="" VerticalAlignment="Center" />
+                    </Grid>
+                    <TextBlock Classes="stable-help" Text="{Binding Description}" />
+                    <TextBlock Height="18" MaxLines="1" TextTrimming="CharacterEllipsis" Foreground="#A24A37" FontSize="12" Text="{Binding Warning}" />
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsAbilityEditor}" Spacing="10">
@@ -386,24 +407,24 @@
                       </StackPanel>
                       <StackPanel Spacing="4">
                         <TextBlock Classes="option-title" Text="技能说明"/>
-                        <TextBlock Classes="caption" FontSize="16" LineHeight="24" Text="{Binding AbilityDescription}" TextWrapping="Wrap"/>
+                        <TextBlock Classes="caption" Height="120" MaxLines="5" TextTrimming="CharacterEllipsis" FontSize="16" LineHeight="24" Text="{Binding AbilityDescription}" TextWrapping="Wrap"/>
                       </StackPanel>
                     </StackPanel>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsBattlePreview}" Spacing="5">
                     <TextBlock Classes="option-title" Text="预览模式"/><ComboBox ItemsSource="{Binding PreviewModes}" SelectedIndex="{Binding RecordId}"/>
-                    <TextBlock Classes="caption" Text="{Binding PreviewModeDescription}" TextWrapping="Wrap"/>
+                    <TextBlock Classes="caption stable-help" Text="{Binding PreviewModeDescription}"/>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsCharacterRandomizer}" Spacing="8">
                     <TextBlock Classes="option-title" Text="随机种子"/>
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                       <NumericUpDown Value="{Binding ValueA}" Minimum="1" Maximum="2147483647"/>
-                      <Button Grid.Column="1" Classes="compact" Content="重新随机" Command="{Binding RerollCommand}"/>
+                      <Button Grid.Column="1" Width="110" Classes="compact" Content="重新随机" Command="{Binding RerollCommand}"/>
                     </Grid>
                     <ToggleSwitch IsChecked="{Binding MixPromotionTiers, Mode=TwoWay}" OnContent="混合转职阶段" OffContent="保持相同转职阶段" HorizontalAlignment="Left"/>
-                    <TextBlock Classes="caption" Text="默认只在相同转职阶段内交换；启用后允许基础、转职及后期角色跨阶段交换。同一种子和选项会生成相同置换。" TextWrapping="Wrap"/>
+                    <TextBlock Classes="caption stable-help" Text="默认只在相同转职阶段内交换；启用后允许基础、转职及后期角色跨阶段交换。同一种子和选项会生成相同置换。"/>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsClassEditor}" Spacing="12">
@@ -442,7 +463,7 @@
                         </ItemsControl>
                       </StackPanel>
                     </Grid>
-                    <TextBlock Classes="caption" Text="技能下拉按主动/被动分开；第一项固定 1 级，后续技能可设置习得等级。更换为职业无法播放其动画的技能可能显示异常。" TextWrapping="Wrap"/>
+                    <TextBlock Classes="caption stable-help" Text="技能下拉按主动/被动分开；第一项固定 1 级，后续技能可设置习得等级。更换为职业无法播放其动画的技能可能显示异常。"/>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsFortEditor}" Spacing="8">
@@ -451,7 +472,7 @@
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="原版招募"/><ComboBox ItemsSource="{Binding Fort.SelectedLocation.Records}" SelectedItem="{Binding Fort.SelectedRecord, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Choice.DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                       <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="修改为"/><local:ModSearchPicker ItemsSource="{Binding ClassChoices}" SelectedItem="{Binding Fort.SelectedClass, Mode=TwoWay}"/></StackPanel>
                     </Grid>
-                    <TextBlock Classes="caption" Text="按游戏中的据点名称选择招募位置；选择后载入该位置的原版职业。仅修改职业，不覆盖亚洲版额外字段。" TextWrapping="Wrap"/>
+                    <TextBlock Classes="caption stable-help" Text="按游戏中的据点名称选择招募位置；选择后载入该位置的原版职业。仅修改职业，不覆盖亚洲版额外字段。"/>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsMineEditor}" Spacing="12">
@@ -465,7 +486,7 @@
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="挖掘目标"/><NumericUpDown Value="{Binding Mine.DigTarget}" Minimum="0" Maximum="1000000"/></StackPanel>
                       <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="单局上限"/><NumericUpDown Value="{Binding Mine.RoundLimit}" Minimum="1" Maximum="999999"/></StackPanel>
                     </Grid>
-                    <TextBlock Classes="caption" Text="掉落权重是同地区各槽之间的相对概率；挖掘目标越高越难在限时内挖出；单局上限限制一次采矿最多取得数量。" TextWrapping="Wrap"/>
+                    <TextBlock Classes="caption stable-help" Text="掉落权重是同地区各槽之间的相对概率；挖掘目标越高越难在限时内挖出；单局上限限制一次采矿最多取得数量。"/>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsShopEditor}" Spacing="12">
@@ -478,12 +499,12 @@
                       <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="库存（-1 为无限）"/><NumericUpDown Value="{Binding Shop.Stock}" Minimum="-1" Maximum="9999"/></StackPanel>
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="金币买价"/><NumericUpDown Value="{Binding Shop.Price}" Minimum="0" Maximum="65535"/></StackPanel>
                     </Grid>
-                    <TextBlock Classes="caption" Text="先选地图地点，再选该武具店的商品；带“共享库存”的条目会同步影响引用同一库存的城镇。金币买价按物品全局共享，卖价自动设为买价的 10%。" TextWrapping="Wrap"/>
+                    <TextBlock Classes="caption stable-help" Text="先选地图地点，再选该武具店的商品；带“共享库存”的条目会同步影响引用同一库存的城镇。金币买价按物品全局共享，卖价自动设为买价的 10%。"/>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsSixMemberUnits}" Spacing="5">
                     <TextBlock Classes="option-title" Text="第五人扩充到第六人的荣誉费用"/><NumericUpDown Value="{Binding ValueA}" Minimum="0" Maximum="999999"/>
-                    <TextBlock Classes="caption" Text="并非默认开启：只有打开此开关并导出安装补丁后，S 级声望的小队才可扩充到六人。" TextWrapping="Wrap"/>
+                    <TextBlock Classes="caption stable-help" Text="并非默认开启：只有打开此开关并导出安装补丁后，S 级声望的小队才可扩充到六人。"/>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsTypeMatchups}" Spacing="10">
@@ -492,7 +513,7 @@
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="弓兵对飞行"/><ComboBox ItemsSource="{Binding MatchupValues}" SelectedItem="{Binding ValueE}"/></StackPanel>
                       <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="飞龙/狮鹫对骑兵"/><ComboBox ItemsSource="{Binding MatchupValues}" SelectedItem="{Binding ValueF}"/></StackPanel>
                     </Grid>
-                    <TextBlock Classes="caption" Text="三项倍率作用于对应兵种的每一次攻击，与技能自身的类型加成相乘。例如骑兵对步兵设为 1 表示取消固有双倍克制。" TextWrapping="Wrap"/>
+                    <TextBlock Classes="caption stable-help" Text="三项倍率作用于对应兵种的每一次攻击，与技能自身的类型加成相乘。例如骑兵对步兵设为 1 表示取消固有双倍克制。"/>
                   </StackPanel>
 
                   <TextBlock IsVisible="{Binding HasNoOptions}" Classes="caption" Text="此模块本身只有启用或停用，没有额外参数。"/>
@@ -504,18 +525,18 @@
 	                </ItemsControl>
               </ScrollViewer>
 			  <Grid Grid.Column="1" IsVisible="{Binding $parent[Window].DataContext.IsTextModWorkspace}" DataContext="{Binding TextEditor}" RowDefinitions="Auto,Auto,*">
-			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" Margin="18,14">
+			<Grid Height="68" ColumnDefinitions="*,Auto" ColumnSpacing="16" Margin="18,0">
 			  <StackPanel Spacing="3">
 				<TextBlock Classes="section-title" Text="文本编辑器" />
 				<TextBlock Classes="caption" Text="基于所选语言 CPK 的原始 FMS 按索引修改；不会改动源归档" />
 			  </StackPanel>
 			  <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-				<Button Classes="compact" Content="选择 CPK 工具" Command="{Binding ChooseToolCommand}" />
-				<Button Classes="primary" Content="载入 CPK 副本" Command="{Binding OpenCpkCommand}" />
+				<Button Width="130" Classes="compact" Content="选择 CPK 工具" Command="{Binding ChooseToolCommand}" />
+				<Button Width="130" Classes="primary" Content="载入 CPK 副本" Command="{Binding OpenCpkCommand}" />
 			  </StackPanel>
 			</Grid>
 
-			<Border Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,1" Padding="18,10">
+			<Border Grid.Row="1" Height="86" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,1" Padding="18,8">
 			  <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
 				<StackPanel Spacing="2">
 				  <TextBlock Text="{Binding SourceSummary}" FontWeight="SemiBold" />
@@ -539,7 +560,7 @@
 				  <DataTemplate>
 					<StackPanel Spacing="3">
 					  <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
-					  <TextBlock Classes="caption" Text="{Binding Summary}" TextWrapping="Wrap" />
+					  <TextBlock Classes="caption" Height="36" MaxLines="2" TextTrimming="CharacterEllipsis" Text="{Binding Summary}" TextWrapping="Wrap" />
 					</StackPanel>
 				  </DataTemplate>
 				</ListBox.ItemTemplate>
@@ -548,12 +569,12 @@
 			  <Grid Grid.Column="1" RowDefinitions="Auto,*">
 				<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="12">
 				  <TextBox Classes="search" PlaceholderText="输入索引或文本" Text="{Binding SearchText, Mode=TwoWay}" />
-				  <Button Grid.Column="1" Classes="compact" Content="搜索" Command="{Binding SearchCommand}" />
+				  <Button Grid.Column="1" Width="72" Classes="compact" Content="搜索" Command="{Binding SearchCommand}" />
 				</Grid>
 				<ListBox Grid.Row="1" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedEntry, Mode=TwoWay}">
 				  <ListBox.ItemTemplate>
 					<DataTemplate>
-					  <Grid ColumnDefinitions="62,*" ColumnSpacing="8">
+					  <Grid Height="58" ColumnDefinitions="62,*" ColumnSpacing="8">
 						<TextBlock Text="{Binding Index}" Foreground="{StaticResource AccentBrush}" />
 						<StackPanel Grid.Column="1" Spacing="2">
 						  <TextBlock Text="{Binding Text}" MaxLines="2" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" />
@@ -569,12 +590,12 @@
 				<StackPanel Margin="18" Spacing="10">
 				  <TextBlock Classes="section-title" Text="{Binding SelectedEntry.Index, StringFormat='索引 {0}'}" />
 				  <TextBlock Text="原文" FontWeight="SemiBold" />
-				  <Border Background="#F3F4F6" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4" Padding="10" MinHeight="92">
-					<TextBlock Text="{Binding SelectedEntry.OriginalText}" TextWrapping="Wrap" />
+				  <Border Height="92" Background="#F3F4F6" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+					<TextBlock MaxLines="3" TextTrimming="CharacterEllipsis" Text="{Binding SelectedEntry.OriginalText}" TextWrapping="Wrap" />
 				  </Border>
 				  <TextBlock Text="修改后文本" FontWeight="SemiBold" />
 				  <TextBox Text="{Binding SelectedEntry.Text, Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="150" />
-				  <TextBlock Classes="caption" Text="{Binding ValidationMessage}" TextWrapping="Wrap" />
+				  <TextBlock Classes="caption" Height="40" MaxLines="2" TextTrimming="CharacterEllipsis" Text="{Binding ValidationMessage}" TextWrapping="Wrap" />
 				</StackPanel>
 			  </ScrollViewer>
 			</Grid>
@@ -586,7 +607,7 @@
 		  </TabItem>
 	</TabControl>
 
-    <Border Grid.Row="2" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="16,8">
+    <Border Grid.Row="2" Height="60" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="16,0">
       <Grid>
         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" IsVisible="{Binding IsSaveWorkspace}">
           <StackPanel Spacing="1" VerticalAlignment="Center">
@@ -594,25 +615,25 @@
             <TextBlock Classes="caption" Text="{Binding FileLocation}" TextTrimming="CharacterEllipsis" />
           </StackPanel>
           <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-            <Button Classes="header" Content="打开存档" Command="{Binding OpenFileCommand}" />
-            <Button Classes="compact" Content="存档另存为" Command="{Binding SaveAsFileCommand}" IsEnabled="{Binding IsSaveLoaded}" />
-            <Button Classes="primary" Content="保存存档" Command="{Binding SaveFileCommand}" IsEnabled="{Binding IsSaveLoaded}" />
+            <Button Width="112" Classes="header" Content="打开存档" Command="{Binding OpenFileCommand}" />
+            <Button Width="128" Classes="compact" Content="存档另存为" Command="{Binding SaveAsFileCommand}" IsEnabled="{Binding IsSaveLoaded}" />
+            <Button Width="112" Classes="primary" Content="保存存档" Command="{Binding SaveFileCommand}" IsEnabled="{Binding IsSaveLoaded}" />
           </StackPanel>
         </Grid>
 
         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" IsVisible="{Binding IsGameplayModWorkspace}">
           <TextBlock Text="MOD 制作" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
-          <Button Grid.Column="1" Classes="primary" Content="导出 MOD 包" Command="{Binding ExportModPackageCommand}" IsEnabled="{Binding CanExportMods}" />
+          <Button Grid.Column="1" Width="180" Classes="primary" Content="导出 MOD 包" Command="{Binding ExportModPackageCommand}" IsEnabled="{Binding CanExportMods}" />
         </Grid>
 
         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" IsVisible="{Binding IsTextModWorkspace}">
           <TextBlock Text="文本 MOD" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
-          <Button Grid.Column="1" Classes="primary" Content="导出文本 MOD 包" Command="{Binding TextEditor.ExportCommand}" />
+          <Button Grid.Column="1" Width="210" Classes="primary" Content="导出文本 MOD 包" Command="{Binding TextEditor.ExportCommand}" />
         </Grid>
       </Grid>
     </Border>
 
-    <Border Grid.Row="3" Background="#F8F9FA" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="16,6">
+    <Border Grid.Row="3" Height="30" Background="#F8F9FA" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="16,0">
       <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
         <TextBlock Classes="caption" Text="{Binding StatusMessage}" TextTrimming="CharacterEllipsis" />
         <TextBlock Grid.Column="1" Classes="caption" Text="{Binding ContextStatusMessage}" TextTrimming="CharacterEllipsis" />

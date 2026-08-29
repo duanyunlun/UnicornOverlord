@@ -6,27 +6,27 @@
         CanResize="True" WindowStartupLocation="CenterOwner"
         Background="#F3F4F6"
         Loaded="Window_Loaded">
-  <Grid RowDefinitions="Auto,*,Auto">
-    <Border Background="White" Padding="18,14" BorderBrush="#D8DBE0" BorderThickness="0,0,0,1">
+  <Grid RowDefinitions="78,*,60">
+    <Border Background="White" Padding="18,10" BorderBrush="#D8DBE0" BorderThickness="0,0,0,1">
       <StackPanel Spacing="6">
-        <TextBlock Text="筛选" FontWeight="SemiBold" />
+        <TextBlock Height="20" LineHeight="20" Text="筛选" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
         <TextBox x:Name="TextBoxFilter" Classes="search" PlaceholderText="输入名称或 ID" TextChanged="TextBoxFilter_TextChanged" />
       </StackPanel>
     </Border>
     <ListBox Grid.Row="1" x:Name="ListBoxItem" Margin="12" SelectionChanged="ListBoxItem_SelectionChanged">
       <ListBox.ItemTemplate>
         <DataTemplate>
-          <Grid ColumnDefinitions="*,Auto" Margin="6,4">
+          <Grid Height="32" ColumnDefinitions="*,Auto" Margin="6,0">
             <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
             <TextBlock Grid.Column="1" Text="{Binding Value}" Foreground="#656B75" Margin="12,0,0,0" />
           </Grid>
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
-    <Border Grid.Row="2" Background="White" Padding="12" BorderBrush="#D8DBE0" BorderThickness="0,1,0,0">
+    <Border Grid.Row="2" Background="White" Padding="12,0" BorderBrush="#D8DBE0" BorderThickness="0,1,0,0">
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-        <Button Content="取消" Click="ButtonCancel_Click" Padding="16,8" />
-        <Button x:Name="ButtonDecision" Content="确定" IsEnabled="False" Click="ButtonDecision_Click" Padding="16,8" Background="#287764" Foreground="White" />
+        <Button Width="90" Height="32" Content="取消" Click="ButtonCancel_Click" Padding="16,0" />
+        <Button Width="90" Height="32" x:Name="ButtonDecision" Content="确定" IsEnabled="False" Click="ButtonDecision_Click" Padding="16,0" Background="#287764" Foreground="White" />
       </StackPanel>
     </Border>
   </Grid>

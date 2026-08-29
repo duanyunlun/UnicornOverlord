@@ -37,12 +37,18 @@ internal sealed class ModSkillInfo
 	public required int Accuracy { get; init; }
 	public required int TargetShape { get; init; }
 	public required double EffectValue { get; init; }
+	public required String EnglishDescription { get; init; }
 	public required String ChineseDescription { get; init; }
 	public required String JapaneseDescription { get; init; }
 	public String TypeText => LocaleManager.Instance.Translate(IsPassive ? "被动技能（PP）" : "主动技能（AP）");
-	public String Description => ApplicationSettings.Language == 1 && !String.IsNullOrWhiteSpace(JapaneseDescription)
-		? JapaneseDescription
-		: ChineseDescription;
+	public String Description => ApplicationSettings.Language switch
+	{
+		0 => FirstAvailable(EnglishDescription, JapaneseDescription, ChineseDescription),
+		1 => FirstAvailable(JapaneseDescription, ChineseDescription, EnglishDescription),
+		_ => FirstAvailable(ChineseDescription, JapaneseDescription, EnglishDescription),
+	};
+	private static String FirstAvailable(params String[] descriptions) =>
+		descriptions.FirstOrDefault(description => !String.IsNullOrWhiteSpace(description)) ?? String.Empty;
 }
 
 internal sealed class ModClassInfo
@@ -274,6 +280,7 @@ internal static class ModCatalog
 
 	private static IReadOnlyList<ModSkillInfo> LoadSkills()
 	{
+		IReadOnlyDictionary<int, String> englishDescriptions = LoadDescriptions("skilldesc-en.txt");
 		IReadOnlyDictionary<int, String> chineseDescriptions = LoadDescriptions("skilldesc-cn.txt");
 		IReadOnlyDictionary<int, String> japaneseDescriptions = LoadDescriptions("skilldesc-ja.txt");
 		var result = new List<ModSkillInfo>();
@@ -291,6 +298,7 @@ internal static class ModCatalog
 				Accuracy = ParseInt(values[8]),
 				TargetShape = ParseInt(values[9]),
 				EffectValue = ParseDouble(values[10]),
+				EnglishDescription = englishDescriptions.GetValueOrDefault(id, String.Empty),
 				ChineseDescription = chineseDescriptions.GetValueOrDefault(id, String.Empty),
 				JapaneseDescription = japaneseDescriptions.GetValueOrDefault(id, String.Empty),
 			});

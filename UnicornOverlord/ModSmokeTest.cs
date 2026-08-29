@@ -25,6 +25,7 @@ internal static class ModSmokeTest
 		LocaleManager.Instance.SetLanguage(0);
 		ModCatalog.RefreshLocalizedNames();
 		Require(ModCatalog.FindSkill(372)?.Name == "Abyssal Miasma", "技能名称没有跟随编辑器语言切换为英文。");
+		Require(ModCatalog.Skills.Single(skill => skill.Choice.Value == 372).Description.StartsWith("Remove the user's debuffs.", StringComparison.Ordinal), "技能说明没有跟随编辑器语言切换为英文。");
 		Require(ModCatalog.FindClass(1)?.Name == "Lord", "职业名称没有跟随编辑器语言切换为英文。");
 		Require(ModCatalog.FortRecordChoices.Count == 248 && ModCatalog.FindFortRecord(1)?.DisplayName.StartsWith("Fort Soligie", StringComparison.Ordinal) == true, "据点名称映射不完整。");
 		Require(ModCatalog.MineRecordChoices.Count == 63 && ModCatalog.FindMineRecord(0)?.DisplayName.StartsWith("Cornia Quarry", StringComparison.Ordinal) == true, "采掘场名称映射不完整。");

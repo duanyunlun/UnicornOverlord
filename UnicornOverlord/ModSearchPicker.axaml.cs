@@ -80,17 +80,27 @@ public partial class ModSearchPicker : UserControl
 		}
 	}
 
-	private void OnSearchTextChanged(object? sender, TextChangedEventArgs args) => ApplyFilter();
+	private void OnSearchTextChanged(object? sender, TextChangedEventArgs args) => ApplyFilter(selectFirstMatch: true);
 
-	private void ApplyFilter()
+	private void ApplyFilter(bool selectFirstMatch = false)
 	{
 		if (mChoices == null || mSearchBox == null) return;
 		String query = mSearchBox.Text?.Trim() ?? String.Empty;
 		object[] visibleItems = query.Length == 0 ? mItems : mItems.Where(item => Matches(query, item)).ToArray();
+		object? nextSelection = selectFirstMatch && query.Length > 0
+			? FirstMatch(query, visibleItems)
+			: visibleItems.Contains(SelectedItem) ? SelectedItem : null;
 		mUpdating = true;
-		mChoices.ItemsSource = visibleItems;
-		mChoices.SelectedItem = visibleItems.Contains(SelectedItem) ? SelectedItem : null;
-		mUpdating = false;
+		try
+		{
+			mChoices.ItemsSource = visibleItems;
+			mChoices.SelectedItem = nextSelection;
+			if (selectFirstMatch && nextSelection != null) SelectedItem = nextSelection;
+		}
+		finally
+		{
+			mUpdating = false;
+		}
 	}
 
 	private static String GetDisplayText(object? value) => value switch
@@ -110,6 +120,9 @@ public partial class ModSearchPicker : UserControl
 		String query = search.Trim();
 		return GetSearchTerms(item).Any(term => term.Contains(query, StringComparison.CurrentCultureIgnoreCase));
 	}
+
+	internal static object? FirstMatch(String? search, IEnumerable items) =>
+		items.Cast<object>().FirstOrDefault(item => Matches(search, item));
 
 	private static IEnumerable<String> GetSearchTerms(object item) => item switch
 	{

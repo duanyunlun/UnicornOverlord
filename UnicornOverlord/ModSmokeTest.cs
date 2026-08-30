@@ -76,6 +76,7 @@ internal static class ModSmokeTest
 			Require(ModSearchPicker.Matches("幽世瘴气", ability.SelectedSkill), "长下拉框必须能按当前语言的完整名称匹配技能。");
 		Require(ModSearchPicker.Matches("瘴气", ability.SelectedSkill), "长下拉框必须能按技能名称片段匹配。");
 		Require(!ModSearchPicker.Matches("372", ability.SelectedSkill), "长下拉框不应再按内部 ID 匹配技能。");
+		Require(ReferenceEquals(ModSearchPicker.FirstMatch("Cavalry Slayer", ModCatalog.SkillChoices), ModCatalog.FindSkill(29)), "搜索框没有定位到第一条匹配技能。");
 		ability.AbilityFilterIndex = 1;
 		Require(ability.FilteredSkillChoices.Count == ModCatalog.ActiveSkillChoicesWithoutEmpty.Count &&
 			ability.FilteredSkillChoices.All(choice => ModCatalog.ActiveSkillChoicesWithoutEmpty.Contains(choice)), "主动技能筛选结果不完整。");

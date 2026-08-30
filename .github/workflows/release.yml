@@ -1,0 +1,262 @@
+name: 手动发布
+
+run-name: 发布 ${{ inputs.version }}（${{ github.ref_name }}）
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 发布版本号，例如 0.15 或 0.15.1
+        required: true
+        type: string
+      prerelease:
+        description: 标记为预发布版本
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: manual-release
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: 检查发布参数
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      app_version: ${{ steps.version.outputs.app_version }}
+    steps:
+      - name: 检出发布提交
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 校验版本号与远端状态
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! "$RELEASE_VERSION" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "版本号必须为 0.15 或 0.15.1 形式。" >&2
+            exit 1
+          fi
+
+          if git ls-remote --exit-code --tags origin "refs/tags/$RELEASE_VERSION" >/dev/null 2>&1; then
+            echo "Tag $RELEASE_VERSION 已存在。" >&2
+            exit 1
+          fi
+
+          if gh release view "$RELEASE_VERSION" >/dev/null 2>&1; then
+            echo "Release $RELEASE_VERSION 已存在。" >&2
+            exit 1
+          fi
+
+          APP_VERSION="$RELEASE_VERSION"
+          if [[ "$APP_VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            APP_VERSION="$APP_VERSION.0"
+          fi
+
+          echo "version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
+          echo "app_version=$APP_VERSION" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: 构建 ${{ matrix.rid }}
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: macos-15-intel
+            rid: osx-x64
+          - os: macos-15
+            rid: osx-arm64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: 检出发布提交
+        uses: actions/checkout@v6
+
+      - name: 安装 .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: 发布自包含程序
+        shell: pwsh
+        run: >-
+          dotnet publish UnicornOverlord/UnicornOverlord.csproj
+          --configuration Release
+          --runtime ${{ matrix.rid }}
+          --self-contained true
+          --output "${{ runner.temp }}/publish"
+          -p:Version=${{ needs.prepare.outputs.app_version }}
+          -p:DebugType=None
+          -p:DebugSymbols=false
+
+      - name: 打包并验证 Windows x64
+        if: matrix.rid == 'win-x64'
+        env:
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $packageName = "UnicornOverloardEditor-$env:RELEASE_VERSION-win-x64"
+          $packageDir = Join-Path $env:RUNNER_TEMP $packageName
+          $distDir = Join-Path $env:GITHUB_WORKSPACE "dist"
+          $executable = Join-Path $packageDir "UnicornOverloardEditor.exe"
+
+          New-Item -ItemType Directory -Force -Path $packageDir, $distDir | Out-Null
+          Copy-Item -Path (Join-Path $env:RUNNER_TEMP "publish\*") -Destination $packageDir -Recurse -Force
+          Get-ChildItem -Path $packageDir -Filter "*.pdb" -Recurse | Remove-Item -Force
+
+          if (-not (Test-Path $executable)) {
+            throw "Windows 可执行文件不存在：$executable"
+          }
+
+          & $executable --validate-mods (Join-Path $env:RUNNER_TEMP "all-modules.zip")
+          if ($LASTEXITCODE -ne 0) {
+            throw "Windows 包内验证失败，退出码：$LASTEXITCODE"
+          }
+
+          Compress-Archive -Path $packageDir -DestinationPath (Join-Path $distDir "$packageName.zip")
+
+      - name: 打包并验证 macOS
+        if: startsWith(matrix.rid, 'osx-')
+        env:
+          APP_VERSION: ${{ needs.prepare.outputs.app_version }}
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+          RELEASE_RID: ${{ matrix.rid }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          package_name="UnicornOverloardEditor-$RELEASE_VERSION-$RELEASE_RID"
+          app="$RUNNER_TEMP/$package_name/UnicornOverloardEditor.app"
+          executable="$app/Contents/MacOS/UnicornOverloardEditor"
+          dist="$GITHUB_WORKSPACE/dist"
+
+          mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources" "$dist"
+          cp -a "$RUNNER_TEMP/publish/." "$app/Contents/MacOS/"
+          cp UnicornOverlord/Platforms/macOS/Info.plist "$app/Contents/Info.plist"
+          cp UnicornOverlord/Assets/AppIcon.icns "$app/Contents/Resources/AppIcon.icns"
+
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $APP_VERSION" "$app/Contents/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $APP_VERSION" "$app/Contents/Info.plist"
+          chmod +x "$executable"
+          codesign --force --deep --sign - "$app"
+
+          file_output="$(file "$executable")"
+          if [[ "$RELEASE_RID" == "osx-x64" ]]; then
+            grep -q "x86_64" <<< "$file_output"
+          else
+            grep -q "arm64" <<< "$file_output"
+          fi
+
+          codesign --verify --deep --strict "$app"
+          [[ "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Contents/Info.plist")" == "$APP_VERSION" ]]
+          "$executable" --validate-mods "$RUNNER_TEMP/all-modules.zip"
+
+          ditto -c -k --sequesterRsrc --keepParent "$app" "$dist/$package_name.zip"
+
+      - name: 上传发布候选包
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.rid }}
+          path: dist/*.zip
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+
+  release:
+    name: 创建 GitHub Release
+    needs:
+      - prepare
+      - build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 下载三个发布候选包
+        uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          path: release-assets
+          merge-multiple: true
+
+      - name: 检查归档并生成发布说明
+        env:
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          expected=(
+            "UnicornOverloardEditor-$RELEASE_VERSION-win-x64.zip"
+            "UnicornOverloardEditor-$RELEASE_VERSION-osx-x64.zip"
+            "UnicornOverloardEditor-$RELEASE_VERSION-osx-arm64.zip"
+          )
+
+          for archive in "${expected[@]}"; do
+            test -f "release-assets/$archive"
+            unzip -tq "release-assets/$archive"
+          done
+
+          archive_count="$(find release-assets -maxdepth 1 -type f -name '*.zip' | wc -l | tr -d ' ')"
+          if [[ "$archive_count" != "3" ]]; then
+            echo "发布候选包数量不是 3：$archive_count" >&2
+            exit 1
+          fi
+
+          notes="$RUNNER_TEMP/release-notes.md"
+          {
+            echo "## 下载"
+            echo
+            echo "- Windows x64：\`${expected[0]}\`"
+            echo "- macOS Intel x64：\`${expected[1]}\`"
+            echo "- macOS Apple Silicon arm64：\`${expected[2]}\`"
+            echo
+            echo "三个包均为自包含版本。macOS 应用使用 ad-hoc 签名，未经过 Apple 公证。"
+            echo
+            echo "构建提交：\`$GITHUB_SHA\`"
+            echo
+            echo "## SHA-256"
+            echo
+            echo '```text'
+            sha256sum release-assets/*.zip | sed 's#release-assets/##'
+            echo '```'
+          } > "$notes"
+
+      - name: 发布到 GitHub Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+          PRERELEASE: ${{ inputs.prerelease }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          args=(
+            "$RELEASE_VERSION"
+            release-assets/*.zip
+            --target "$GITHUB_SHA"
+            --title "UnicornOverloardEditor $RELEASE_VERSION"
+            --notes-file "$RUNNER_TEMP/release-notes.md"
+          )
+
+          if [[ "$PRERELEASE" == "true" ]]; then
+            args+=(--prerelease)
+          else
+            args+=(--latest)
+          fi
+
+          gh release create "${args[@]}"

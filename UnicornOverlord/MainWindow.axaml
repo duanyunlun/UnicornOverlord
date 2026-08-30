@@ -7,6 +7,7 @@
         x:Name="Root"
         mc:Ignorable="d"
         Title="独角兽之王 存档与 MOD 编辑器"
+        Icon="/Assets/AppIcon.png"
         Width="1180" Height="820" MinWidth="960" MinHeight="680"
         WindowStartupLocation="CenterScreen"
         Background="#F3F4F6">

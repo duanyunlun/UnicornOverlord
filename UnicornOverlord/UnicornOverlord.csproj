@@ -15,6 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaResource Include="Assets/AppIcon.png" />
+    <Content Include="Assets/AppIcon.icns" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="info/**/*" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="mods/**/*" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="locales/*.json" CopyToOutputDirectory="PreserveNewest" />

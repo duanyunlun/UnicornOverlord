@@ -1,10 +1,7 @@
-using System.ComponentModel;
-
 namespace UnicornOverlord;
 
-internal sealed class TextTable : INotifyPropertyChanged
+internal sealed class TextTable : ObservableObject
 {
-	public event PropertyChangedEventHandler? PropertyChanged;
 	public String Name { get; }
 	public String ArchivePath { get; }
 	public int ArchiveIndex { get; }
@@ -19,5 +16,5 @@ internal sealed class TextTable : INotifyPropertyChanged
 		Document = document;
 	}
 
-	public void NotifyChanged() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Summary)));
+	public void NotifyChanged() => Notify(nameof(Summary));
 }

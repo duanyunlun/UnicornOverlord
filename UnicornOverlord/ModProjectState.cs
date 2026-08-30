@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Text.Json;
 
 namespace UnicornOverlord;
@@ -230,72 +229,29 @@ internal sealed class FortRecordEdit
 	public object Snapshot() => new { RecordId, ClassId };
 }
 
-internal sealed class FortLocationState : INotifyPropertyChanged
+internal sealed class FortLocationState : ObservableObject, ILocationState<FortRecordEdit>
 {
-	public event PropertyChangedEventHandler? PropertyChanged;
 	public required ModLocationChoice Choice { get; init; }
 	public required IReadOnlyList<FortRecordEdit> Records { get; init; }
 	public String DisplayName => Choice.DisplayName;
-	public void RefreshLocalizedName() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DisplayName)));
+	public void RefreshLocalizedName() => Notify(nameof(DisplayName));
 }
 
-internal sealed class FortEditorState : INotifyPropertyChanged
+internal sealed class FortEditorState : LocationEditorState<FortLocationState, FortRecordEdit>
 {
-	private FortLocationState mSelectedLocation;
-	private FortRecordEdit mSelectedRecord;
+	private static readonly String[] SelectionProperties = [nameof(SelectedClass), nameof(ClassId)];
 
-	public FortEditorState()
-	{
-		var edits = ModCatalog.FortRecordChoices.ToDictionary(choice => choice.Value, choice => new FortRecordEdit
-		{
-			Choice = choice,
-			OriginalClassId = ModCatalog.FortRecords[choice.Value].ValueA,
-			ClassId = ModCatalog.FortRecords[choice.Value].ValueA,
-		});
-		Locations = ModCatalog.FortLocations.Select(location => new FortLocationState
-		{
-			Choice = location,
-			Records = ModCatalog.FortRecordChoices.Where(record => record.LocationKey == location.Key).Select(record => edits[record.Value]).ToArray(),
-		}).ToArray();
-		mSelectedLocation = Locations[0];
-		mSelectedRecord = mSelectedLocation.Records[0];
-	}
+	public FortEditorState() : base(CreateLocations()) { }
 
-	public event PropertyChangedEventHandler? PropertyChanged;
-	public IReadOnlyList<FortLocationState> Locations { get; }
-	public IReadOnlyList<FortRecordEdit> RecordsAtLocation => mSelectedLocation.Records;
 	public IEnumerable<FortRecordEdit> ModifiedRecords => Locations.SelectMany(location => location.Records).Where(record => record.IsModified);
-
-	public FortLocationState SelectedLocation
-	{
-		get => mSelectedLocation;
-		set
-		{
-			if (value == null || ReferenceEquals(mSelectedLocation, value)) return;
-			mSelectedLocation = value;
-			Notify(nameof(SelectedLocation), nameof(RecordsAtLocation));
-			SelectedRecord = value.Records[0];
-		}
-	}
-
-	public FortRecordEdit SelectedRecord
-	{
-		get => mSelectedRecord;
-		set
-		{
-			if (value == null || ReferenceEquals(mSelectedRecord, value) || !mSelectedLocation.Records.Contains(value)) return;
-			mSelectedRecord = value;
-			Notify(nameof(SelectedRecord), nameof(SelectedClass), nameof(ClassId));
-		}
-	}
 
 	public int ClassId
 	{
-		get => mSelectedRecord.ClassId;
+		get => SelectedRecord.ClassId;
 		set
 		{
-			if (mSelectedRecord.ClassId == value) return;
-			mSelectedRecord.ClassId = value;
+			if (SelectedRecord.ClassId == value) return;
+			SelectedRecord.ClassId = value;
 			Notify(nameof(ClassId), nameof(SelectedClass));
 		}
 	}
@@ -306,27 +262,23 @@ internal sealed class FortEditorState : INotifyPropertyChanged
 		set { if (value != null) ClassId = value.Value; }
 	}
 
-	public void SelectLocation(ModLocationChoice? location)
-	{
-		if (location != null && Locations.FirstOrDefault(item => ReferenceEquals(item.Choice, location) || item.Choice.Key == location.Key) is FortLocationState selected)
-			SelectedLocation = selected;
-	}
+	protected override int RecordId(FortRecordEdit record) => record.RecordId;
+	protected override String[] SelectedRecordPropertyNames => SelectionProperties;
+	protected override String[] LocalizedPropertyNames => [nameof(SelectedClass)];
 
-	public void SelectRecord(ModRecordChoice? choice)
+	private static IReadOnlyList<FortLocationState> CreateLocations()
 	{
-		if (choice != null && RecordsAtLocation.FirstOrDefault(record => record.RecordId == choice.Value) is FortRecordEdit selected)
-			SelectedRecord = selected;
-	}
-
-	public void RefreshLocalizedChoices()
-	{
-		foreach (FortLocationState location in Locations) location.RefreshLocalizedName();
-		Notify(nameof(Locations), nameof(SelectedLocation), nameof(SelectedRecord), nameof(SelectedClass));
-	}
-
-	private void Notify(params String[] propertyNames)
-	{
-		foreach (String propertyName in propertyNames) PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		var edits = ModCatalog.FortRecordChoices.ToDictionary(choice => choice.Value, choice => new FortRecordEdit
+		{
+			Choice = choice,
+			OriginalClassId = ModCatalog.FortRecords[choice.Value].ValueA,
+			ClassId = ModCatalog.FortRecords[choice.Value].ValueA,
+		});
+		return ModCatalog.FortLocations.Select(location => new FortLocationState
+		{
+			Choice = location,
+			Records = ModCatalog.FortRecordChoices.Where(record => record.LocationKey == location.Key).Select(record => edits[record.Value]).ToArray(),
+		}).ToArray();
 	}
 }
 
@@ -342,71 +294,29 @@ internal sealed class ShopRecordEdit
 	public object Snapshot() => new { RecordId, ItemId, Stock, Price };
 }
 
-internal sealed class ShopLocationState : INotifyPropertyChanged
+internal sealed class ShopLocationState : ObservableObject, ILocationState<ShopRecordEdit>
 {
-	public event PropertyChangedEventHandler? PropertyChanged;
 	public required ModLocationChoice Choice { get; init; }
 	public required IReadOnlyList<ShopRecordEdit> Records { get; init; }
 	public String DisplayName => Choice.DisplayName;
-	public void RefreshLocalizedName() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DisplayName)));
+	public void RefreshLocalizedName() => Notify(nameof(DisplayName));
 }
 
-internal sealed class ShopEditorState : INotifyPropertyChanged
+internal sealed class ShopEditorState : LocationEditorState<ShopLocationState, ShopRecordEdit>
 {
-	private ShopLocationState mSelectedLocation;
-	private ShopRecordEdit mSelectedRecord;
+	private static readonly String[] SelectionProperties = [nameof(SelectedItem), nameof(ItemId), nameof(Stock), nameof(Price)];
 
-	public ShopEditorState()
-	{
-		var edits = ModCatalog.ShopRecordChoices.ToDictionary(choice => choice.Value, choice =>
-		{
-			ModShopRecordInfo original = ModCatalog.ShopRecords[choice.Value];
-			return new ShopRecordEdit { Choice = choice, Original = original, ItemId = original.ItemId, Stock = original.Stock, Price = original.Price };
-		});
-		Locations = ModCatalog.ShopLocations.Select(location => new ShopLocationState
-		{
-			Choice = location,
-			Records = ModCatalog.ShopRecordChoices.Where(record => record.LocationKey == location.Key).Select(record => edits[record.Value]).ToArray(),
-		}).ToArray();
-		mSelectedLocation = Locations[0];
-		mSelectedRecord = mSelectedLocation.Records[0];
-	}
+	public ShopEditorState() : base(CreateLocations()) { }
 
-	public event PropertyChangedEventHandler? PropertyChanged;
-	public IReadOnlyList<ShopLocationState> Locations { get; }
-	public IReadOnlyList<ShopRecordEdit> RecordsAtLocation => mSelectedLocation.Records;
 	public IEnumerable<ShopRecordEdit> ModifiedRecords => Locations.SelectMany(location => location.Records).Where(record => record.IsModified);
-
-	public ShopLocationState SelectedLocation
-	{
-		get => mSelectedLocation;
-		set
-		{
-			if (value == null || ReferenceEquals(mSelectedLocation, value)) return;
-			mSelectedLocation = value;
-			Notify(nameof(SelectedLocation), nameof(RecordsAtLocation));
-			SelectedRecord = value.Records[0];
-		}
-	}
-
-	public ShopRecordEdit SelectedRecord
-	{
-		get => mSelectedRecord;
-		set
-		{
-			if (value == null || ReferenceEquals(mSelectedRecord, value) || !mSelectedLocation.Records.Contains(value)) return;
-			mSelectedRecord = value;
-			Notify(nameof(SelectedRecord), nameof(SelectedItem), nameof(ItemId), nameof(Stock), nameof(Price));
-		}
-	}
 
 	public int ItemId
 	{
-		get => mSelectedRecord.ItemId;
+		get => SelectedRecord.ItemId;
 		set
 		{
-			if (mSelectedRecord.ItemId == value) return;
-			mSelectedRecord.ItemId = value;
+			if (SelectedRecord.ItemId == value) return;
+			SelectedRecord.ItemId = value;
 			Notify(nameof(ItemId), nameof(SelectedItem));
 		}
 	}
@@ -419,36 +329,31 @@ internal sealed class ShopEditorState : INotifyPropertyChanged
 
 	public int Stock
 	{
-		get => mSelectedRecord.Stock;
-		set { if (mSelectedRecord.Stock != value) { mSelectedRecord.Stock = value; Notify(nameof(Stock)); } }
+		get => SelectedRecord.Stock;
+		set { if (SelectedRecord.Stock != value) { SelectedRecord.Stock = value; Notify(nameof(Stock)); } }
 	}
 
 	public int Price
 	{
-		get => mSelectedRecord.Price;
-		set { if (mSelectedRecord.Price != value) { mSelectedRecord.Price = value; Notify(nameof(Price)); } }
+		get => SelectedRecord.Price;
+		set { if (SelectedRecord.Price != value) { SelectedRecord.Price = value; Notify(nameof(Price)); } }
 	}
 
-	public void SelectLocation(ModLocationChoice? location)
-	{
-		if (location != null && Locations.FirstOrDefault(item => ReferenceEquals(item.Choice, location) || item.Choice.Key == location.Key) is ShopLocationState selected)
-			SelectedLocation = selected;
-	}
+	protected override int RecordId(ShopRecordEdit record) => record.RecordId;
+	protected override String[] SelectedRecordPropertyNames => SelectionProperties;
+	protected override String[] LocalizedPropertyNames => [nameof(SelectedItem)];
 
-	public void SelectRecord(ModRecordChoice? choice)
+	private static IReadOnlyList<ShopLocationState> CreateLocations()
 	{
-		if (choice != null && RecordsAtLocation.FirstOrDefault(record => record.RecordId == choice.Value) is ShopRecordEdit selected)
-			SelectedRecord = selected;
-	}
-
-	public void RefreshLocalizedChoices()
-	{
-		foreach (ShopLocationState location in Locations) location.RefreshLocalizedName();
-		Notify(nameof(Locations), nameof(SelectedLocation), nameof(SelectedRecord), nameof(SelectedItem));
-	}
-
-	private void Notify(params String[] propertyNames)
-	{
-		foreach (String propertyName in propertyNames) PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		var edits = ModCatalog.ShopRecordChoices.ToDictionary(choice => choice.Value, choice =>
+		{
+			ModShopRecordInfo original = ModCatalog.ShopRecords[choice.Value];
+			return new ShopRecordEdit { Choice = choice, Original = original, ItemId = original.ItemId, Stock = original.Stock, Price = original.Price };
+		});
+		return ModCatalog.ShopLocations.Select(location => new ShopLocationState
+		{
+			Choice = location,
+			Records = ModCatalog.ShopRecordChoices.Where(record => record.LocationKey == location.Key).Select(record => edits[record.Value]).ToArray(),
+		}).ToArray();
 	}
 }

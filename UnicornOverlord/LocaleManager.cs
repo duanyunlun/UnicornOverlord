@@ -16,6 +16,7 @@ internal sealed class LocaleManager : INotifyPropertyChanged
 {
 	private readonly Dictionary<String, IReadOnlyDictionary<String, String>> mLocales = new(StringComparer.OrdinalIgnoreCase);
 	private readonly Dictionary<String, String> mKnownTranslations = new(StringComparer.Ordinal);
+	private readonly IReadOnlyList<FormatTemplate> mFormatTemplates;
 	private int mLanguageIndex;
 
 	private LocaleManager()
@@ -31,6 +32,13 @@ internal sealed class LocaleManager : INotifyPropertyChanged
 			foreach ((String source, String translation) in locale)
 				if (!String.IsNullOrWhiteSpace(translation)) mKnownTranslations.TryAdd(translation, source);
 		}
+		mFormatTemplates = mLocales.Values
+			.SelectMany(values => values.Keys)
+			.Distinct()
+			.Where(value => value.Count(c => c == '{') == 1 && value.Contains("{0}", StringComparison.Ordinal))
+			.Select(template => new FormatTemplate(template,
+				[template, .. mLocales.Values.Select(values => values.GetValueOrDefault(template)).Where(value => !String.IsNullOrWhiteSpace(value))!]))
+			.ToArray();
 		mLanguageIndex = Math.Clamp(ApplicationSettings.Language, 0, Languages.Count - 1);
 	}
 
@@ -58,17 +66,16 @@ internal sealed class LocaleManager : INotifyPropertyChanged
 		if (mKnownTranslations.TryGetValue(source, out String? original)) source = original;
 		IReadOnlyDictionary<String, String> locale = mLocales[Languages[mLanguageIndex].Code];
 		if (locale.TryGetValue(source, out String? translated) && !String.IsNullOrWhiteSpace(translated)) return translated;
-		foreach (String template in mLocales.Values.SelectMany(values => values.Keys).Distinct().Where(value => value.Count(c => c == '{') == 1 && value.Contains("{0}", StringComparison.Ordinal)))
+		foreach (FormatTemplate template in mFormatTemplates)
 		{
-			IEnumerable<String> candidates = [template, .. mLocales.Values.Select(values => values.GetValueOrDefault(template)).Where(value => !String.IsNullOrWhiteSpace(value))!];
-			foreach (String candidate in candidates)
+			foreach (String candidate in template.Candidates)
 			{
 				int marker = candidate.IndexOf("{0}", StringComparison.Ordinal);
 				String prefix = candidate[..marker];
 				String suffix = candidate[(marker + 3)..];
 				if (!source.StartsWith(prefix, StringComparison.Ordinal) || !source.EndsWith(suffix, StringComparison.Ordinal) || source.Length < prefix.Length + suffix.Length) continue;
 				String value = source[prefix.Length..(source.Length - suffix.Length)];
-				String target = locale.GetValueOrDefault(template) ?? template;
+				String target = locale.GetValueOrDefault(template.Source) ?? template.Source;
 				return String.Format(target, value);
 			}
 		}
@@ -76,6 +83,8 @@ internal sealed class LocaleManager : INotifyPropertyChanged
 	}
 
 	public String Format(String source, params object?[] args) => String.Format(Translate(source), args);
+
+	private sealed record FormatTemplate(String Source, IReadOnlyList<String> Candidates);
 }
 
 internal static class VisualLocalizer

@@ -1,11 +1,7 @@
-﻿using System.ComponentModel;
-
-namespace UnicornOverlord
+﻿namespace UnicornOverlord
 {
-	internal class Item : INotifyPropertyChanged
+	internal class Item : ObservableObject
 	{
-		public event PropertyChangedEventHandler? PropertyChanged;
-
 		private readonly uint mAddress;
 
 		public Item(uint address)
@@ -19,7 +15,7 @@ namespace UnicornOverlord
 			set
 			{
 				SaveData.Instance().WriteNumber(mAddress, 4, value);
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ID)));
+					Notify(nameof(ID));
 			}
 		}
 
@@ -35,7 +31,7 @@ namespace UnicornOverlord
 			set
 			{
 				SaveData.Instance().WriteNumber(mAddress + 8, 3, value);
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
+					Notify(nameof(Count));
 			}
 		}
 

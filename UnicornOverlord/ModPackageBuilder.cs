@@ -1,5 +1,4 @@
 using System.IO.Compression;
-using System.Text;
 
 namespace UnicornOverlord;
 
@@ -26,12 +25,12 @@ internal static class ModPackageBuilder
 		foreach (var patch in patches)
 		{
 			String entryName = $"emulator/contents/{target.TitleId}/{patch.Module.Key}/exefs/main.pchtxt";
-			WriteText(archive, entryName, patch.Content);
+			archive.WriteUtf8Text(entryName, patch.Content);
 		}
 
-		WriteText(archive, "README_CN.txt", CreateReadme(modules, target) + "\n");
-		WriteText(archive, "manifest.txt", CreateManifest(modules, target));
-		WriteText(archive, "mod-project.json", project.ToJson(modules, target) + "\n");
+		archive.WriteUtf8Text("README_CN.txt", CreateReadme(modules, target) + "\n");
+		archive.WriteUtf8Text("manifest.txt", CreateManifest(modules, target));
+		archive.WriteUtf8Text("mod-project.json", project.ToJson(modules, target) + "\n");
 	}
 
 	private static void ValidateConflicts(IEnumerable<(ModModule Module, String Content)> patches)
@@ -87,13 +86,5 @@ internal static class ModPackageBuilder
 		};
 		lines.AddRange(modules.Select(module => $"module={module.Key}|{module.Name}"));
 		return String.Join('\n', lines) + "\n";
-	}
-
-	private static void WriteText(ZipArchive archive, String path, String content)
-	{
-		ZipArchiveEntry entry = archive.CreateEntry(path, CompressionLevel.Optimal);
-		using Stream stream = entry.Open();
-		using var writer = new StreamWriter(stream, new UTF8Encoding(false));
-		writer.Write(content);
 	}
 }

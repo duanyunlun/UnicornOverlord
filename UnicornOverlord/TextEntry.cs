@@ -1,13 +1,10 @@
-using System.ComponentModel;
-
 namespace UnicornOverlord;
 
-internal sealed class TextEntry : INotifyPropertyChanged
+internal sealed class TextEntry : ObservableObject
 {
 	private readonly FmsDocument mDocument;
 	private String mText;
 
-	public event PropertyChangedEventHandler? PropertyChanged;
 	public int Index { get; }
 	public String OriginalText => mDocument.GetOriginalText(Index);
 	public bool IsChanged => mDocument.IsChanged(Index);
@@ -21,9 +18,7 @@ internal sealed class TextEntry : INotifyPropertyChanged
 			if (mText == value) return;
 			mDocument.SetText(Index, value ?? String.Empty);
 			mText = value ?? String.Empty;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Text)));
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsChanged)));
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StateText)));
+			Notify(nameof(Text), nameof(IsChanged), nameof(StateText));
 		}
 	}
 
@@ -34,5 +29,5 @@ internal sealed class TextEntry : INotifyPropertyChanged
 		mText = document.GetText(index);
 	}
 
-	public void RefreshLocale() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StateText)));
+	public void RefreshLocale() => Notify(nameof(StateText));
 }

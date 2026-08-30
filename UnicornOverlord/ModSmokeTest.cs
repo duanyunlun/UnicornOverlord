@@ -10,7 +10,7 @@ internal static class ModSmokeTest
 	{
 		String? directory = Path.GetDirectoryName(Path.GetFullPath(outputPath));
 		if (!String.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
-		ModModule[] modules = [.. ViewModel.CreateModModules().Where(module => !module.IsTextEditor)];
+		ModModule[] modules = [.. ModModuleCatalog.CreateModules().Where(module => !module.IsTextEditor)];
 		ValidateEditorSemantics(modules);
 		foreach (ModTarget target in ModTarget.All)
 		{

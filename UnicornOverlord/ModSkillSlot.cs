@@ -1,13 +1,10 @@
-using System.ComponentModel;
-
 namespace UnicornOverlord;
 
-internal sealed class ModSkillSlot : INotifyPropertyChanged
+internal sealed class ModSkillSlot : ObservableObject
 {
 	private ModChoice? mSelectedSkill;
 	private int mLevel;
 
-	public event PropertyChangedEventHandler? PropertyChanged;
 	public required int Index { get; init; }
 	public required bool IsPassive { get; init; }
 	public IReadOnlyList<ModChoice> Choices => IsPassive ? ModCatalog.PassiveSkillChoices : ModCatalog.ActiveSkillChoices;
@@ -20,9 +17,7 @@ internal sealed class ModSkillSlot : INotifyPropertyChanged
 		get => mSelectedSkill;
 		set
 		{
-			if (mSelectedSkill == value) return;
-			mSelectedSkill = value;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedSkill)));
+			SetField(ref mSelectedSkill, value, nameof(SelectedSkill));
 		}
 	}
 
@@ -32,11 +27,9 @@ internal sealed class ModSkillSlot : INotifyPropertyChanged
 		set
 		{
 			int normalized = Math.Clamp(value, 1, 99);
-			if (mLevel == normalized) return;
-			mLevel = normalized;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Level)));
+			SetField(ref mLevel, normalized, nameof(Level));
 		}
 	}
 
-	public void RefreshLocale() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SlotName)));
+	public void RefreshLocale() => Notify(nameof(SlotName));
 }

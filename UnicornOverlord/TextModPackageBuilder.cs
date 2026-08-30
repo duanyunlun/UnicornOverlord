@@ -36,7 +36,7 @@ internal static class TextModPackageBuilder
 			using var archive = new ZipArchive(zipStream, ZipArchiveMode.Create);
 			String cpkPath = $"emulator/contents/{target.TitleId}/text_editor/romfs/{language.CpkFileName}";
 			archive.CreateEntryFromFile(rebuiltCpk, cpkPath, CompressionLevel.NoCompression);
-			WriteText(archive, "README_CN.txt", $"""
+				archive.WriteUtf8Text("README_CN.txt", $"""
 				《独角兽之王》文本 MOD
 
 				目标版本：{target.DisplayName}
@@ -47,7 +47,7 @@ internal static class TextModPackageBuilder
 				压缩包内 emulator 目录可复制到模拟器配置目录。启用前请确认 Title ID 与游戏版本一致。
 				本工具只重建所选 CPK 的副本，不修改源 CPK、游戏文件或存档。
 				""" + "\n");
-			if (!String.IsNullOrEmpty(projectJson)) WriteText(archive, "mod-project.json", projectJson + "\n");
+				if (!String.IsNullOrEmpty(projectJson)) archive.WriteUtf8Text("mod-project.json", projectJson + "\n");
 		}
 		finally
 		{
@@ -75,12 +75,5 @@ internal static class TextModPackageBuilder
 		if (process.ExitCode != 0)
 			throw new InvalidOperationException($"CPK 工具执行失败：{(String.IsNullOrWhiteSpace(error) ? output : error).Trim()}");
 		return output;
-	}
-
-	private static void WriteText(ZipArchive archive, String path, String content)
-	{
-		using Stream stream = archive.CreateEntry(path).Open();
-		using var writer = new StreamWriter(stream, new System.Text.UTF8Encoding(false));
-		writer.Write(content);
 	}
 }

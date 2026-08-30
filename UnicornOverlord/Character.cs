@@ -1,12 +1,9 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
 
 namespace UnicornOverlord
 {
-	internal class Character : INotifyPropertyChanged
+	internal class Character : ObservableObject
 	{
-		public event PropertyChangedEventHandler? PropertyChanged;
-
 		public ObservableCollection<Bond>? Bonds {  get; set; }
 
 		private readonly uint mAddress;
@@ -27,7 +24,7 @@ namespace UnicornOverlord
 			set
 			{
 				SaveData.Instance().WriteNumber(mAddress + 40, 1, value);
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Class)));
+					Notify(nameof(Class));
 			}
 		}
 

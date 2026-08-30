@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.Windows.Input;
 
 namespace UnicornOverlord;
@@ -9,7 +8,7 @@ internal sealed record ModCategory(String SourceName, IReadOnlyList<ModModule> M
 	public bool IsTextEditor => Modules.Count == 1 && Modules[0].IsTextEditor;
 }
 
-internal sealed class ModModule : INotifyPropertyChanged
+internal sealed class ModModule : ObservableObject
 {
 	private String mCategory = String.Empty;
 	private String mName = String.Empty;
@@ -18,7 +17,6 @@ internal sealed class ModModule : INotifyPropertyChanged
 	private String? mCalibrationState;
 	public ModModule() => RerollCommand = new ActionCommand(_ => ValueA = Random.Shared.Next(1, Int32.MaxValue));
 
-	public event PropertyChangedEventHandler? PropertyChanged;
 	public required ModProjectState Project { get; init; }
 	public required String Key { get; init; }
 	public required String Category { get => LocaleManager.Instance.Translate(mCategory); init => mCategory = value; }
@@ -243,9 +241,4 @@ internal sealed class ModModule : INotifyPropertyChanged
 		nameof(SelectedFortClass), nameof(SelectedShopItem), nameof(SelectedTargetShape), nameof(AbilityTypeText), nameof(IsActiveAbility), nameof(IsPassiveAbility), nameof(AbilityDescription),
 		nameof(PreviewModeDescription), nameof(ValueA), nameof(ValueB), nameof(ValueC), nameof(ValueD), nameof(ValueE), nameof(ValueF), nameof(ValueG), nameof(ValueH), nameof(ValueI),
 		nameof(ValueJ), nameof(ValueK), nameof(ValueL), nameof(ValueM), nameof(ValueN), nameof(ActiveSkills), nameof(PassiveSkills));
-
-	private void Notify(params String[] propertyNames)
-	{
-		foreach (String propertyName in propertyNames) PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-	}
 }

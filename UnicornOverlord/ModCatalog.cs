@@ -1,12 +1,10 @@
 using System.Globalization;
-using System.ComponentModel;
 using System.Text;
 
 namespace UnicornOverlord;
 
-internal sealed class ModChoice : INotifyPropertyChanged
+internal sealed class ModChoice : ObservableObject
 {
-	public event PropertyChangedEventHandler? PropertyChanged;
 	public required int Value { get; init; }
 	public required String EnglishName { get; init; }
 	public required String JapaneseName { get; init; }
@@ -22,8 +20,7 @@ internal sealed class ModChoice : INotifyPropertyChanged
 	private static String FirstAvailable(params String[] names) => names.FirstOrDefault(name => !String.IsNullOrWhiteSpace(name)) ?? String.Empty;
 	public void RefreshName()
 	{
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DisplayName)));
+		Notify(nameof(Name), nameof(DisplayName));
 	}
 }
 
@@ -67,9 +64,8 @@ internal sealed record ModRecordInfo(int Id, int ValueA, int ValueB, int ValueC,
 
 internal sealed record ModShopRecordInfo(int Id, uint Address, int ItemId, int Stock, int Price, String LocationKey, String GroupName, bool IsShared);
 
-internal sealed class ModLocationChoice : INotifyPropertyChanged
+internal sealed class ModLocationChoice : ObservableObject
 {
-	public event PropertyChangedEventHandler? PropertyChanged;
 	public required String Key { get; init; }
 	public required String EnglishName { get; init; }
 	public required String JapaneseName { get; init; }
@@ -80,12 +76,11 @@ internal sealed class ModLocationChoice : INotifyPropertyChanged
 		1 => JapaneseName,
 		_ => ChineseName,
 	};
-	public void RefreshName() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DisplayName)));
+	public void RefreshName() => Notify(nameof(DisplayName));
 }
 
-internal sealed class ModRecordChoice : INotifyPropertyChanged
+internal sealed class ModRecordChoice : ObservableObject
 {
-	public event PropertyChangedEventHandler? PropertyChanged;
 	public required int Value { get; init; }
 	public required String LocationKey { get; init; }
 	public required String EnglishLocation { get; init; }
@@ -132,8 +127,7 @@ internal sealed class ModRecordChoice : INotifyPropertyChanged
 
 	public void RefreshName()
 	{
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DisplayName)));
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DetailDisplayName)));
+		Notify(nameof(DisplayName), nameof(DetailDisplayName));
 	}
 }
 
@@ -141,6 +135,7 @@ internal static class ModCatalog
 {
 	public static IReadOnlyList<ModSkillInfo> Skills { get; } = LoadSkills();
 	public static IReadOnlyList<ModChoice> SkillChoices { get; } = Skills.Select(skill => skill.Choice).ToArray();
+	private static IReadOnlyDictionary<int, ModChoice> SkillChoicesById { get; } = Index(SkillChoices, choice => choice.Value);
 	public static IReadOnlyList<ModChoice> ActiveSkillChoices { get; } = CreateSkillChoices(false);
 	public static IReadOnlyList<ModChoice> PassiveSkillChoices { get; } = CreateSkillChoices(true);
 	public static IReadOnlyList<ModChoice> ActiveSkillChoicesWithoutEmpty { get; } = ActiveSkillChoices.Where(choice => choice.Value != 0).ToArray();
@@ -153,6 +148,8 @@ internal static class ModCatalog
 		.Where(item => item.Value <= 970)
 		.Select(item => new ModChoice { Value = checked((int)item.Value), EnglishName = item.Name, JapaneseName = String.Empty, ChineseName = item.Name, Source = item })
 		.ToArray();
+	private static IReadOnlyDictionary<int, ModChoice> ClassChoicesById { get; } = Index(ClassChoices, choice => choice.Value);
+	private static IReadOnlyDictionary<int, ModChoice> ItemChoicesById { get; } = Index(ItemChoices, choice => choice.Value);
 	public static IReadOnlyDictionary<int, ModClassInfo> Classes { get; } = LoadClasses();
 	public static IReadOnlyDictionary<int, ModRecordInfo> FortRecords { get; } = LoadRecords("fortmod.txt", 3);
 	public static IReadOnlyDictionary<int, ModRecordInfo> MineRecords { get; } = LoadRecords("minemod.txt", 5);
@@ -162,16 +159,19 @@ internal static class ModCatalog
 	public static IReadOnlyList<ModRecordChoice> FortRecordChoices { get; } = CreateFortRecordChoices();
 	public static IReadOnlyList<ModRecordChoice> MineRecordChoices { get; } = CreateMineRecordChoices();
 	public static IReadOnlyList<ModRecordChoice> ShopRecordChoices { get; } = CreateShopRecordChoices();
+	private static IReadOnlyDictionary<int, ModRecordChoice> FortRecordChoicesById { get; } = Index(FortRecordChoices, choice => choice.Value);
+	private static IReadOnlyDictionary<int, ModRecordChoice> MineRecordChoicesById { get; } = Index(MineRecordChoices, choice => choice.Value);
+	private static IReadOnlyDictionary<int, ModRecordChoice> ShopRecordChoicesById { get; } = Index(ShopRecordChoices, choice => choice.Value);
 	public static IReadOnlyList<ModLocationChoice> FortLocations { get; } = CreateLocations(FortRecordChoices);
 	public static IReadOnlyList<ModLocationChoice> MineLocations { get; } = CreateLocations(MineRecordChoices);
 	public static IReadOnlyList<ModLocationChoice> ShopLocations { get; } = CreateLocations(ShopRecordChoices);
 
-	public static ModChoice? FindSkill(int id) => SkillChoices.FirstOrDefault(choice => choice.Value == id);
-	public static ModChoice? FindClass(int id) => ClassChoices.FirstOrDefault(choice => choice.Value == id);
-	public static ModChoice? FindItem(int id) => ItemChoices.FirstOrDefault(choice => choice.Value == id);
-	public static ModRecordChoice? FindFortRecord(int id) => FortRecordChoices.FirstOrDefault(choice => choice.Value == id);
-	public static ModRecordChoice? FindMineRecord(int id) => MineRecordChoices.FirstOrDefault(choice => choice.Value == id);
-	public static ModRecordChoice? FindShopRecord(int id) => ShopRecordChoices.FirstOrDefault(choice => choice.Value == id);
+	public static ModChoice? FindSkill(int id) => SkillChoicesById.GetValueOrDefault(id);
+	public static ModChoice? FindClass(int id) => ClassChoicesById.GetValueOrDefault(id);
+	public static ModChoice? FindItem(int id) => ItemChoicesById.GetValueOrDefault(id);
+	public static ModRecordChoice? FindFortRecord(int id) => FortRecordChoicesById.GetValueOrDefault(id);
+	public static ModRecordChoice? FindMineRecord(int id) => MineRecordChoicesById.GetValueOrDefault(id);
+	public static ModRecordChoice? FindShopRecord(int id) => ShopRecordChoicesById.GetValueOrDefault(id);
 	public static void RefreshLocalizedNames()
 	{
 		foreach (ModChoice choice in SkillChoices.Concat(ClassChoices).Concat(ItemChoices).Distinct()) choice.RefreshName();
@@ -189,6 +189,9 @@ internal static class ModCatalog
 			String chinese = String.IsNullOrEmpty(first.ChineseFacilityType) ? first.ChineseLocation : $"{first.ChineseLocation} · {first.ChineseFacilityType}";
 			return new ModLocationChoice { Key = group.Key, EnglishName = english, JapaneseName = japanese, ChineseName = chinese };
 		}).ToArray();
+
+	private static IReadOnlyDictionary<int, T> Index<T>(IEnumerable<T> values, Func<T, int> keySelector) =>
+		values.ToDictionary(keySelector);
 
 	private static IReadOnlyList<ModRecordChoice> CreateFortRecordChoices()
 	{

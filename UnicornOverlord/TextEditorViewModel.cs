@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace UnicornOverlord;
 
-internal sealed class TextEditorViewModel : INotifyPropertyChanged
+internal sealed class TextEditorViewModel : ObservableObject
 {
 	private const int MaximumResults = 500;
 	private static readonly String[] SupportedTables = ["MsgSheet/UcFactorList.fms", "MsgSheet/UcScriptMsgConv.fms"];
@@ -22,7 +22,6 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 	private TextEntry? mSelectedEntry;
 	private String mValidationMessage = "尚未载入文本归档。";
 
-	public event PropertyChangedEventHandler? PropertyChanged;
 	public ICommand ChooseToolCommand { get; }
 	public ICommand OpenCpkCommand { get; }
 	public ICommand SearchCommand { get; }
@@ -288,12 +287,4 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 		return null;
 	}
 
-	private void SetField<T>(ref T field, T value, String propertyName)
-	{
-		if (EqualityComparer<T>.Default.Equals(field, value)) return;
-		field = value;
-		OnPropertyChanged(propertyName);
-	}
-
-	private void OnPropertyChanged(String propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

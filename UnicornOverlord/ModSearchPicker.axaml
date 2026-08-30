@@ -3,7 +3,8 @@
              x:Class="UnicornOverlord.ModSearchPicker"
              x:Name="Root">
   <Grid ColumnDefinitions="Auto,110" ColumnSpacing="6" Height="{Binding ControlHeight, ElementName=Root}" HorizontalAlignment="Left">
-    <ComboBox x:Name="Choices" Width="{Binding ChoiceWidth, ElementName=Root}" Height="{Binding ControlHeight, ElementName=Root}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxDropDownHeight="360"/>
+    <ComboBox x:Name="Choices" Width="{Binding ChoiceWidth, ElementName=Root}" MaxWidth="{Binding MaxChoiceWidth, ElementName=Root}"
+              Height="{Binding ControlHeight, ElementName=Root}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxDropDownHeight="360"/>
     <TextBox x:Name="SearchBox" Grid.Column="1" Classes="search" Height="{Binding ControlHeight, ElementName=Root}" VerticalAlignment="Stretch"
              PlaceholderText="搜索名称" TextChanged="OnSearchTextChanged"/>
   </Grid>

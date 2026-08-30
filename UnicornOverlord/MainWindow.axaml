@@ -470,7 +470,7 @@
 
                   <StackPanel IsVisible="{Binding IsFortEditor}" Spacing="8">
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
-                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="地图地点"/><local:ModSearchPicker ChoiceWidth="NaN" ItemsSource="{Binding Fort.Locations}" SelectedItem="{Binding Fort.SelectedLocation, Mode=TwoWay}"/></StackPanel>
+                      <StackPanel Spacing="5"><TextBlock Classes="option-title" Text="地图地点"/><local:ModSearchPicker ChoiceWidth="NaN" MaxChoiceWidth="300" ItemsSource="{Binding Fort.Locations}" SelectedItem="{Binding Fort.SelectedLocation, Mode=TwoWay}"/></StackPanel>
                       <StackPanel Grid.Column="1" Spacing="5"><TextBlock Classes="option-title" Text="原版招募"/><ComboBox ItemsSource="{Binding Fort.SelectedLocation.Records}" SelectedItem="{Binding Fort.SelectedRecord, Mode=TwoWay}" MaxDropDownHeight="420"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Choice.DetailDisplayName}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel>
                       <StackPanel Grid.Column="2" Spacing="5"><TextBlock Classes="option-title" Text="修改为"/><local:ModSearchPicker ItemsSource="{Binding ClassChoices}" SelectedItem="{Binding Fort.SelectedClass, Mode=TwoWay}"/></StackPanel>
                     </Grid>

@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 
 namespace UnicornOverlord;
 
@@ -16,6 +17,8 @@ public partial class ModSearchPicker : UserControl
 		AvaloniaProperty.Register<ModSearchPicker, double>(nameof(ControlHeight), 32);
 	public static readonly StyledProperty<double> ChoiceWidthProperty =
 		AvaloniaProperty.Register<ModSearchPicker, double>(nameof(ChoiceWidth), 120);
+	public static readonly StyledProperty<double> MaxChoiceWidthProperty =
+		AvaloniaProperty.Register<ModSearchPicker, double>(nameof(MaxChoiceWidth), Double.PositiveInfinity);
 	public static readonly DirectProperty<ModSearchPicker, object?> SelectedItemProperty =
 		AvaloniaProperty.RegisterDirect<ModSearchPicker, object?>(nameof(SelectedItem), picker => picker.SelectedItem,
 			(picker, value) => picker.SelectedItem = value, defaultBindingMode: BindingMode.TwoWay);
@@ -31,7 +34,12 @@ public partial class ModSearchPicker : UserControl
 		AvaloniaXamlLoader.Load(this);
 		mChoices = this.FindControl<ComboBox>("Choices")!;
 		mSearchBox = this.FindControl<TextBox>("SearchBox")!;
-		mChoices.ItemTemplate = new FuncDataTemplate(typeof(object), (item, _) => new TextBlock { Text = GetDisplayText(item) });
+		mChoices.ItemTemplate = new FuncDataTemplate(typeof(object), (item, _) => new TextBlock
+		{
+			Text = GetDisplayText(item),
+			TextTrimming = TextTrimming.CharacterEllipsis,
+			TextWrapping = TextWrapping.NoWrap,
+		});
 		mChoices.SelectionChanged += (_, _) =>
 		{
 			if (mUpdating) return;
@@ -57,6 +65,12 @@ public partial class ModSearchPicker : UserControl
 	{
 		get => GetValue(ChoiceWidthProperty);
 		set => SetValue(ChoiceWidthProperty, value);
+	}
+
+	public double MaxChoiceWidth
+	{
+		get => GetValue(MaxChoiceWidthProperty);
+		set => SetValue(MaxChoiceWidthProperty, value);
 	}
 
 	public object? SelectedItem

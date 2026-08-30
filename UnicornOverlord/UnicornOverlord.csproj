@@ -3,6 +3,10 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>UnicornOverloardEditor</AssemblyName>
+    <Product>UnicornOverloardEditor</Product>
+    <Version>0.14.0</Version>
+    <ApplicationIcon>Assets/AppIcon.ico</ApplicationIcon>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>

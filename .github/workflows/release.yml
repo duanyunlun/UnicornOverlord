@@ -122,9 +122,9 @@ jobs:
             throw "Windows 可执行文件不存在：$executable"
           }
 
-          & $executable --validate-mods (Join-Path $env:RUNNER_TEMP "all-modules.zip")
-          if ($LASTEXITCODE -ne 0) {
-            throw "Windows 包内验证失败，退出码：$LASTEXITCODE"
+          $validation = Start-Process -FilePath $executable -ArgumentList "--validate-mods", (Join-Path $env:RUNNER_TEMP "all-modules.zip") -Wait -PassThru -NoNewWindow
+          if ($validation.ExitCode -ne 0) {
+            throw "Windows 包内验证失败，退出码：$($validation.ExitCode)"
           }
 
           Compress-Archive -Path $packageDir -DestinationPath (Join-Path $distDir "$packageName.zip")

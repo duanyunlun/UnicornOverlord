@@ -42,6 +42,7 @@ internal static class ModSmokeTest
 		ModCatalog.RefreshLocalizedNames();
 		Require(modules.Single(module => module.Key == "ability_editor").Name == "Skill Editor", "MOD 模块标题没有跟随编辑器语言切换为英文。");
 		Require(modules.Single(module => module.Key == "ability_editor").Description.StartsWith("Choose from 441", StringComparison.Ordinal), "MOD 模块说明没有跟随编辑器语言切换为英文。");
+		Require(modules.Single(module => module.Key == "unlimited_battle_start").Name == "Un-(Limited) Start of Battle Passives", "开战被动模块标题没有跟随编辑器语言切换为英文。");
 		Require(LocaleManager.Instance.Translate("打开存档") == "Open Save", "英文 locale 没有载入界面按钮文案。");
 		Require(LocaleManager.Instance.Translate("5 名角色") == "5 characters", "英文 locale 没有处理带运行时数值的界面文案。");
 		Require(LocaleManager.Instance.Format("{0} · {1:N0} 项 · 已修改 {2} 项", "Table", 1200, 3) == "Table · 1,200 entries · 3 changed", "英文 locale 没有处理多参数动态摘要。");
@@ -243,8 +244,19 @@ internal static class ModSmokeTest
 				using JsonDocument project = JsonDocument.Parse(projectReader.ReadToEnd());
 				String[] keys = project.RootElement.GetProperty("modules").EnumerateArray()
 					.Select(element => element.GetProperty("Key").GetString() ?? String.Empty).ToArray();
-				if (!keys.Contains("ability_editor", StringComparer.Ordinal) || !keys.Contains("shop_editor", StringComparer.Ordinal))
+				if (!keys.Contains("ability_editor", StringComparer.Ordinal) || !keys.Contains("shop_editor", StringComparer.Ordinal) ||
+					!keys.Contains("unlimited_battle_start", StringComparer.Ordinal))
 					throw new InvalidDataException("项目中间状态没有记录所有已选模块。");
+			}
+			ZipArchiveEntry battleStart = archive.GetEntry($"emulator/contents/{target.TitleId}/unlimited_battle_start/exefs/main.pchtxt")
+				?? throw new InvalidDataException("MOD 包缺少开战被动解除限制补丁。");
+			using (var battleStartReader = new StreamReader(battleStart.Open()))
+			{
+				String content = battleStartReader.ReadToEnd();
+				String badgeAddress = target == ModTarget.Asia ? "00573320" : "00573330";
+				if (!content.Contains("00068290 1F2003D5", StringComparison.Ordinal) ||
+					!content.Contains($"{badgeAddress} 1F2003D5", StringComparison.Ordinal))
+					throw new InvalidDataException($"{target.DisplayName} 的开战被动补丁地址不正确。");
 			}
 		foreach (ZipArchiveEntry patch in patches)
 		{

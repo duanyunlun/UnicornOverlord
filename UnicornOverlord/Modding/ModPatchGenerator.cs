@@ -61,6 +61,7 @@ internal static class ModPatchGenerator
 		{
 			"battle_preview" => module.RecordId == 1 ? "battle_preview_imperfect_western.pchtxt" : "battle_preview_hidden_western.pchtxt",
 			"battle_timer_freeze" => "battle_timer_freeze_western.pchtxt",
+			"unlimited_battle_start" => "unlimited_battle_start_western.pchtxt",
 			"character_randomizer" => "character_randomizer_western_base.pchtxt",
 			"six_member_units" => "six_member_units_western.pchtxt",
 			_ => module.TemplateFile,

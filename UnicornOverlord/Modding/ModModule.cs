@@ -38,8 +38,8 @@ internal sealed class ModModule : ObservableObject
 	public bool IsTypeMatchups => Key == "type_matchups";
 	public bool IsTextEditor => Key == "text_editor";
 	public bool ShowHeaderEnableToggle => !IsTextEditor;
-	public bool ShowContentSeparator => Key is "battle_preview" or "battle_timer_freeze";
-	public bool HasNoOptions => Key == "battle_timer_freeze";
+	public bool ShowContentSeparator => Key is "battle_preview" or "battle_timer_freeze" or "unlimited_battle_start";
+	public bool HasNoOptions => Key is "battle_timer_freeze" or "unlimited_battle_start";
 	public IReadOnlyList<String> PreviewModes => [LocaleManager.Instance.Translate("完全隐藏"), LocaleManager.Instance.Translate("不完美预览")];
 	public IReadOnlyList<String> AbilityFilters => [LocaleManager.Instance.Translate("全部技能"), LocaleManager.Instance.Translate("主动技能（AP）"), LocaleManager.Instance.Translate("被动技能（PP）")];
 	public IReadOnlyList<double> MatchupValues { get; } = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];

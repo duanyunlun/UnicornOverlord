@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {configureTranslations,setLanguage,t,LANGUAGES} from './i18n.js';
+import {configureTranslations,setLanguage,t,LANGUAGES,localizedName} from './i18n.js';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const names=JSON.parse(read('./game-names.json'));
 const doc=JSON.parse(gunzipSync(readFileSync(new URL('../UnicornOverlord/info/mission_catalog.json.gz',import.meta.url))));
@@ -28,4 +28,14 @@ test('仓库中英日名称、关卡和条件按语言显示，数据标识不�
   setLanguage('ja-JP');assert.equal(t('DARK_PRINCE_HG'),'オーバーロード');
   assert.equal(JSON.stringify(catalog),original);
   assert.throws(()=>setLanguage('unknown'));
+});
+test('同名中文物品按记录取译文，不通过名称反查覆盖',()=>{
+  configureTranslations(catalog);
+  const items=new Map(info['item.txt'].split(/\r?\n/).filter(line=>/^\d+\t/.test(line)).map(line=>{const row=line.split('\t');return [Number(row[0]),row];}));
+  assert.equal(items.get(65)[3],items.get(115)[3]);
+  for(const [column,language] of [[1,'en-US'],[2,'ja-JP'],[3,'zh-CN']]){
+    setLanguage(language);
+    for(const id of [65,115])assert.equal(localizedName(items.get(id)),items.get(id)[column]);
+  }
+  assert.equal(localizedName(undefined,9999),'ID 9999');
 });

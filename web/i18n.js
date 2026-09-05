@@ -1,6 +1,7 @@
 export const LANGUAGES=['zh-CN','en-US','ja-JP'];
 let language='zh-CN',catalog,lookup=new Map(),phraseIndex=new Map();
 export function getLanguage(){return language;}
+export function localizedName(row,id=row?.[0]){return row?.[{'zh-CN':3,'en-US':1,'ja-JP':2}[language]]||t(row?.[2]||row?.[3]||row?.[1])||`ID ${id}`;}
 const sourceText=new WeakMap(),sourceAttributes=new WeakMap();
 export function translateDom(root){
   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);while(walker.nextNode()){const node=walker.currentNode;if(node.parentElement?.closest('script,style,pre,code,textarea,[data-no-translate]'))continue;const source=sourceText.get(node);if(!source||node.nodeValue!==source.translated)sourceText.set(node,{original:node.nodeValue,translated:node.nodeValue});const entry=sourceText.get(node);node.nodeValue=t(entry.original);entry.translated=node.nodeValue;}

@@ -7,6 +7,23 @@ try{
   const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
   page.on('pageerror',error=>errors.push(error.message));page.on('dialog',dialog=>dialog.accept());
   await page.goto(process.env.TEST_URL||'http://127.0.0.1:8766/');await page.locator('#categories button').first().waitFor();
+  const recordPicker=page.locator('.record-picker select').last();
+  await recordPicker.selectOption('32');
+  await page.locator('#module-panel input[type=number]').nth(1).fill('123');
+  for(const language of ['en-US','ja-JP','zh-CN']){
+    await page.locator('#language').selectOption(language);
+    assert.equal(await recordPicker.inputValue(),'32','切换语言应保留选中记录');
+    assert.equal(await page.locator('#module-panel input[type=number]').nth(1).inputValue(),'123');
+    const suffix={'zh-CN':'cn','en-US':'en','ja-JP':'ja'}[language];
+    const descriptions=await readFile(new URL('../UnicornOverlord/info/skilldesc-'+suffix+'.txt',import.meta.url),'utf8');
+    const expected=Buffer.from(descriptions.split(/\r?\n/).find(line=>line.startsWith('32\t')).split('\t')[1],'base64').toString('utf8');
+    assert.equal(await page.locator('#module-panel p[data-no-translate]').textContent(),expected,'游戏说明必须保持对应语种原文');
+  }
+  await page.locator('#categories button').nth(5).click();
+  await page.locator('#language').selectOption('en-US');
+  assert.equal(await page.locator('#module-panel .field option[value="65"]').textContent(),'65 · Fevrite');
+  assert.equal(await page.locator('#module-panel .field option[value="115"]').textContent(),'115 · Iron Ore');
+  await page.locator('#language').selectOption('zh-CN');
   await page.locator('#categories button').nth(3).click();await page.locator('#module-tabs button').nth(1).click();
   const frame=page.frameLocator('iframe');await frame.locator('.catalog-layout').waitFor();
   const left=frame.locator('.catalog-layout > .panel').first(),right=frame.locator('.catalog-layout > .panel').last();

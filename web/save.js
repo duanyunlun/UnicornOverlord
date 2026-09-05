@@ -1,5 +1,5 @@
 import {rows} from './mod-engine.js';
-import {translateDom,t} from './i18n.js';
+import {translateDom,t,localizedName} from './i18n.js';
 export function download(name,content){const url=URL.createObjectURL(new Blob([content]));const anchor=document.createElement('a');anchor.href=url;anchor.download=name;anchor.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 export class SaveFile{
   constructor(buffer){this.original=new Uint8Array(buffer).slice();this.data=this.original.slice();if(this.data.length<0x4da3a0||String.fromCharCode(...this.data.slice(4,8))!=='UCSD')throw Error('不支持或不完整的 UCSD 存档');this.view=new DataView(this.data.buffer);}
@@ -16,7 +16,7 @@ export class SaveFile{
   }
 }
 export function mountSave(container,catalog,notify){
-  container.className='save-editor';let save,filename='',section='基本',selectedCharacter=0;const tables=Object.fromEntries(['class','name','item','kind'].map(name=>[name,new Map(rows(catalog.info[name+'.txt']).filter(row=>/^\d+$/.test(row[0])&&(name!=='class'||Number(row[0])<74)).map(row=>[Number(row[0]),row]))]));const name=(table,id)=>{const row=tables[table].get(id);return t(row?.[3]||row?.[2]||row?.[1]||`ID ${id}`);};
+  container.className='save-editor';let save,filename='',section='基本',selectedCharacter=0;const tables=Object.fromEntries(['class','name','item','kind'].map(name=>[name,new Map(rows(catalog.info[name+'.txt']).filter(row=>/^\d+$/.test(row[0])&&(name!=='class'||Number(row[0])<74)).map(row=>[Number(row[0]),row]))]));const name=(table,id)=>localizedName(tables[table].get(id),id);
   const element=(tag,text,parent)=>{const result=document.createElement(tag);if(text!==undefined)result.textContent=t(text);parent?.append(result);return result;};
   const action=(parent,text,callback)=>{const button=element('button',text,parent);button.onclick=async()=>{try{await callback();notify('操作完成；源文件未覆盖，请下载修改后的存档。');}catch(error){notify(error.message,true);}};return button;};
   const filePicker=async(accept,callback)=>{const input=document.createElement('input');input.type='file';input.accept=accept;input.onchange=async()=>{try{if(input.files[0])await callback(input.files[0]);}catch(error){notify(error.message,true);}};input.click();};

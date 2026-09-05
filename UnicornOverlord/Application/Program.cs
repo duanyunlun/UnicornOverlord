@@ -7,6 +7,12 @@ internal static class Program
 	[STAThread]
 	public static void Main(string[] args)
 	{
+		if (args is ["--validate-mod-layout"])
+		{
+			BuildAvaloniaApp().SetupWithoutStarting();
+			ModLayoutSmokeTest.Run();
+			return;
+		}
 		if (args is ["--validate-mods", String outputPath])
 		{
 			ModSmokeTest.Run(outputPath);

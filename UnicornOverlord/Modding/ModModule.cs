@@ -37,9 +37,14 @@ internal sealed class ModModule : ObservableObject
 	public bool IsSixMemberUnits => Key == "six_member_units";
 	public bool IsTypeMatchups => Key == "type_matchups";
 	public bool IsTextEditor => Key == "text_editor";
+	public bool IsMissionEditor => Key == "mission_editor";
+	public bool IsExperienceScale => Key == "experience_scale";
+	public double ExperienceMultiplier { get => Project.ExperienceMultiplier; set { Project.ExperienceMultiplier = value; Notify(nameof(ExperienceMultiplier)); } }
+	public IReadOnlyList<double> ExperienceMultipliers => ExperienceScalePatch.Multipliers;
+	public MissionEditorState Missions => Project.Missions;
 	public bool ShowHeaderEnableToggle => !IsTextEditor;
-	public bool ShowContentSeparator => Key is "battle_preview" or "battle_timer_freeze" or "unlimited_battle_start";
-	public bool HasNoOptions => Key is "battle_timer_freeze" or "unlimited_battle_start";
+	public bool ShowContentSeparator => Key is "battle_preview" or "battle_timer_freeze" or "unlimited_battle_start" or "type_matchups" or "experience_scale" or "six_member_units";
+	public bool HasNoOptions => Key is "battle_timer_freeze" or "unlimited_battle_start" or "enemy_level_scale";
 	public IReadOnlyList<String> PreviewModes => [LocaleManager.Instance.Translate("完全隐藏"), LocaleManager.Instance.Translate("不完美预览")];
 	public IReadOnlyList<String> AbilityFilters => [LocaleManager.Instance.Translate("全部技能"), LocaleManager.Instance.Translate("主动技能（AP）"), LocaleManager.Instance.Translate("被动技能（PP）")];
 	public IReadOnlyList<double> MatchupValues { get; } = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];

@@ -10,7 +10,8 @@ internal static class ModSmokeTest
 	{
 		String? directory = Path.GetDirectoryName(Path.GetFullPath(outputPath));
 		if (!String.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
-		ModModule[] modules = [.. ModModuleCatalog.CreateModules().Where(module => !module.IsTextEditor)];
+		ModIntegrationSmokeTest.Run(directory!);
+		ModModule[] modules = [.. ModModuleCatalog.CreateModules().Where(module => !module.IsTextEditor && module.Key is not ("mission_editor" or "experience_scale" or "enemy_level_scale"))];
 		ValidateEditorSemantics(modules);
 		foreach (ModTarget target in ModTarget.All)
 		{

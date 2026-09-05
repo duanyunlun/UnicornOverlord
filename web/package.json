@@ -1,0 +1,1 @@
+{"name":"unicorn-overlord-web","private":true,"type":"module","scripts":{"test":"node --test *.test.mjs mission/tests/*.test.mjs","build":"node build.mjs"}}

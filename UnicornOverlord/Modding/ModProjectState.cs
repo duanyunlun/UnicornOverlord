@@ -1,11 +1,13 @@
 using System.Collections.ObjectModel;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace UnicornOverlord;
 
 internal sealed class ModProjectState
 {
 	private readonly Dictionary<String, ModOptionState> mOptions = new(StringComparer.Ordinal);
+	private MissionEditorState? mMissions;
 
 	public ModProjectState()
 	{
@@ -27,6 +29,58 @@ internal sealed class ModProjectState
 	public CharacterRandomizerProjectState CharacterRandomizer { get; } = new();
 	public TypeMatchupProjectState TypeMatchups { get; } = new();
 	public SixMemberProjectState SixMemberUnits { get; } = new();
+	public double ExperienceMultiplier { get; set; } = 1;
+	public MissionEditorState Missions => mMissions ??= new MissionEditorState(this);
+	public JsonObject MissionEdits => mMissions?.Edits ?? new JsonObject();
+
+	public void ImportMissionClassEdits(JsonArray entries)
+	{
+		foreach (JsonObject entry in entries.OfType<JsonObject>())
+		{
+			ClassRecordEdit record = Classes.GetRecord(MissionModCatalog.Number(entry, "class_id")) ?? throw new InvalidDataException("不支持的职业 ID。");
+			foreach (ModSkillSlot slot in record.ActiveSkills.Concat(record.PassiveSkills)) slot.SelectedSkill = slot.Choices.First(choice => choice.Value == 0);
+			foreach (JsonObject line in entry["lines"]?.AsArray().OfType<JsonObject>() ?? [])
+			{
+				int action = MissionModCatalog.Number(line, "action");
+				if (action is < 3 or > 10) throw new InvalidDataException("职业战术必须引用四个主动或四个被动槽。");
+				ModSkillSlot slot = action < 7 ? record.ActiveSkills[action - 3] : record.PassiveSkills[action - 7];
+				int skill = MissionModCatalog.Number(line, "skill_id");
+				slot.SelectedSkill = slot.Choices.FirstOrDefault(choice => choice.Value == skill) ?? throw new InvalidDataException("职业技能类型不匹配。");
+				slot.Level = slot.IsFirst ? 1 : MissionModCatalog.Number(line, "learn_level", 1);
+				if (skill != 0) Classes.Conditions.Set(skill, MissionModCatalog.Number(line, "if0"), MissionModCatalog.Number(line, "if1"));
+			}
+		}
+	}
+
+	public JsonArray ExportMissionClassEdits()
+	{
+		var entries = new JsonArray();
+		foreach (ClassRecordEdit record in Classes.Records.Where(record => record.IsModified || record.ActiveSkills.Concat(record.PassiveSkills).Any(slot => Classes.Conditions.ModifiedRecords.ContainsKey(slot.SelectedSkill?.Value ?? 0))))
+		{
+			var lines = new JsonArray();
+			foreach (ModSkillSlot slot in record.ActiveSkills.Concat(record.PassiveSkills).Where(slot => (slot.SelectedSkill?.Value ?? 0) > 0))
+			{
+				int skill = slot.SelectedSkill!.Value;
+				var conditions = Classes.Conditions.Get(skill);
+				lines.Add(new JsonObject { ["action"] = (slot.IsPassive ? 7 : 3) + slot.Index, ["skill_id"] = skill, ["learn_level"] = slot.Level, ["if0"] = conditions.First, ["if1"] = conditions.Second });
+			}
+			entries.Add(new JsonObject { ["class_id"] = record.RecordId, ["lines"] = lines });
+		}
+		return entries;
+	}
+
+	public JsonObject ExportMissionEdits(bool includeClasses = true, bool includeMissions = true)
+	{
+		var edits = includeMissions ? (JsonObject)MissionEdits.DeepClone() : new JsonObject();
+		edits.Remove("class_tactics");
+		edits.Remove("equiptype_items");
+		if (includeClasses)
+		{
+			edits["class_tactics"] = ExportMissionClassEdits();
+			if (MissionEdits["equiptype_items"] is JsonArray gear) edits["equiptype_items"] = gear.DeepClone();
+		}
+		return edits;
+	}
 
 	public ModOptionState Options(String key)
 	{
@@ -68,7 +122,9 @@ internal sealed class ModProjectState
 	private object CreateModuleSnapshot(ModModule module) => module.Key switch
 	{
 		"ability_editor" => new { module.Key, records = Ability.ModifiedRecords.Select(record => record.Snapshot()).ToArray() },
-		"class_editor" => new { module.Key, records = Classes.ModifiedRecords.Select(record => record.Snapshot()).ToArray() },
+		"class_editor" => new { module.Key, records = Classes.ModifiedRecords.Select(record => record.Snapshot()).ToArray(), class_tactics = ExportMissionClassEdits(), equiptype_items = MissionEdits["equiptype_items"] },
+		"mission_editor" => new { module.Key, edits = MissionEdits },
+		"experience_scale" => new { module.Key, multiplier = ExperienceMultiplier },
 		"fort_editor" => new { module.Key, records = Fort.ModifiedRecords.Select(record => record.Snapshot()).ToArray() },
 		"mine_editor" => new { module.Key, records = Mine.ModifiedRecords.Select(record => new { record.RecordId, record.ItemId, record.Weight, record.DigTarget, record.RoundLimit }).ToArray() },
 		"shop_editor" => new { module.Key, records = Shop.ModifiedRecords.Select(record => record.Snapshot()).ToArray() },
@@ -209,9 +265,13 @@ internal sealed class ClassEditorState
 	public ClassEditorState()
 	{
 		mRecords = ModCatalog.Classes.ToDictionary(pair => pair.Key, pair => new ClassRecordEdit(pair.Value));
+		foreach (ModSkillSlot slot in mRecords.Values.SelectMany(record => record.ActiveSkills.Concat(record.PassiveSkills))) slot.BindConditions(Conditions);
 		SelectedRecord = mRecords.GetValueOrDefault(1) ?? mRecords.Values.First();
 	}
 	public ClassRecordEdit SelectedRecord { get; private set; }
+	public SkillConditionState Conditions { get; } = new();
+	public IEnumerable<ClassRecordEdit> Records => mRecords.Values;
+	public ClassRecordEdit? GetRecord(int id) => mRecords.GetValueOrDefault(id);
 	public IEnumerable<ClassRecordEdit> ModifiedRecords => mRecords.Values.Where(record => record.IsModified);
 	public void Select(int recordId)
 	{

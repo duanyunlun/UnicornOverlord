@@ -1,6 +1,7 @@
 using System.Buffers.Binary;
 using System.Globalization;
 using System.Text;
+using System.Text.Json.Nodes;
 
 namespace UnicornOverlord;
 
@@ -21,6 +22,15 @@ internal static class ModPatchGenerator
 
 	public static String Generate(ModModule module, ModTarget target)
 	{
+		if (module.Key == "experience_scale") return ExperienceScalePatch.Generate(module.Project.ExperienceMultiplier, target);
+		if (module.Key == "enemy_level_scale") return EnemyLevelScalePatch.Generate(target);
+		if (module.Key == "mission_editor")
+		{
+			var edits = (JsonObject)module.Project.MissionEdits.DeepClone();
+			edits.Remove("class_tactics");
+			edits.Remove("equiptype_items");
+			return MissionModPatch.Generate(edits, target);
+		}
 		List<PatchWrite> writes = module.Key switch
 		{
 			"ability_editor" => GenerateAbility(module),
@@ -32,6 +42,17 @@ internal static class ModPatchGenerator
 			"six_member_units" => GenerateSixMember(module),
 			_ => [],
 		};
+		if (module.IsClassEditor && module.Project.MissionEdits["equiptype_items"] is JsonArray gear && gear.Count > 0)
+		{
+			String patch = MissionModPatch.Generate(new JsonObject { ["equiptype_items"] = gear.DeepClone() }, target, includeEngineFix: false);
+			foreach (String line in patch.Split('\n'))
+			{
+				String[] parts = line.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+				if (parts.Length == 2 && UInt32.TryParse(parts[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint address))
+					writes.Add(new PatchWrite(address, Convert.FromHexString(parts[1]), "默认装备表"));
+			}
+		}
+		if (module.IsClassEditor && writes.Count == 0) throw new InvalidOperationException("职业编辑器尚未修改职业、默认条件或默认装备。");
 
 		if (writes.Count > 0) return WritePchtxt(writes, target);
 		String? templateFile = ResolveTemplateFile(module, target);
@@ -134,7 +155,6 @@ internal static class ModPatchGenerator
 	private static List<PatchWrite> GenerateClass(ModModule module)
 	{
 		ClassRecordEdit[] edits = module.Project.Classes.ModifiedRecords.OrderBy(record => record.RecordId).ToArray();
-		if (edits.Length == 0) throw new InvalidOperationException("职业编辑器尚未修改任何职业。");
 		var writes = new List<PatchWrite>();
 		String[] names = ["生命", "物攻", "物防", "魔攻", "魔防", "命中", "闪避", "暴击", "格挡", "速度"];
 		foreach (ClassRecordEdit edit in edits)
@@ -156,6 +176,12 @@ internal static class ModPatchGenerator
 			}
 			AppendClassSkillWrites(writes, skills, edit.ActiveSkills, 0x04, $"职业 {id} 的主动");
 			AppendClassSkillWrites(writes, skills, edit.PassiveSkills, 0x34, $"职业 {id} 的被动");
+		}
+		foreach (var edit in module.Project.Classes.Conditions.ModifiedRecords.OrderBy(entry => entry.Key))
+		{
+			uint address = SkillBase + (uint)edit.Key * SkillStride;
+			writes.Add(new PatchWrite(address + 0xAC, UInt32Bytes((uint)edit.Value.First), $"技能 {edit.Key} 的全局默认条件 1"));
+			writes.Add(new PatchWrite(address + 0xB0, UInt32Bytes((uint)edit.Value.Second), $"技能 {edit.Key} 的全局默认条件 2"));
 		}
 		return writes;
 	}

@@ -402,3 +402,5 @@ FodyWeavers.xsd
 .testdata/
 .extracted/
 .codex-melisandre-work/
+web/dist/
+web/mission/dist/

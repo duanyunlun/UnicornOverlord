@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:UnicornOverlord" x:Class="UnicornOverlord.DefaultGearEditorView">
+  <StackPanel Spacing="12">
+    <TextBlock Text="职业默认装备表" FontWeight="SemiBold"/>
+    <TextBlock Text="原版 56 行，三等级档：1–14 / 15–27 / 28–50。修改影响所有引用此默认装备行的角色；已有显式装备不被覆盖。" TextWrapping="Wrap" Foreground="#656B75"/>
+    <ItemsControl ItemsSource="{Binding DefaultGearRows}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Border BorderBrush="#D8DBE0" BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,0,0,8">
+            <StackPanel Spacing="8">
+              <Grid ColumnDefinitions="*,Auto"><TextBlock Text="{Binding Label}" VerticalAlignment="Center"/><Button Grid.Column="1" Content="恢复本行" Command="{Binding RestoreCommand}"/></Grid>
+              <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                <StackPanel Spacing="5"><TextBlock Text="Lv 1–14"/><local:ModSearchPicker ItemsSource="{Binding Choices}" SelectedItem="{Binding Low, Mode=TwoWay}"/></StackPanel>
+                <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="Lv 15–27"/><local:ModSearchPicker ItemsSource="{Binding Choices}" SelectedItem="{Binding Middle, Mode=TwoWay}"/></StackPanel>
+                <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="Lv 28–50"/><local:ModSearchPicker ItemsSource="{Binding Choices}" SelectedItem="{Binding High, Mode=TwoWay}"/></StackPanel>
+              </Grid>
+            </StackPanel>
+          </Border>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </StackPanel>
+</UserControl>

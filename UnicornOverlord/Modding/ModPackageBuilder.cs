@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using System.Text.Json;
 
 namespace UnicornOverlord;
 
@@ -31,11 +32,18 @@ internal static class ModPackageBuilder
 		archive.WriteUtf8Text("README_CN.txt", CreateReadme(modules, target) + "\n");
 		archive.WriteUtf8Text("manifest.txt", CreateManifest(modules, target));
 		archive.WriteUtf8Text("mod-project.json", project.ToJson(modules, target) + "\n");
+		if (modules.Any(module => module.IsMissionEditor || module.IsClassEditor))
+		{
+			var snapshot = new { schemaVersion = 1, target = new { target.Key, target.TitleId, target.BuildId }, edits = project.ExportMissionEdits(modules.Any(module => module.IsClassEditor), modules.Any(module => module.IsMissionEditor)) };
+			archive.WriteUtf8Text("mission_editor_edits.json", JsonSerializer.Serialize(snapshot, new JsonSerializerOptions { WriteIndented = true }));
+		}
+		String notice = Path.Combine(AppContext.BaseDirectory, "THIRD_PARTY_MODS.md");
+		if (File.Exists(notice)) archive.WriteUtf8Text("THIRD_PARTY_MODS.md", File.ReadAllText(notice));
 	}
 
 	private static void ValidateConflicts(IEnumerable<(ModModule Module, String Content)> patches)
 	{
-		var ranges = new List<(uint Start, uint End, String Module)>();
+		var bytes = new Dictionary<uint, (byte Value, String Module)>();
 		foreach (var patch in patches)
 		{
 			foreach (String line in patch.Content.Replace("\r\n", "\n").Split('\n'))
@@ -45,11 +53,14 @@ internal static class ModPackageBuilder
 				String hex = line[9..].Trim();
 				if (hex.Length == 0 || hex.Length % 2 != 0 || !hex.All(Uri.IsHexDigit))
 					throw new InvalidDataException($"{patch.Module.Name} 包含无效补丁行：{line}");
-				uint end = checked(address + (uint)(hex.Length / 2));
-				var conflict = ranges.FirstOrDefault(range => range.Module != patch.Module.Name && address < range.End && end > range.Start);
-				if (conflict != default)
-					throw new InvalidOperationException($"{patch.Module.Name} 与 {conflict.Module} 在地址 {Math.Max(address, conflict.Start):X8} 冲突。");
-				ranges.Add((address, end, patch.Module.Name));
+				byte[] data = Convert.FromHexString(hex);
+				for (int index = 0; index < data.Length; index++)
+				{
+					uint location = checked(address + (uint)index);
+					if (bytes.TryGetValue(location, out var prior) && prior.Value != data[index])
+						throw new InvalidOperationException($"{patch.Module.Name} 与 {prior.Module} 在地址 {location:X8} 写入不同内容，禁止导出。");
+					bytes[location] = (data[index], patch.Module.Name);
+				}
 			}
 		}
 	}

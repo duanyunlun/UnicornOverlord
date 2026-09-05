@@ -456,17 +456,19 @@
                       <StackPanel Spacing="6">
                         <TextBlock FontWeight="SemiBold" Text="主动技能"/>
                         <ItemsControl ItemsSource="{Binding ActiveSkills}">
-                          <ItemsControl.ItemTemplate><DataTemplate><Grid ColumnDefinitions="70,*,82" ColumnSpacing="6" Margin="0,0,0,6"><TextBlock Classes="option-title" Text="{Binding SlotName}" VerticalAlignment="Center"/><local:ModSearchPicker Grid.Column="1" ItemsSource="{Binding Choices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}"/><NumericUpDown Grid.Column="2" Value="{Binding Level}" Minimum="1" Maximum="99" IsEnabled="{Binding CanEditLevel}" ToolTip.Tip="习得等级；第一项固定 1 级"/></Grid></DataTemplate></ItemsControl.ItemTemplate>
+                          <ItemsControl.ItemTemplate><DataTemplate><StackPanel Spacing="5" Margin="0,0,0,8"><Grid ColumnDefinitions="70,*,82" ColumnSpacing="6"><TextBlock Classes="option-title" Text="{Binding SlotName}" VerticalAlignment="Center"/><local:ModSearchPicker Grid.Column="1" ItemsSource="{Binding Choices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}"/><NumericUpDown Grid.Column="2" Value="{Binding Level}" Minimum="1" Maximum="99" IsEnabled="{Binding CanEditLevel}" ToolTip.Tip="习得等级；第一项固定 1 级"/></Grid><Expander Header="默认战术条件" IsEnabled="{Binding CanEditConditions}"><StackPanel Spacing="5"><TextBlock Text="条件 1（IF0）"/><local:ModSearchPicker ItemsSource="{Binding ConditionChoices}" SelectedItem="{Binding SelectedCondition0, Mode=TwoWay}"/><TextBlock Text="条件 2（IF1）"/><local:ModSearchPicker ItemsSource="{Binding ConditionChoices}" SelectedItem="{Binding SelectedCondition1, Mode=TwoWay}"/></StackPanel></Expander></StackPanel></DataTemplate></ItemsControl.ItemTemplate>
                         </ItemsControl>
                       </StackPanel>
                       <StackPanel Grid.Column="1" Spacing="6">
                         <TextBlock FontWeight="SemiBold" Text="被动技能"/>
                         <ItemsControl ItemsSource="{Binding PassiveSkills}">
-                          <ItemsControl.ItemTemplate><DataTemplate><Grid ColumnDefinitions="70,*,82" ColumnSpacing="6" Margin="0,0,0,6"><TextBlock Classes="option-title" Text="{Binding SlotName}" VerticalAlignment="Center"/><local:ModSearchPicker Grid.Column="1" ItemsSource="{Binding Choices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}"/><NumericUpDown Grid.Column="2" Value="{Binding Level}" Minimum="1" Maximum="99" IsEnabled="{Binding CanEditLevel}" ToolTip.Tip="习得等级；第一项固定 1 级"/></Grid></DataTemplate></ItemsControl.ItemTemplate>
+                          <ItemsControl.ItemTemplate><DataTemplate><StackPanel Spacing="5" Margin="0,0,0,8"><Grid ColumnDefinitions="70,*,82" ColumnSpacing="6"><TextBlock Classes="option-title" Text="{Binding SlotName}" VerticalAlignment="Center"/><local:ModSearchPicker Grid.Column="1" ItemsSource="{Binding Choices}" SelectedItem="{Binding SelectedSkill, Mode=TwoWay}"/><NumericUpDown Grid.Column="2" Value="{Binding Level}" Minimum="1" Maximum="99" IsEnabled="{Binding CanEditLevel}" ToolTip.Tip="习得等级；第一项固定 1 级"/></Grid><Expander Header="默认战术条件" IsEnabled="{Binding CanEditConditions}"><StackPanel Spacing="5"><TextBlock Text="条件 1（IF0）"/><local:ModSearchPicker ItemsSource="{Binding ConditionChoices}" SelectedItem="{Binding SelectedCondition0, Mode=TwoWay}"/><TextBlock Text="条件 2（IF1）"/><local:ModSearchPicker ItemsSource="{Binding ConditionChoices}" SelectedItem="{Binding SelectedCondition1, Mode=TwoWay}"/></StackPanel></Expander></StackPanel></DataTemplate></ItemsControl.ItemTemplate>
                         </ItemsControl>
                       </StackPanel>
                     </Grid>
                     <TextBlock Classes="caption stable-help" Text="技能下拉按主动/被动分开；第一项固定 1 级，后续技能可设置习得等级。更换为职业无法播放其动画的技能可能显示异常。"/>
+                    <TextBlock Classes="caption stable-help" Text="默认战术条件按技能全局共享；修改会影响所有使用该技能默认条件的职业。关卡独立战术请在编队中创建私有预设。新增条件名称暂以可靠上游英文或日文为准。"/>
+                    <Expander Header="默认装备表（全职业共享）"><local:DefaultGearEditorView DataContext="{Binding Missions}"/></Expander>
                   </StackPanel>
 
                   <StackPanel IsVisible="{Binding IsFortEditor}" Spacing="8">
@@ -519,6 +521,14 @@
                     <TextBlock Classes="caption stable-help" Text="三项倍率作用于对应兵种的每一次攻击，与技能自身的类型加成相乘。例如骑兵对步兵设为 1 表示取消固有双倍克制。"/>
                   </StackPanel>
 
+                  <StackPanel IsVisible="{Binding IsExperienceScale}" Spacing="6">
+                    <TextBlock Classes="option-title" Text="战斗经验倍率"/>
+                    <ComboBox Width="150" HorizontalAlignment="Left" ItemsSource="{Binding ExperienceMultipliers}" SelectedItem="{Binding ExperienceMultiplier, Mode=TwoWay}"/>
+                    <TextBlock Classes="caption stable-help" Text="倍率 1 为原始经验；不会改变经验书。导出前会检查目标版本与代码洞冲突。"/>
+                  </StackPanel>
+                  <StackPanel IsVisible="{Binding IsMissionEditor, FallbackValue=False}">
+                    <local:MissionEditorView DataContext="{Binding Missions}"/>
+                  </StackPanel>
                   <TextBlock IsVisible="{Binding HasNoOptions}" Classes="caption" Text="此模块本身只有启用或停用，没有额外参数。"/>
 	                </StackPanel>
 	                <Border IsVisible="{Binding ShowContentSeparator}" Height="1" Background="{StaticResource BorderBrush}" Margin="0,18" />

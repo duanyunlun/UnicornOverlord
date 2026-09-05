@@ -1,0 +1,71 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:UnicornOverlord" x:Class="UnicornOverlord.MissionEditorView">
+  <StackPanel Spacing="12">
+    <WrapPanel><Button Content="导入 JSON / 上游 ZIP" Click="ImportEdits" Margin="0,0,8,0"/><Button Content="保存完整编辑 JSON" Click="SaveEdits"/></WrapPanel>
+    <TabControl>
+      <TabItem Header="任务编队">
+        <StackPanel Spacing="12" Margin="0,12,0,0">
+          <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+            <StackPanel Spacing="5"><TextBlock Text="筛选任务"/><TextBox Text="{Binding Query, Mode=TwoWay}" PlaceholderText="任务名 / ID"/></StackPanel>
+            <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="地区"/><ComboBox ItemsSource="{Binding Regions}" SelectedItem="{Binding Region, Mode=TwoWay}"/></StackPanel>
+            <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="阵营（PL 我方 / EN 敌方）"/><ComboBox ItemsSource="{Binding Sides}" SelectedItem="{Binding Side, Mode=TwoWay}"/></StackPanel>
+          </Grid>
+          <StackPanel Spacing="5"><TextBlock Text="任务排序（未知等级置后）"/><ComboBox ItemsSource="{Binding MissionSortChoices}" SelectedItem="{Binding MissionSort, Mode=TwoWay}"/></StackPanel>
+          <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+            <StackPanel Spacing="5"><TextBlock Text="任务"/><local:ModSearchPicker ItemsSource="{Binding Missions}" SelectedItem="{Binding SelectedMission, Mode=TwoWay}"/></StackPanel>
+            <StackPanel Grid.Column="1" Spacing="5"><TextBlock Text="队伍"/><local:ModSearchPicker ItemsSource="{Binding Squads}" SelectedItem="{Binding SelectedSquad, Mode=TwoWay}"/></StackPanel>
+          </Grid>
+          <ItemsControl ItemsSource="{Binding Seats}">
+            <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="3" Rows="2"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate><DataTemplate><Button Content="{Binding Label}" Command="{Binding SelectCommand}" CommandParameter="{Binding Index}" Margin="3" MinHeight="66" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Background="#E5F2EE" Foreground="#234F43"/></DataTemplate></ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <Button Content="{Binding ExchangeLabel}" Command="{Binding ExchangeCommand}"/>
+          <TextBlock Text="{Binding UnitSummary}" TextWrapping="Wrap"/>
+          <TextBlock Text="替换角色（搜索匹配即选中并写入；选择 0 清空）"/>
+          <local:ModSearchPicker ItemsSource="{Binding CharacterChoices}" SelectedItem="{Binding SelectedCharacter, Mode=TwoWay}"/>
+          <ItemsControl ItemsSource="{Binding Gear}" IsEnabled="{Binding HasUnit}">
+            <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="2"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate><DataTemplate><StackPanel Spacing="5" Margin="3"><TextBlock Text="{Binding Label}"/><local:ModSearchPicker ItemsSource="{Binding Choices}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"/></StackPanel></DataTemplate></ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <CheckBox Content="明确授权：允许覆盖此角色的共享装备（duplicate_if_shared=false）" IsChecked="{Binding AllowSharedGear, Mode=TwoWay}" IsEnabled="{Binding HasUnit}"/>
+          <TextBlock Text="{Binding SharedWarning}" TextWrapping="Wrap" Foreground="#9B611B"/>
+          <Button Content="恢复此角色全部原版装备 / 撤销共享授权" Command="{Binding RestoreGearCommand}" IsEnabled="{Binding HasUnit}"/>
+          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <local:ModSearchPicker ItemsSource="{Binding Presets}" SelectedItem="{Binding SelectedPreset, Mode=TwoWay}"/>
+            <Button Grid.Column="1" Content="分配给当前槽" Command="{Binding AssignPresetCommand}" IsEnabled="{Binding HasUnit}"/>
+          </Grid>
+          <Button Content="复制当前角色战术为私有预设并分配" Command="{Binding CopyPrivateCommand}" IsEnabled="{Binding HasUnit}"/>
+        </StackPanel>
+      </TabItem>
+      <TabItem Header="战术预设">
+        <StackPanel Spacing="12" Margin="0,12,0,0">
+          <CheckBox Content="只显示任务页当前任务使用的预设" IsChecked="{Binding PresetsForMission, Mode=TwoWay}"/>
+          <local:ModSearchPicker ItemsSource="{Binding FilteredPresets}" SelectedItem="{Binding SelectedPreset, Mode=TwoWay}"/>
+          <StackPanel Spacing="5"><TextBlock Text="预设名称（仅新建私有预设可改；原版符号只读）"/><TextBox Text="{Binding PresetName, Mode=TwoWay}" IsEnabled="{Binding CanRenamePreset}" MaxLength="96"/></StackPanel>
+          <TextBlock Text="{Binding PresetWarning}" TextWrapping="Wrap" Foreground="#9B611B"/>
+          <WrapPanel><Button Content="新建空预设（负 ID）" Command="{Binding NewPresetCommand}" Margin="0,0,8,0"/><Button Content="分配给任务页当前槽" Command="{Binding AssignPresetCommand}" IsEnabled="{Binding HasUnit}"/></WrapPanel>
+          <TextBlock Text="技能 / 职业槽标记　·　IF0　·　IF1（均支持搜索，修改即时生效）" TextWrapping="Wrap"/>
+          <ItemsControl ItemsSource="{Binding Lines}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border BorderBrush="#D8DBE0" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,8">
+                  <StackPanel Spacing="8">
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="8"><TextBlock Text="{Binding Label}" VerticalAlignment="Center"/><local:ModSearchPicker Grid.Column="1" ItemsSource="{Binding SkillChoices}" SelectedItem="{Binding Skill, Mode=TwoWay}"/><Button Grid.Column="2" Content="↑" Command="{Binding UpCommand}" ToolTip.Tip="上移"/><Button Grid.Column="3" Content="↓" Command="{Binding DownCommand}" ToolTip.Tip="下移"/><Button Grid.Column="4" Content="删除" Command="{Binding DeleteCommand}"/></Grid>
+                    <Grid ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="8"><TextBlock Text="IF0" VerticalAlignment="Center"/><local:ModSearchPicker Grid.Column="1" ItemsSource="{Binding IfChoices}" SelectedItem="{Binding If0, Mode=TwoWay}"/><TextBlock Grid.Column="2" Text="IF1" VerticalAlignment="Center"/><local:ModSearchPicker Grid.Column="3" ItemsSource="{Binding IfChoices}" SelectedItem="{Binding If1, Mode=TwoWay}"/></Grid>
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <Button Content="新增职业主动槽 1 战术" Command="{Binding AddLineCommand}" IsEnabled="{Binding CanEditPreset}"/>
+          <Expander Header="当前任务引用影响（包含编辑后的分配）"><TextBlock Text="{Binding References}" TextWrapping="Wrap"/></Expander>
+          <Expander Header="原版完整引用（含任务外上下文，编辑后可能变化）"><TextBlock Text="{Binding CatalogReferences}" TextWrapping="Wrap"/></Expander>
+        </StackPanel>
+      </TabItem>
+    </TabControl>
+    <TextBlock Text="FinalTactics · 任务页当前选中角色的最终战术" FontWeight="SemiBold"/>
+    <Button Content="刷新职业 / 装备预览" Command="{Binding RefreshPreviewCommand}"/>
+    <TextBlock Text="{Binding PreviewNotice}" TextWrapping="Wrap" Foreground="#656B75"/>
+    <Border Background="#F3F4F6" BorderBrush="#D8DBE0" BorderThickness="1" Padding="10" CornerRadius="4"><TextBlock Text="{Binding FinalTactics}" TextWrapping="Wrap"/></Border>
+    <TextBlock Text="{Binding Status}" TextWrapping="Wrap"/>
+  </StackPanel>
+</UserControl>

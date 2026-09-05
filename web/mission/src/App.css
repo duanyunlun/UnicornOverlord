@@ -27,6 +27,10 @@ body {
   max-width: 1800px;
   margin: 0 auto;
   padding: 1.25rem;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .header {
@@ -68,21 +72,26 @@ h3 {
 
 .layout {
   display: grid;
-  grid-template-columns: 260px minmax(340px, 0.8fr) minmax(0, 2fr);
+  grid-template-columns: minmax(160px, 0.7fr) minmax(180px, 0.8fr) minmax(0, 1.7fr);
   gap: 0.85rem;
-  min-height: 70vh;
+  min-height: 0;
+  flex: 1;
 }
 
 .catalog-layout {
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
+  grid-template-columns: minmax(170px, 0.65fr) minmax(0, 2fr);
   gap: 0.85rem;
-  min-height: 70vh;
+  min-height: 0;
+  flex: 1;
 }
 
 .layout > .panel,
 .catalog-layout > .panel {
   min-width: 0;
+  min-height: 0;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .view-tabs {
@@ -115,7 +124,7 @@ h3 {
 }
 
 .panel.wide {
-  min-height: 70vh;
+  min-height: 0;
 }
 
 .search {
@@ -189,6 +198,12 @@ h3 {
   gap: 0.4rem;
   flex-shrink: 0;
 }
+
+.layout > .panel:not(.wide) > .row { flex-direction: column; align-items: stretch; }
+.layout > .panel:not(.wide) > .row h2 { font-size: 20px; overflow-wrap: anywhere; }
+.layout > .panel:not(.wide) .row-actions { justify-content: flex-start; }
+.header h1 { font-family: inherit; font-size: 24px; line-height: 1.4; }
+.header > div { min-width: 0; }
 
 .filter-hint {
   margin: 0 0 0.55rem;
@@ -684,11 +699,6 @@ button.linkish {
 }
 
 @media (max-width: 1100px) {
-  .layout,
-  .catalog-layout {
-    grid-template-columns: 1fr;
-  }
-
   .class-line-row {
     grid-template-columns: 1fr;
   }
@@ -836,10 +846,17 @@ button.linkish {
 }
 
 @media (max-width: 600px) {
+  .app { height: auto; min-height: 100dvh; overflow: visible; padding: 0.75rem; }
+  .layout, .catalog-layout { grid-template-columns: minmax(0, 1fr); }
+  .layout > .panel:not(.wide), .catalog-layout > .panel:first-child { max-height: 250px; }
   .header { flex-direction: column; }
   .header > div, .header-actions, .mod-name-field { min-width: 0; max-width: 100%; }
   .mod-name-field input { min-width: 0; width: 100%; }
   .header h1 { font-size: 22px; }
+  .header .hint { display: none; }
+  .header-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); width: 100%; }
+  .header-actions button { font-size: 12px; padding: 0.5rem; overflow-wrap: anywhere; }
+  .mod-name-field { grid-column: 1 / -1; }
   .header .sub { overflow-wrap: anywhere; }
   .equiptype-cols { grid-template-columns: minmax(0, 1fr); }
 }

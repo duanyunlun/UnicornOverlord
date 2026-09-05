@@ -1,7 +1,8 @@
 import {TARGETS,rows,generateMod,validateConflicts,zipFiles} from './mod-engine.js';
 import {mountSave,download} from './save.js';
+import {configureTranslations,setLanguage,getLanguage,t,translateDom} from './i18n.js';
 const $=id=>document.getElementById(id);
-const notify=(message,error=false)=>{$('status').textContent=message;$('status').className=error?'error':'';};
+const notify=(message,error=false)=>{$('status').textContent=t(message);$('status').className=error?'error':'';};
 const definitions=[
   ['技能','ability_editor','技能数值','修改技能消耗、物理 / 魔法威力、命中与效果参数。'],
   ['战斗','battle_preview','战斗预览','调整战斗预测显示，不改变实际战斗结算。'],['战斗','battle_timer_freeze','冻结计时器','冻结关卡战斗计时器。'],['战斗','unlimited_battle_start','开战被动','解除开战被动的发动数量限制。'],['战斗','type_matchups','类型克制','分别调整三种类型克制倍率。'],['战斗','experience_scale','经验倍率','仅修改战斗经验，经验书和道具不受影响。'],['战斗','enemy_level_scale','动态等级','根据玩家队伍等级调整敌军，保留上游关卡下限与例外。'],
@@ -13,7 +14,7 @@ const definitions=[
 let catalog,project={schema:1,target:'asia',modules:{}},category='技能',moduleKey='ability_editor',saveController;
 const missionKeys=new Set(['missions','presets','classes','gear']);let missionFrame,frameReady=false;
 const pendingRequests=new Map();
-function ensureFrame(){if(!missionFrame){missionFrame=element('iframe',undefined,$('mission-host'));missionFrame.title='关卡、战术与默认装备编辑器';missionFrame.src=`./mission/?target=${project.target}&view=${missionKeys.has(moduleKey)?moduleKey:'missions'}`;}return missionFrame;}
+function ensureFrame(){if(!missionFrame){missionFrame=element('iframe',undefined,$('mission-host'));missionFrame.title=t('关卡、战术与默认装备编辑器');missionFrame.src=`./mission/?target=${project.target}&language=${getLanguage()}&view=${missionKeys.has(moduleKey)?moduleKey:'missions'}`;}return missionFrame;}
 async function requestFrame(type,extra={}){
   ensureFrame();
   if(!frameReady)await new Promise((resolve,reject)=>{const deadline=Date.now()+20000;const timer=setInterval(()=>{if(frameReady){clearInterval(timer);resolve();}else if(Date.now()>deadline){clearInterval(timer);reject(Error('任务编辑器加载超时'));}},50);});
@@ -21,20 +22,21 @@ async function requestFrame(type,extra={}){
 }
 window.addEventListener('message',event=>{
   if(event.origin!==location.origin||event.source!==missionFrame?.contentWindow||!event.data)return;
-  const message=event.data;if(message.type==='uo-ready'){frameReady=true;missionFrame.contentWindow.postMessage({type:'uo-view',view:missionKeys.has(moduleKey)?moduleKey:'missions',target:project.target},location.origin);}
+  const message=event.data;if(message.type==='uo-ready'){frameReady=true;missionFrame.contentWindow.postMessage({type:'uo-language',language:getLanguage()},location.origin);missionFrame.contentWindow.postMessage({type:'uo-view',view:missionKeys.has(moduleKey)?moduleKey:'missions',target:project.target},location.origin);}
   if(message.type==='uo-navigate'&&missionKeys.has(message.view)){moduleKey=message.view;category=definitions.find(row=>row[1]===moduleKey)[0];render();}
   const request=pendingRequests.get(message.requestId);if(request){clearTimeout(request.timer);pendingRequests.delete(message.requestId);if(message.error)request.reject(Error(message.error));else request.resolve(message);}
 });
-const element=(tag,text,parent)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;parent?.append(node);return node;};
+const element=(tag,text,parent)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=t(text);parent?.append(node);return node;};
 function button(parent,text,callback){const node=element('button',text,parent);node.onclick=async()=>{try{await callback();}catch(error){notify(error.message,true);}};return node;}
 const lookup=(filename,id)=>rows(catalog.info[filename]).find(row=>Number(row[0])===id);
-const name=(filename,id)=>{const row=lookup(filename,id);return row?.[3]||row?.[2]||row?.[1]||`ID ${id}`;};
+const name=(filename,id)=>{const row=lookup(filename,id);return t(row?.[3]||row?.[2]||row?.[1]||`ID ${id}`);};
 function defaults(key){if(key.endsWith('_editor'))return {enabled:false,records:[]};return {enabled:false,...({battle_preview:{mode:'hidden'},type_matchups:{cavalryVsInfantry:2,archerVsFlying:2,flyingVsCavalry:2},character_randomizer:{seed:12345,mixPromotionTiers:false},six_member_units:{honorCost:200},experience_scale:{multiplier:1}}[key]||{})};}
 function state(key=moduleKey){return project.modules[key]??=defaults(key);}
-function updateCount(){const count=Object.values(project.modules).filter(value=>value.enabled).length;$('selection-count').textContent=`${count} 个模块已启用${missionFrame?' · 含任务编辑工作区':''}`;$('export').disabled=count===0&&!missionFrame;}
-function field(parent,label,value,callback,options){const wrapper=element('label',label,parent);wrapper.className='field';const input=element(options?'select':'input',undefined,wrapper);input.setAttribute('aria-label',label);if(options)for(const [value,text] of options){const option=element('option',text,input);option.value=value;}else{input.type='number';input.step='any';}input.value=value;input.onchange=()=>{if(!options&&(input.value===''||!Number.isFinite(Number(input.value)))){notify('请输入有效数字',true);return;}callback(options&&typeof value==='string'?input.value:Number(input.value));notify('修改已保留在当前工程；请启用模块后导出。');};return input;}
-function checkbox(parent,label,value,callback){const wrapper=element('label',undefined,parent);wrapper.className='toggle';const input=element('input',undefined,wrapper);input.type='checkbox';input.checked=value;wrapper.append(document.createTextNode(label));input.onchange=()=>callback(input.checked);}
-function render(){
+function updateCount(){const count=Object.values(project.modules).filter(value=>value.enabled).length;$('selection-count').textContent=t(`${count} 个模块已启用${missionFrame?' · 含任务编辑工作区':''}`);$('export').disabled=count===0&&!missionFrame;}
+function field(parent,label,value,callback,options){const wrapper=element('label',label,parent);wrapper.className='field';const input=element(options?'select':'input',undefined,wrapper);input.setAttribute('aria-label',t(label));if(options)for(const [value,text] of options){const option=element('option',text,input);option.value=value;}else{input.type='number';input.step='any';}input.value=value;input.onchange=()=>{if(!options&&(input.value===''||!Number.isFinite(Number(input.value)))){notify('请输入有效数字',true);return;}callback(options&&typeof value==='string'?input.value:Number(input.value));notify('修改已保留在当前工程；请启用模块后导出。');};return input;}
+function checkbox(parent,label,value,callback){const wrapper=element('label',undefined,parent);wrapper.className='toggle';const input=element('input',undefined,wrapper);input.type='checkbox';input.checked=value;wrapper.append(document.createTextNode(t(label)));input.onchange=()=>callback(input.checked);}
+function render(){renderContent();translateDom(document.body);}
+function renderContent(){
   $('categories').replaceChildren();for(const label of [...new Set(definitions.map(row=>row[0]))]){const node=button($('categories'),label,()=>{category=label;moduleKey=definitions.find(row=>row[0]===category)[1];render();});node.className=category===label?'active':'';element('span','›',node);}
   $('category-title').textContent=category;$('module-tabs').replaceChildren();for(const row of definitions.filter(row=>row[0]===category)){const node=button($('module-tabs'),row[2],()=>{moduleKey=row[1];render();});node.className=moduleKey===row[1]?'active':'';}
   $('module-panel').replaceChildren();$('mission-host').hidden=!missionKeys.has(moduleKey);
@@ -66,31 +68,32 @@ function renderRecords(card,selected){
     if(key==='ability_editor')baseline={id,cost:Number(row[5]),physicalPotency:Number(row[6]),magicalPotency:Number(row[7]),accuracy:Number(row[8]),targetShape:Number(row[9]),effectValue:Number(row[10])};
     if(key==='class_editor')baseline={id,ap:Number(row[1]),pp:Number(row[2]),growths:row.slice(3,13).map(Number),activeSkills:Array.from({length:4},(_,index)=>({skillId:Number(row[13+index*2]),level:Number(row[14+index*2])})),passiveSkills:Array.from({length:4},(_,index)=>({skillId:Number(row[21+index*2]),level:Number(row[22+index*2])}))};
     if(key==='fort_editor')baseline={id,classId:Number(row[1])};if(key==='mine_editor')baseline={id,itemId:Number(row[1]),weight:Number(row[2]),digTarget:Number(row[3]),roundLimit:Number(row[5])};if(key==='shop_editor')baseline={id,itemId:Number(row[2]),stock:Number(row[3]),price:Number(row[4])};record??=structuredClone(baseline);
-    const change=callback=>value=>{callback(value);selected.records=selected.records.filter(entry=>entry.id!==id);if(JSON.stringify(record)!==JSON.stringify(baseline))selected.records.push(record);summary.textContent=`已修改 ${selected.records.length} 条记录`;};summary.textContent=`已修改 ${selected.records.length} 条记录`;
+    const change=callback=>value=>{callback(value);selected.records=selected.records.filter(entry=>entry.id!==id);if(JSON.stringify(record)!==JSON.stringify(baseline))selected.records.push(record);summary.textContent=t(`已修改 ${selected.records.length} 条记录`);};summary.textContent=t(`已修改 ${selected.records.length} 条记录`);
     const heading=element('div',undefined,body);heading.className='record-summary';element('strong',title(row),heading);button(heading,'恢复此条原版',()=>{selected.records=selected.records.filter(entry=>entry.id!==id);choose();});const grid=element('div',undefined,body);grid.className='grid three';
-    if(key==='ability_editor'){for(const [property,label] of [['cost','AP / PP 消耗'],['physicalPotency','物理威力'],['magicalPotency','魔法威力'],['accuracy','命中'],['effectValue','首个效果参数']])field(grid,label,record[property],change(value=>record[property]=value));field(grid,'目标范围',record.targetShape,change(value=>record.targetShape=value),[[0,'原始 / 无目标'],[1,'单体'],[2,'2个目标'],[3,'3个目标'],[5,'全体'],[6,'一排'],[7,'前后纵列']]);const desc=lookup('skilldesc-cn.txt',id);if(desc)element('p',new TextDecoder().decode(Uint8Array.from(atob(desc[1]),character=>character.charCodeAt(0))),body);}
+    if(key==='ability_editor'){for(const [property,label] of [['cost','AP / PP 消耗'],['physicalPotency','物理威力'],['magicalPotency','魔法威力'],['accuracy','命中'],['effectValue','首个效果参数']])field(grid,label,record[property],change(value=>record[property]=value));field(grid,'目标范围',record.targetShape,change(value=>record.targetShape=value),[[0,'原始 / 无目标'],[1,'单体'],[2,'2个目标'],[3,'3个目标'],[5,'全体'],[6,'一排'],[7,'前后纵列']]);const desc=lookup('skilldesc-'+({'zh-CN':'cn','en-US':'en','ja-JP':'ja'}[getLanguage()])+'.txt',id);if(desc)element('p',new TextDecoder().decode(Uint8Array.from(atob(desc[1]),character=>character.charCodeAt(0))),body);}
     if(key==='class_editor'){
       field(grid,'AP',record.ap,change(value=>record.ap=value));field(grid,'PP',record.pp,change(value=>record.pp=value));for(const [index,label] of ['生命','物攻','物防','魔攻','魔防','命中','闪避','暴击','格挡','速度'].entries())field(grid,label+'成长',record.growths[index],change(value=>record.growths[index]=value));
       for(const [property,label,type] of [['activeSkills','主动技能','A'],['passiveSkills','被动技能','P']]){element('h4',label,body);const slots=element('div',undefined,body);slots.className='grid';record[property].forEach((slot,index)=>{field(slots,`${label} ${index+1}`,slot.skillId,change(value=>slot.skillId=value),[[0,'0 · 空槽'],...rows(catalog.info['skill.txt']).filter(row=>row[4]===type).map(row=>[Number(row[0]),`${row[0]} · ${row[3]||row[1]}`])]);const input=field(slots,'习得等级',slot.level,change(value=>slot.level=value));input.disabled=index===0;});}element('p','技能全局默认条件在「默认战术」页中。修改同一职业的技能时，请不要同时导出两份相互覆盖的补丁。',body);
     }
-    if(key==='fort_editor')field(grid,'招募职业',record.classId,change(value=>record.classId=value),rows(catalog.info['class.txt']).map(row=>[Number(row[0]),row[3]||row[1]]));
+    if(key==='fort_editor')field(grid,'招募职业',record.classId,change(value=>record.classId=value),rows(catalog.info['class.txt']).filter(row=>/^\d+$/.test(row[0])&&Number(row[0])<74).map(row=>[Number(row[0]),row[3]||row[1]]));
     if(key==='mine_editor'||key==='shop_editor'){field(grid,'物品',record.itemId,change(value=>record.itemId=value),rows(catalog.info['item.txt']).filter(row=>Number(row[0])<=970).map(row=>[Number(row[0]),`${row[0]} · ${row[3]||row[1]}`]));for(const [property,label] of key==='mine_editor'?[['weight','相对权重'],['digTarget','挖掘目标'],['roundLimit','单局上限']]:[['stock','库存（-1为无限）'],['price','全局买价（卖价为1/10）']])field(grid,label,record[property],change(value=>record[property]=value));}
   }
-  const populate=()=>{const previous=picker.value;picker.replaceChildren();for(const row of all){if(!title(row).toLowerCase().includes(search.value.toLowerCase()))continue;if(filter.value&&(key==='ability_editor'?row[4]!==filter.value.slice(-1):location(row)!==filter.value))continue;const option=element('option',title(row),picker);option.value=row[0];}if([...picker.options].some(option=>option.value===previous))picker.value=previous;choose();};search.oninput=populate;filter.onchange=populate;picker.onchange=choose;populate();
+  const populate=()=>{const previous=picker.value;picker.replaceChildren();for(const row of all){if(!(title(row)+' '+t(title(row))).toLowerCase().includes(search.value.toLowerCase()))continue;if(filter.value&&(key==='ability_editor'?row[4]!==filter.value.slice(-1):location(row)!==filter.value))continue;const option=element('option',title(row),picker);option.value=row[0];}if([...picker.options].some(option=>option.value===previous))picker.value=previous;choose();};search.oninput=populate;filter.onchange=populate;picker.onchange=choose;populate();
 }
 $('target').onchange=()=>{project.target=$('target').value;missionFrame?.contentWindow.postMessage({type:'uo-target',target:project.target},location.origin);render();};
-$('show-save').onclick=()=>{$('save-workspace').hidden=false;$('mod-workspace').hidden=true;$('show-save').className='active';$('show-mod').className='';$('mod-toolbar').querySelector('.actions').hidden=true;$('mod-toolbar').querySelector('strong').textContent='存档编辑';};
-$('show-mod').onclick=()=>{$('save-workspace').hidden=true;$('mod-workspace').hidden=false;$('show-save').className='';$('show-mod').className='active';$('mod-toolbar').querySelector('.actions').hidden=false;$('mod-toolbar').querySelector('strong').textContent='MOD 工程';};
+$('language').onchange=()=>{setLanguage($('language').value);document.documentElement.lang=getLanguage();try{localStorage.setItem('uo-language',getLanguage());}catch{}saveController?.refresh();missionFrame?.contentWindow.postMessage({type:'uo-language',language:getLanguage()},location.origin);render();};
+$('show-save').onclick=()=>{$('save-workspace').hidden=false;$('mod-workspace').hidden=true;$('show-save').className='active';$('show-mod').className='';$('mod-toolbar').querySelector('.actions').hidden=true;$('mod-toolbar').querySelector('strong').textContent=t('存档编辑');};
+$('show-mod').onclick=()=>{$('save-workspace').hidden=true;$('mod-workspace').hidden=false;$('show-save').className='';$('show-mod').className='active';$('mod-toolbar').querySelector('.actions').hidden=false;$('mod-toolbar').querySelector('strong').textContent=t('MOD 工程');};
 $('save-project').onclick=async()=>{try{if(missionFrame)project.missionEdits=(await requestFrame('uo-request-edits')).edits;download('unicorn-mod-project.json',JSON.stringify(project,null,2));notify('完整工程已保存，包含任务、预设、职业默认战术与装备');}catch(error){notify(error.message,true);}};
 $('import-project').onclick=()=>{const input=document.createElement('input');input.type='file';input.accept='.json';input.onchange=async()=>{try{
   const file=input.files[0];if(!file)return;if(file.size>16*1024*1024)throw Error('工程超过16 MiB');const candidate=JSON.parse(await file.text());
   if(candidate.schema!==1||!TARGETS[candidate.target]||!candidate.modules||Array.isArray(candidate.modules))throw Error('不是本网站的MOD工程；上游工程请在任务编辑器中载入');
   for(const [key,value] of Object.entries(candidate.modules)){if(!definitions.some(row=>row[1]===key)||missionKeys.has(key)||!value||typeof value.enabled!=='boolean')throw Error('工程模块无效');if(value.enabled||value.records?.length)generateMod(key,value,candidate.target,catalog);}
-  if(!confirm('载入工程会替换当前所有MOD修改，继续？'))return;
+  if(!confirm(t('载入工程会替换当前所有MOD修改，继续？')))return;
   if(candidate.missionEdits||missionFrame)await requestFrame('uo-load-edits',{edits:candidate.missionEdits||{},target:candidate.target});
   project=candidate;$('target').value=project.target;render();notify('完整工程已载入');
 }catch(error){notify(error.message,true);}};input.click();};
-$('reset').onclick=async()=>{try{if(!confirm('清空全部MOD工程修改，包括任务、职业默认装备与预设？'))return;if(missionFrame)await requestFrame('uo-load-edits',{edits:{}});project={schema:1,target:project.target,modules:{}};render();notify('全部MOD修改已重置');}catch(error){notify(error.message,true);}};
+$('reset').onclick=async()=>{try{if(!confirm(t('清空全部MOD工程修改，包括任务、职业默认装备与预设？')))return;if(missionFrame)await requestFrame('uo-load-edits',{edits:{}});project={schema:1,target:project.target,modules:{}};render();notify('全部MOD修改已重置');}catch(error){notify(error.message,true);}};
 $('export').onclick=async()=>{try{
   const snapshot=structuredClone(project);
   const patches=Object.entries(snapshot.modules).filter(([,value])=>value.enabled).map(([key,value])=>({key,content:generateMod(key,value,snapshot.target,catalog)}));
@@ -101,4 +104,4 @@ $('export').onclick=async()=>{try{
   download('UnicornOverlord_MOD_'+snapshot.target+'.zip',zipFiles(files));notify(`已导出 ${patches.length} 个模块，字节冲突检查通过`);
 }catch(error){notify(error.message,true);}};
 window.addEventListener('beforeunload',event=>{if(missionFrame||Object.keys(project.modules).some(key=>project.modules[key].enabled||project.modules[key].records?.length)||saveController?.hasChanges()){event.preventDefault();event.returnValue='';}});
-try{const response=await fetch('./data/catalog.json');if(!response.ok)throw Error('目录加载失败');catalog=await response.json();saveController=mountSave($('save-workspace'),catalog,notify);render();notify('就绪 · 文件只在浏览器本地处理');}catch(error){notify(error.message,true);}
+try{const response=await fetch('./data/catalog.json');if(!response.ok)throw Error('目录加载失败');catalog=await response.json();configureTranslations(catalog);try{const saved=localStorage.getItem('uo-language');if(saved)setLanguage(saved);}catch{}$('language').value=getLanguage();document.documentElement.lang=getLanguage();saveController=mountSave($('save-workspace'),catalog,notify);render();notify('就绪 · 文件只在浏览器本地处理');}catch(error){notify(error.message,true);}

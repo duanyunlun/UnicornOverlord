@@ -15,6 +15,8 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    "jsxImportSource": "./i18n-runtime",
+    "allowJs": true,
 
     /* Linting */
     "noUnusedLocals": true,

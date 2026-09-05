@@ -62,8 +62,8 @@
 61	Dew of Parrrying	堅守の雫	坚守之露
 62	Dew of Agility	敏捷の雫	敏捷之露
 63	Dew of Illusion	幻の雫	幻之露
-64		隕鉄石	陨铁石
-65		フェブライト	铁矿石
+64	Meteorite Stone	隕鉄石	陨铁石
+65	Fevrite	フェブライト	铁矿石
 66	Idealist's Handmirror	イデアの手鏡	理想手镜
 67	Goat Biscuit	ゴートクッキー	山羊曲奇
 68	Free Meal Ticket	無料食事券	免费餐券
@@ -168,7 +168,7 @@
 169	Lapis Lazuli 	ラピスラズリ	青金石
 170	Ruby	ルビー	红宝石
 171	Black Diamond	ブラックダイヤ	黑钻石
-172		グラフスタート
+172	Map Section Start	グラフスタート	地图部分起点
 173	Cornia Treasure Map 1	コルニア地図1	科尔尼亚藏宝图1
 174	Cornia Treasure Map 2	コルニア地図2	科尔尼亚藏宝图2
 175	Cornia Treasure Map 3	コルニア地図3	科尔尼亚藏宝图3
@@ -256,11 +256,11 @@
 257	Hydeland Emblem 	ハイドランドの紋章	海德兰纹章
 258	Sakura High School Emblem	咲良高等学校の紋章	樱花高中纹章
 259	Emblem End	紋章エンド	纹章部分结束
-260	Faded Note 1 	色褪せた手記1
-261	Faded Note 2 	色褪せた手記2
-262	Faded Note 3 	色褪せた手記3
-263	Faded Note 4 	色褪せた手記4
-264	Faded Note 5	色褪せた手記5
+260	Faded Note 1	色褪せた手記1	褪色的手记1
+261	Faded Note 2	色褪せた手記2	褪色的手记2
+262	Faded Note 3	色褪せた手記3	褪色的手记3
+263	Faded Note 4	色褪せた手記4	褪色的手记4
+264	Faded Note 5	色褪せた手記5	褪色的手记5
 265	Dig time Extensions (S)	ディグゲーム時間延長S	挖掘时间延长（小）
 266	Dig time Extensions (M)	ディグゲーム時間延長M	挖掘时间延长（中）
 267	Dig time Extensions (L)	ディグゲーム時間延長L	挖掘时间延长（大）

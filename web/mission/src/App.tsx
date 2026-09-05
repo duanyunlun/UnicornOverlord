@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import {configureTranslations, setLanguage, t, LANGUAGES} from '../../i18n.js';
 import "./App.css";
 import {
   SearchableCombobox,
@@ -555,6 +556,8 @@ function refreshEditsSkillNames(
 }
 
 function App() {
+  const [language,setEditorLanguage]=useState(()=>{const value=new URLSearchParams(location.search).get('language')||'zh-CN';const selected=LANGUAGES.includes(value)?value:'zh-CN';setLanguage(selected);return selected;});
+  useEffect(()=>{document.documentElement.lang=language;},[language]);
   const [frameView, setFrameView] = useState<FrameView>(() => {
     const value = new URLSearchParams(location.search).get("view");
     return isView(value) ? value : "missions";
@@ -592,6 +595,8 @@ function App() {
   const [presetId, setPresetId] = useState<number | null>(null);
   const [equiptypeFilter, setEquiptypeFilter] = useState("");
   const [equiptypeId, setEquiptypeId] = useState<number | null>(null);
+  useEffect(()=>{document.querySelectorAll<HTMLElement>('.panel.wide').forEach(panel=>{panel.scrollTop=0;});},[missionId,squadId,slotIdx,classId,presetId,equiptypeId]);
+  useEffect(()=>{const panel=document.querySelector<HTMLElement>('.layout > .panel:nth-child(2)');if(panel)panel.scrollTop=0;},[missionId]);
   const [liveClassTactics, setLiveClassTactics] = useState<ClassTactics[] | null>(
     null
   );
@@ -609,6 +614,7 @@ function App() {
   useEffect(() => {
     const receive = (event: MessageEvent) => {
       if (!acceptsParentMessage(event, location.origin, window.parent) || !event.data || typeof event.data !== "object") return;
+      if(event.data.type==='uo-language'&&LANGUAGES.includes(event.data.language)){setLanguage(event.data.language);setEditorLanguage(event.data.language);}
       if ((event.data.type === "uo-target" || event.data.type === "uo-view") && isTarget(event.data.target) && event.data.target !== target) {
         setTarget(event.data.target);
         setLiveClassTactics(null);
@@ -657,7 +663,7 @@ function App() {
   }, [doc, target, frameView]);
 
   useEffect(() => {
-    fetch(DATA_URL)
+    fetch('../data/catalog.json').then(response=>{if(!response.ok)throw new Error('Language catalog unavailable');return response.json();}).then(data=>{configureTranslations(data);return fetch(DATA_URL);})
       .then((r) => {
         if (!r.ok) throw new Error(`Failed to load ${DATA_URL}`);
         if (!r.body) throw new Error("目录响应为空");
@@ -928,14 +934,12 @@ function App() {
     return (doc?.equiptype_items ?? []).filter((entry) => {
       if (!q) return true;
       return (
-        entry.symbol.toLowerCase().includes(q) ||
+        (entry.symbol+' '+t(entry.symbol)).toLowerCase().includes(q) ||
         String(entry.id).includes(q) ||
-        (entry.item_col0 || "").toLowerCase().includes(q) ||
-        (entry.item_col1 || "").toLowerCase().includes(q) ||
-        (entry.item_col2 || "").toLowerCase().includes(q)
+        [entry.item_col0, entry.item_col1, entry.item_col2].some(value=>((value||'')+' '+t(value||'')).toLowerCase().includes(q))
       );
     });
-  }, [doc, equiptypeFilter]);
+  }, [doc, equiptypeFilter, language]);
 
   const ifOptions: ComboboxOption[] = useMemo(() => {
     const opts: ComboboxOption[] = [
@@ -1017,17 +1021,17 @@ function App() {
       if (regionFilter !== "ALL" && m.region !== regionFilter) return false;
       if (!q) return true;
       return (
-        m.stage_name.toLowerCase().includes(q) ||
+        (m.stage_name+' '+t(m.stage_name)).toLowerCase().includes(q) ||
         m.quest_symbol.toLowerCase().includes(q) ||
-        m.region.toLowerCase().includes(q) ||
+        (m.region+' '+t(m.region)).toLowerCase().includes(q) ||
         m.squads.some(
           (s) =>
             s.unitset_symbol.toLowerCase().includes(q) ||
             s.slots.some(
               (sl) =>
-                (sl.chara_name || "").toLowerCase().includes(q) ||
+                ((sl.chara_name || "")+' '+t(sl.chara_name || "")).toLowerCase().includes(q) ||
                 sl.charaset_symbol.toLowerCase().includes(q) ||
-                sl.class_symbol.toLowerCase().includes(q)
+                (sl.class_symbol+' '+t(sl.class_symbol)).toLowerCase().includes(q)
             )
         )
       );
@@ -1037,7 +1041,7 @@ function App() {
       return Number.isFinite(n) ? n : Number.POSITIVE_INFINITY;
     };
     const nameKey = (m: Mission) =>
-      (m.stage_name || m.quest_symbol || "").toLowerCase();
+      t(m.stage_name || m.quest_symbol || "").toLowerCase();
     return [...filtered].sort((a, b) => {
       if (missionSort === "level") {
         const d = levelNum(a) - levelNum(b);
@@ -1047,7 +1051,7 @@ function App() {
       if (byName !== 0) return byName;
       return a.quest_id - b.quest_id;
     });
-  }, [doc, filter, missionSort, regionFilter]);
+  }, [doc, filter, missionSort, regionFilter, language]);
 
   const missionsByName = useMemo(() => {
     if (!doc) return [] as Mission[];
@@ -1542,7 +1546,7 @@ function App() {
   }
 
   function resetChanges() {
-    if (hasEdits() && !window.confirm("丢弃所有未保存的修改？")) return;
+    if (hasEdits() && !window.confirm(t("丢弃所有未保存的修改？"))) return;
     setEdits(EMPTY_EDITS);
     setEditEpoch((n) => n + 1);
     setExportMsg("修改已重置。");
@@ -1596,7 +1600,7 @@ function App() {
   }
 
   function importEditorText(label: string, text: string) {
-    if (hasEdits() && !window.confirm("替换当前所有未保存的修改？")) {
+    if (hasEdits() && !window.confirm(t("替换当前所有未保存的修改？"))) {
       return false;
     }
     const imported = parseImportedEdits(JSON.parse(text));
@@ -1660,7 +1664,7 @@ function App() {
   }
 
   function confirmSharedGear() {
-    return window.confirm("装备修改可能影响所有引用相同 CharaSet 的单位。本编辑器无法自动克隆角色模板。确认允许全局装备影响并导出？");
+    return window.confirm(t("装备修改可能影响所有引用相同 CharaSet 的单位。本编辑器无法自动克隆角色模板。确认允许全局装备影响并导出？"));
   }
 
   async function exportMod() {
@@ -1712,7 +1716,7 @@ function App() {
     const q = classFilter.trim().toLowerCase();
     return (
       !q ||
-      entry.class_symbol.toLowerCase().includes(q) ||
+      (entry.class_symbol+' '+t(entry.class_symbol)).toLowerCase().includes(q) ||
       String(entry.class_id).includes(q)
     );
   });
@@ -1894,9 +1898,8 @@ function App() {
           r.charaset_symbol,
         ]
           .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-        return hay.includes(q);
+          .join(" ");
+        return hay.toLowerCase().includes(q) || t(hay).toLowerCase().includes(q);
       });
     }
   );
@@ -3339,11 +3342,11 @@ function UnitPanel({
       catalog.class_name || catalog.class_symbol || `class ${catalog.class_id}`;
     const keepPreset =
       local.equipaiset_id === 0 ||
-      window.confirm(
+      window.confirm(t(
         `Swap to ${catalog.name || catalog.symbol} (${classLabel})?\n\n` +
           "OK = keep the current tactics preset (may not match the new class).\n" +
           "Cancel = abort the swap."
-      );
+      ));
     if (!keepPreset) return;
     const gear = (catalog.gear || []).map((g) => ({
       ...g,
@@ -3378,10 +3381,10 @@ function UnitPanel({
       if (!c) return;
       if (
         c.lines.length === 0 &&
-        !window.confirm(
+        !window.confirm(t(
           "This new preset is still empty. Assigning a non-zero empty preset " +
             "skips class defaults and leaves the unit with NO tactics. Assign anyway?"
-        )
+        ))
       ) {
         return;
       }
@@ -3404,9 +3407,9 @@ function UnitPanel({
     const slotCount = preset?.lines?.length ?? 0;
     if (
       slotCount === 0 &&
-      !window.confirm(
+      !window.confirm(t(
         `Preset ${id} has an empty tactics list. Assigning it will wipe this unit's tactics. Continue?`
-      )
+      ))
     ) {
       return;
     }

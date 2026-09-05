@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import {t,getLanguage} from '../../i18n.js';
 
 export type ComboboxOption = {
   id: number;
@@ -27,18 +28,21 @@ export function SearchableCombobox({
   const rootRef = useRef<HTMLDivElement>(null);
 
   const selected = options.find((o) => o.id === value);
+  const language=getLanguage();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return options;
     return options.filter(
       (o) =>
+        t(o.label).toLowerCase().includes(q) ||
+        t(o.secondary || '').toLowerCase().includes(q) ||
         o.label.toLowerCase().includes(q) ||
         (o.secondary || "").toLowerCase().includes(q) ||
         o.group.toLowerCase().includes(q) ||
         String(o.id) === q
     );
-  }, [options, query]);
+  }, [options, query, language]);
 
   const grouped = useMemo(() => {
     const map = new Map<string, ComboboxOption[]>();
